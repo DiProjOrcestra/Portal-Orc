@@ -15,7 +15,7 @@
     } catch (e) {}
   })();
 
-  fetch("../components/sidebar.html")
+  fetch("components/sidebar.html")
     .then(response => response.text())
     .then(html => {
       document.getElementById("sidebar-container").innerHTML = html;
@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Ubuntu:wght@400;500;700&family=Unbounded:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body data-page="tecnologias">
 <svg class="watermark" viewBox="0 0 1786 1786" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -191,6 +191,6 @@
   <span id="toastMsg">Copiado!</span>
 </div>
 
-<script src="../js/script.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>
