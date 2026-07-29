@@ -106,6 +106,392 @@
         <p class="eyebrow">Gestão de Produto</p>
         <h1 class="page-title">Requisitos do produto</h1>
 
+        <div class="prose">
+
+          <h2 id="requisitos-funcionais">Requisitos Funcionais</h2>
+
+          <h3 id="modulo-comercial-e-gestao-de-vendas">Módulo Comercial e Gestão de Vendas</h3>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Descrição</th>
+                  <th>OE atingido</th>
+                  <th>Dependências funcionais</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>RF01</td>
+                  <td>Visualizar painel de prospecção</td>
+                  <td>Fornecer visualização estruturada por estágios do funil de vendas, contemplando obrigatoriamente as fases: Prospecção, Primeiro Contato, Reunião Agendada, Diagnóstico, Proposta Enviada, Negociação e Fechado/Perdido.</td>
+                  <td>OE1</td>
+                  <td>Nenhuma</td>
+                </tr>
+                <tr>
+                  <td>RF02</td>
+                  <td>Criar painel de oportunidade comerciais</td>
+                  <td>Permitir a criação, atualização, transição de estágio e arquivamento de oportunidades comerciais.</td>
+                  <td>OE2</td>
+                  <td>RF01</td>
+                </tr>
+                <tr>
+                  <td>RF03</td>
+                  <td>Registrar perfil do cliente</td>
+                  <td>Registrar o histórico consolidado por cliente, incluindo responsável do contato, dores identificadas, atas de reuniões, documentos enviados e agendamento de próximos passos (follow-up).</td>
+                  <td>OE2</td>
+                  <td>RF02</td>
+                </tr>
+                <tr>
+                  <td>RF04</td>
+                  <td>Visualizar Dashboard Analytics Comercial</td>
+                  <td>Dashboard Analytics Comercial apresentando as métricas: quantidade de empresas prospectadas por semana, reuniões realizadas, taxa de conversão por etapa, ticket médio, faturamento previsto versus realizado, tempo médio de negociação e desempenho individual de membros.</td>
+                  <td>OE1</td>
+                  <td>RF03</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="modulo-de-perfil-do-cliente-e-inteligencia-de-mercado">Módulo de Perfil do Cliente e Inteligência de Mercado</h3>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Descrição</th>
+                  <th>OE atingido</th>
+                  <th>Dependências funcionais</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>RF05</td>
+                  <td>Visualizar perfil 360° do cliente</td>
+                  <td>Manter o cadastro do Perfil 360° do Cliente, contendo segmento de atuação, número de colaboradores, dores mapeadas e orçamento estimado.</td>
+                  <td>OE2</td>
+                  <td>Nenhuma</td>
+                </tr>
+                <tr>
+                  <td>RF06</td>
+                  <td>Recomendar Soluções do portfólio corporativo</td>
+                  <td>Associar e recomendar soluções do portfólio corporativo com base nas necessidades registradas do cliente.</td>
+                  <td>OE6</td>
+                  <td>RF05</td>
+                </tr>
+                <tr>
+                  <td>RF07</td>
+                  <td>Consultar histórico de projetos</td>
+                  <td>Permitir a consulta ao histórico de projetos semelhantes executados anteriormente para fundamentar novas propostas comerciais.</td>
+                  <td>OE5</td>
+                  <td>RF05</td>
+                </tr>
+                <tr>
+                  <td>RF08</td>
+                  <td>Cadastrar Módulos de Inteligência de Mercado</td>
+                  <td>Disponibilizar módulo de Inteligência de Mercado para registro de pesquisas sobre tendências, mapeamento de concorrentes, prospecção de parceiros e eventos do ecossistema.</td>
+                  <td>OE6</td>
+                  <td>Nenhuma</td>
+                </tr>
+                <tr>
+                  <td>RF09</td>
+                  <td>Visualizar Catálogo de Serviços</td>
+                  <td>Estruturar um Catálogo de Serviços detalhando cada solução, problema resolvido, benefícios, cases de sucesso, etapas operacionais, tempo médio de execução e FAQ de apoio às vendas.</td>
+                  <td>OE5</td>
+                  <td>Nenhuma</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="modulo-de-gestao-do-conhecimento-e-capacitacao">Módulo de Gestão do Conhecimento e Capacitação</h3>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Descrição</th>
+                  <th>OE atingido</th>
+                  <th>Dependências funcionais</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>RF10</td>
+                  <td>Centralizar Arquivos</td>
+                  <td>O sistema deve disponibilizar uma Central de Arquivos para armazenar e permitir o download de scripts de prospecção, modelos de mensagens, apresentações institucionais, propostas técnicas e minutas contratuais.</td>
+                  <td>OE1</td>
+                  <td>Nenhuma</td>
+                </tr>
+                <tr>
+                  <td>RF11</td>
+                  <td>Disponibilizar guias</td>
+                  <td>O sistema deve fornecer um Guia de Manejo de Objeções com as principais barreiras comerciais e as respostas institucionais recomendadas.</td>
+                  <td>OE6</td>
+                  <td>Nenhuma</td>
+                </tr>
+                <tr>
+                  <td>RF12</td>
+                  <td>Consultar atas de Post-Mortem</td>
+                  <td>O sistema deve permitir o registro e consulta de atas de Post-Mortem contendo aprendizados, dificuldades enfrentadas e recomendações operacionais pós-projeto.</td>
+                  <td>OE6</td>
+                  <td>RF10</td>
+                </tr>
+                <tr>
+                  <td>RF13</td>
+                  <td>Disponibilizar Trilhas de Aprendizagem</td>
+                  <td>O sistema deve disponibilizar Trilhas de Aprendizagem contendo vídeos, apresentações, materiais metodológicos e testes de avaliação para novos membros e trainees.</td>
+                  <td>OE2</td>
+                  <td>Nenhuma</td>
+                </tr>
+                <tr>
+                  <td>RF14</td>
+                  <td>Simulador Comercial</td>
+                  <td>O sistema deve prover um Simulador Comercial com cenários práticos guiados para treinamento de diagnóstico, elaboração de propostas e técnicas de negociação com emissão de feedback.</td>
+                  <td>OE2</td>
+                  <td>Nenhuma</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="modulo-operacional-calendario-e-gestao-de-pessoas">Módulo Operacional, Calendário e Gestão de Pessoas</h3>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Descrição</th>
+                  <th>OE atingido</th>
+                  <th>Dependências funcionais</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>RF15</td>
+                  <td>Integrar Agenda</td>
+                  <td>Manter agenda integrada para registro de reuniões com clientes, entregas de propostas, treinamentos e metas operacionais.</td>
+                  <td>OE4</td>
+                  <td>Nenhuma</td>
+                </tr>
+                <tr>
+                  <td>RF16</td>
+                  <td>Cadastrar Perfil individual dos membros</td>
+                  <td>Perfil individual dos membros contendo sobre mim, gostos, história na orc, competências técnicas, áreas de interesse, Plano de Desenvolvimento Individual (PDI), histórico de alocação em projetos, indicar o status situacional de cada membro e permitir alteração (exemplo: alocado em projeto, disponível, em período de férias, afastado), ranking e emblemas.</td>
+                  <td>OE1</td>
+                  <td>Nenhuma</td>
+                </tr>
+                <tr>
+                  <td>RF17</td>
+                  <td>Buscar perfis</td>
+                  <td>Disponibilizar ferramentas de busca com filtragem avançada por competência e disponibilidade para alocação eficiente de equipes de projeto.</td>
+                  <td>OE5</td>
+                  <td>RF16</td>
+                </tr>
+                <tr>
+                  <td>RF18</td>
+                  <td>Notificar formulários</td>
+                  <td>Centralizar formulários abertos na página principal.</td>
+                  <td>OE1</td>
+                  <td>Nenhuma</td>
+                </tr>
+                <tr>
+                  <td>RF19</td>
+                  <td>Registrar presença nas Reuniões Gerais</td>
+                  <td>Registrar o controle automatizado de presença nas Reuniões Gerais (RG).</td>
+                  <td>OE2</td>
+                  <td>Nenhuma</td>
+                </tr>
+                <tr>
+                  <td>RF20</td>
+                  <td>Preencher a Orc'ronologia</td>
+                  <td>Preencher e armazenar a Orc'ronologia.</td>
+                  <td>OE3</td>
+                  <td>Nenhuma</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="modulo-de-estrategia-comunicacao-e-transparencia">Módulo de Estratégia, Comunicação e Transparência</h3>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Descrição</th>
+                  <th>OE atingido</th>
+                  <th>Dependências funcionais</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>RF21</td>
+                  <td>Exibir painel informativo</td>
+                  <td>Exibir painel informativo contendo Missão, Visão e Valores (MVV), Planejamento Estratégico e os Objetivos do Ano.</td>
+                  <td>OE1</td>
+                  <td>Nenhuma</td>
+                </tr>
+                <tr>
+                  <td>RF22</td>
+                  <td>Exibir Quadro Kanban de acompanhamento</td>
+                  <td>Disponibilizar um quadro Kanban de acompanhamento de atividades das diretorias associado diretamente às metas do planejamento estratégico e PDI.</td>
+                  <td>OE4</td>
+                  <td>RF21</td>
+                </tr>
+                <tr>
+                  <td>RF23</td>
+                  <td>Disponibilizar Calendário</td>
+                  <td>Fornecer um Calendário Editorial para planejamento, agendamento e acompanhamento das publicações institucionais, eventos, datas comemorativas e compromissos.</td>
+                  <td>OE4</td>
+                  <td>Nenhuma</td>
+                </tr>
+                <tr>
+                  <td>RF24</td>
+                  <td>Disponibilizar Jornal Orc</td>
+                  <td>Manter o "Jornal Orc" para publicação de informes institucionais, notícias das diretorias, encerramento de projetos e atualizações do MEJ.</td>
+                  <td>OE4</td>
+                  <td>Nenhuma</td>
+                </tr>
+                <tr>
+                  <td>RF25</td>
+                  <td>Visualizar Painel de Transparência Financeira</td>
+                  <td>Fornecer um painel de Transparência Financeira com a consolidação de balanços e dados orçamentários.</td>
+                  <td>OE3</td>
+                  <td>Nenhuma</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="modulo-de-gamificacao-e-reconhecimento">Módulo de Gamificação e Reconhecimento</h3>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Descrição</th>
+                  <th>OE atingido</th>
+                  <th>Dependências funcionais</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>RF26</td>
+                  <td>Atribuir Pontuação aos membros</td>
+                  <td>Atribuir pontuação aos membros com base na execução comprovada de atividades operacionais, comerciais e capacitação.</td>
+                  <td>OE4</td>
+                  <td>RF02, RF03, RF10 e RF13</td>
+                </tr>
+                <tr>
+                  <td>RF27</td>
+                  <td>Exibir Rankings periódicos</td>
+                  <td>Gerar rankings periódicos, níveis de evolução, conquistas e medalhas personalizadas associadas aos projetos executados, ao tempo de permanência na empresa e de tempo de capacitação.</td>
+                  <td>OE4</td>
+                  <td>RF26</td>
+                </tr>
+                <tr>
+                  <td>RF28</td>
+                  <td>Exibir Hall da Fama</td>
+                  <td>Manter uma seção de "Hall da Fama" para destaque dos membros reconhecidos e permitir a diferenciação visual de perfis e avatares.</td>
+                  <td>OE5</td>
+                  <td>RF27</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="requisitos-nao-funcionais">Requisitos não-funcionais</h2>
+
+          <p>Seguem, na tabela a seguir, os requisitos não-funcionais do projeto, classificados conforme o modelo
+            FURPS+ (Funcionalidade, Usabilidade, Confiabilidade, Desempenho, Segurança, etc.):</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Categoria (FURPS+)</th>
+                  <th>Descrição</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>RNF01</td>
+                  <td><span class="furps-badge furps-badge--funcionalidade">Funcionalidade</span></td>
+                  <td>O sistema poderá ser desenvolvido utilizando as seguintes tecnologias: React, Java e Supabase ou MongoDB.</td>
+                </tr>
+                <tr>
+                  <td>RNF02</td>
+                  <td><span class="furps-badge furps-badge--confiabilidade">Confiabilidade</span></td>
+                  <td>Garantir suporte visual e funcional entre os principais navegadores web. Métrica: 100% de compatibilidade verificada na última versão estável do Edge.</td>
+                </tr>
+                <tr>
+                  <td>RNF03</td>
+                  <td><span class="furps-badge furps-badge--confiabilidade">Confiabilidade</span></td>
+                  <td>Manter padrão técnico e qualidade de código-fonte na aplicação. Métrica: Cobertura mínima de 80% em testes automatizados.</td>
+                </tr>
+                <tr>
+                  <td>RNF04</td>
+                  <td><span class="furps-badge furps-badge--confiabilidade">Confiabilidade</span></td>
+                  <td>Possuir rotinas automatizadas de backup e plano de recuperação de falhas. Métrica: RPO (perda máxima de dados) de 24 horas e RTO (tempo para restauração) de até 2 horas.</td>
+                </tr>
+                <tr>
+                  <td>RNF05</td>
+                  <td><span class="furps-badge furps-badge--usabilidade">Usabilidade</span></td>
+                  <td>Fornecer interface responsiva e adaptável a diferentes dispositivos e tamanhos de tela. Métrica: Nota mínima de 85/100 em acessibilidade no Google Lighthouse e adaptação visual de 320px a 1920px.</td>
+                </tr>
+                <tr>
+                  <td>RNF06</td>
+                  <td><span class="furps-badge furps-badge--confiabilidade">Confiabilidade</span></td>
+                  <td>Manter a plataforma continuamente acessível e operacional. Métrica: Disponibilidade (Uptime) mínima de 99,5% ao mês (limite máximo de 3,6 horas de indisponibilidade/mês).</td>
+                </tr>
+                <tr>
+                  <td>RNF07</td>
+                  <td><span class="furps-badge furps-badge--desempenho">Desempenho</span></td>
+                  <td>Suportar múltiplos acessos simultâneos sem degradação do desempenho da plataforma. Métrica: Suporte a no mínimo 100 usuários concorrentes mantendo tempo de resposta abaixo de 3,0 segundos para 99% das requisições.</td>
+                </tr>
+                <tr>
+                  <td>RNF08</td>
+                  <td><span class="furps-badge furps-badge--desempenho">Desempenho</span></td>
+                  <td>Garantir tempo de resposta rápido para consultas ao banco de dados e navegação nos módulos operacionais em condições normais de uso. Métrica: 95% das requisições concluídas com tempo de resposta inferior a 2,0 segundos.</td>
+                </tr>
+                <tr>
+                  <td>RNF09</td>
+                  <td><span class="furps-badge furps-badge--desempenho">Desempenho</span></td>
+                  <td>Processar e atualizar as informações do Dashboard de Analytics e do Status Situacional dos membros em tempo real, sem necessidade de atualização manual da página. Métrica: Latência de atualização na interface gráfica inferior a 1,0 segundo via WebSockets ou SSE.</td>
+                </tr>
+                <tr>
+                  <td>RNF10</td>
+                  <td><span class="furps-badge furps-badge--seguranca">Segurança</span></td>
+                  <td>Utilizar mecanismos de criptografia na transmissão (TLS 1.2 ou superior) e no armazenamento de dados sensíveis de usuários (AES-256). Métrica: 0% de dados sensíveis em texto claro no banco de dados.</td>
+                </tr>
+                <tr>
+                  <td>RNF11</td>
+                  <td><span class="furps-badge furps-badge--seguranca">Segurança</span></td>
+                  <td>Aplicar regras rígidas de controle de acesso baseado em papéis (RBAC), respeitando as diretrizes de visibilidade para Direx, TOPS, Diretorias Específicas, Membros e Trainees. Métrica: 100% de conformidade nos testes de autorização, com 0% de acesso não autorizado entre perfis.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
 
     <!-- ============================== TOC ============================== -->
     <aside class="toc">

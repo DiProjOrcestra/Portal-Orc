@@ -125,7 +125,49 @@
             </table>
           </div>
 
-        </div>
+          <h2 id="processo-rad"><a class="anchor" href="#processo-rad">#</a>Processo RAD</h2>
+          <p>O RAD (Rapid Application Development) é um processo de desenvolvimento orientado a ciclos curtos e
+            iterativos, com foco na entrega rápida de versões funcionais do produto e na validação constante
+            com o cliente, em vez de um planejamento extenso e fechado no início do projeto. Cada ciclo passa,
+            de forma resumida, pelas seguintes etapas:</p>
+
+          <ul>
+            <li><strong>Planejamento dos requisitos:</strong> os itens priorizados (via MoSCoW) para o ciclo são
+              refinados e passam pelo checklist de DoR antes de entrarem em desenvolvimento.</li>
+            <li><strong>Modelagem e prototipação:</strong> wireframes e protótipos das telas envolvidas são
+              construídos para alinhar o entendimento antes da implementação.</li>
+            <li><strong>Construção:</strong> a funcionalidade é desenvolvida, testada e validada tecnicamente
+              (DoD Nível 1).</li>
+            <li><strong>Cutover (validação com o cliente):</strong> o incremento entregue é apresentado à
+              cliente, coletando feedback para o próximo ciclo (DoD Nível 2).</li>
+          </ul>
+
+          <p>No contexto do Portal Orc, o RAD será utilizado para viabilizar entregas frequentes e visíveis à
+            Orc'estra Gamificação, permitindo ajustes de rota rápidos conforme o feedback do cliente, em vez de
+            esperar até o final do projeto para validar se a solução atende às necessidades reais do negócio.</p>
+
+          <h2 id="kanban"><a class="anchor" href="#kanban">#</a>Kanban</h2>
+          <p>O Kanban é o framework ágil utilizado para gerenciar o fluxo contínuo de trabalho da equipe de desenvolvimento. Cada funcionalidade, caso de uso ou tarefa é representado por um cartão que percorre cinco etapas, permitindo que toda a equipe e os stakeholders acompanhem facilmente o andamento do projeto.</p>
+
+          <p>O quadro Kanban do Portal Orc será composto pelas seguintes colunas:</p>
+
+          <ul>
+            <li><strong>Escopo:</strong> reúne todos os itens ainda não iniciados e que aguardam priorização para desenvolvimento.</li>
+            <li><strong>Ready:</strong> contém os itens que já foram refinados, atendem aos critérios de entrada definidos pela equipe e estão prontos para serem iniciados.</li>
+            <li><strong>In Progress:</strong> representa as tarefas que estão sendo desenvolvidas ativamente.</li>
+            <li><strong>In Review:</strong> agrupa os itens que concluíram o desenvolvimento e estão passando por revisão técnica, validação ou testes antes da entrega.</li>
+            <li><strong>Done:</strong> contém os itens finalizados, aprovados e concluídos.</li>
+          </ul>
+
+          <p>No Portal Orc, o Kanban será utilizado da seguinte forma:</p>
+
+          <ul>
+            <li><strong>Visualização do fluxo:</strong> cada caso de uso ou tarefa será movido entre as cinco colunas conforme evolui durante o ciclo de desenvolvimento.</li>
+            <li><strong>Critérios de transição:</strong> um item somente poderá avançar para <em>Ready</em> após ser refinado e atender aos critérios definidos pela equipe. A passagem para <em>Done</em> ocorrerá apenas após a conclusão da revisão e aprovação do item.</li>
+            <li><strong>Limite de trabalho em progresso (WIP):</strong> serão definidos limites para as colunas de trabalho ativo, especialmente <em>In Progress</em> e <em>In Review</em>, evitando sobrecarga da equipe e incentivando a conclusão das atividades antes do início de novas.</li>
+            <li><strong>Acompanhamento do progresso:</strong> o quadro Kanban implementado no próprio Portal Orc servirá como ferramenta de gestão e transparência, permitindo que a equipe e os stakeholders acompanhem, em tempo real, o estágio de cada atividade durante o desenvolvimento do projeto.</li>
+          </ul>
+</div>
 
       </div>
     </main>

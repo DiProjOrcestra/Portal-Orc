@@ -655,6 +655,75 @@ h1.page-title {
   color: var(--accent-soft);
 }
 
+/* CHECKLIST — usado nas páginas de DoR/DoD */
+.checklist {
+  list-style: none;
+  margin: 0 0 26px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checklist li {
+  margin: 0;
+}
+
+.checklist li::marker {
+  content: none;
+}
+
+.checklist label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color .15s var(--ease), background .15s var(--ease);
+}
+
+.checklist label:hover {
+  border-color: var(--accent-soft);
+}
+
+.checklist li.is-checked label {
+  background: color-mix(in srgb, var(--brand-mid) 10%, var(--surface));
+  border-color: var(--brand-mid);
+}
+
+.checklist li.is-checked span {
+  color: var(--text-faint);
+  text-decoration: line-through;
+  text-decoration-color: var(--text-faint);
+}
+
+.checklist li.is-checked span strong {
+  color: var(--text-faint);
+}
+
+.checklist input[type="checkbox"] {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  margin-top: 2px;
+  accent-color: var(--brand-mid);
+  cursor: pointer;
+}
+
+.checklist span {
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.checklist span strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .prose code:not(pre code) {
   font-family: var(--font-mono);
   font-size: .86em;
@@ -904,6 +973,122 @@ tbody td code {
   font-family: var(--font-mono);
   font-size: .85em;
   color: var(--text-strong);
+}
+
+/* BADGE — Categoria FURPS+ (tabela de requisitos não-funcionais) */
+.furps-badge {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 11.5px;
+  letter-spacing: .02em;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.furps-badge--funcionalidade {
+  background: color-mix(in srgb, var(--brand-mid) 18%, var(--surface));
+  color: var(--brand-primary);
+}
+
+.furps-badge--confiabilidade {
+  background: color-mix(in srgb, var(--brand-primary) 14%, var(--surface));
+  color: var(--brand-primary);
+}
+
+.furps-badge--usabilidade {
+  background: var(--brand-cream);
+  color: var(--brand-deep);
+}
+
+.furps-badge--desempenho {
+  background: color-mix(in srgb, var(--brand-bright) 22%, var(--surface));
+  color: var(--brand-deep);
+}
+
+.furps-badge--seguranca {
+  background: color-mix(in srgb, #d99a2b 20%, var(--surface));
+  color: #b8791e;
+}
+
+[data-theme="dark"] .furps-badge--funcionalidade {
+  background: color-mix(in srgb, var(--brand-mid) 30%, var(--surface));
+  color: #b7ecab;
+}
+
+[data-theme="dark"] .furps-badge--confiabilidade {
+  background: color-mix(in srgb, var(--accent) 30%, var(--surface));
+  color: #cdeec2;
+}
+
+[data-theme="dark"] .furps-badge--usabilidade {
+  background: color-mix(in srgb, var(--brand-cream) 22%, var(--surface));
+  color: var(--brand-cream);
+}
+
+[data-theme="dark"] .furps-badge--desempenho {
+  background: color-mix(in srgb, var(--brand-bright) 30%, var(--surface));
+  color: #c8ffb8;
+}
+
+[data-theme="dark"] .furps-badge--seguranca {
+  background: color-mix(in srgb, #d99a2b 30%, var(--surface));
+  color: #e0ab49;
+}
+
+/* BADGE — Priorização MoSCoW (tabela de priorização dos requisitos) */
+.moscow-badge {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 11.5px;
+  letter-spacing: .02em;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.moscow-badge--must {
+  background: color-mix(in srgb, var(--brand-primary) 14%, var(--surface));
+  color: var(--brand-primary);
+}
+
+.moscow-badge--should {
+  background: color-mix(in srgb, var(--brand-bright) 22%, var(--surface));
+  color: var(--brand-deep);
+}
+
+.moscow-badge--could {
+  background: var(--brand-cream);
+  color: var(--brand-deep);
+}
+
+.moscow-badge--wont {
+  background: color-mix(in srgb, #d99a2b 20%, var(--surface));
+  color: #b8791e;
+}
+
+[data-theme="dark"] .moscow-badge--must {
+  background: color-mix(in srgb, var(--accent) 30%, var(--surface));
+  color: #cdeec2;
+}
+
+[data-theme="dark"] .moscow-badge--should {
+  background: color-mix(in srgb, var(--brand-bright) 30%, var(--surface));
+  color: #c8ffb8;
+}
+
+[data-theme="dark"] .moscow-badge--could {
+  background: color-mix(in srgb, var(--brand-cream) 22%, var(--surface));
+  color: var(--brand-cream);
+}
+
+[data-theme="dark"] .moscow-badge--wont {
+  background: color-mix(in srgb, #d99a2b 30%, var(--surface));
+  color: #e0ab49;
 }
 
 /* PREV/NEXT */
