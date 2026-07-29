@@ -152,12 +152,12 @@
                     <h1 class="page-title">Padrão de Issue</h1>
 
                     <div class="prose">
-                        <h2>UC-XX: Nome do caso de uso</h2>
+                        <h2 id="uc-xx-nome-do-caso-de-uso">UC-XX: Nome do caso de uso</h2>
 
-                        <h3>Objetivo</h3>
+                        <h3 id="objetivo">Objetivo</h3>
                         <p>Descreva o que o usuário deseja realizar.</p>
 
-                        <h3>Ator</h3>
+                        <h3 id="ator">Ator</h3>
 
                         <ul>
                             <li>- Usuário</li>
@@ -166,7 +166,7 @@
                             <li>- Outro</li>
                         </ul>
 
-                        <h3>Pré-condições</h3>
+                        <h3 id="pre-condicoes">Pré-condições</h3>
                         <p>As condições que devem ser satisfeitas antes da execução do caso de uso.</p>
                         <p>Exemplo:</p>
                         <ul>
@@ -175,7 +175,7 @@
                             <li>- Os dados obrigatórios já existem.</li>
                         </ul>
 
-                        <h3>Fluxo Principal</h3>
+                        <h3 id="fluxo-principal">Fluxo Principal</h3>
                         <p>Passos para a execução do caso de uso.</p>
 
                         <ol>
@@ -187,7 +187,7 @@
                             <li>O sistema apresenta o resultado.</li>
                         </ol>
 
-                        <h3>Fluxos Alternativos</h3>
+                        <h3 id="fluxos-alternativos">Fluxos Alternativos</h3>
                         <h4>FA-X Validação falhou</h4>
                         <ul>
                             <li>O sistema informa os erros.</li>
@@ -200,19 +200,19 @@
                             <li>Exibe mensagem de acesso negado.</li>
                         </ul>
 
-                        <h3>Pós-condições</h3>
+                        <h3 id="pos-condicoes">Pós-condições</h3>
                         <ul>
                             <li>Os dados foram persistidos.</li>
                             <li>O usuário visualiza o resultado atualizado.</li>
                         </ul>
 
-                        <h3>Regras de Negócio</h3>
+                        <h3 id="regras-de-negocio">Regras de Negócio</h3>
                         <ul>
                             <li>RN01: ...</li>
                             <li>RN02: ...</li>
                         </ul>
 
-                        <h3>DoR (Definition of Ready)</h3>
+                        <h3 id="dor-definition-of-ready">DoR (Definition of Ready)</h3>
                         <ul>
                             <li>O fluxo principal é executado com sucesso.</li>
                             <li>Os fluxos alternativos funcionam conforme esperado.</li>
@@ -221,15 +221,17 @@
                         </ul>
                     </div>
 
-
-                    <!-- ============================== TOC ============================== -->
-                    <aside class="toc">
-                        <p class="toc-title">Nesta página</p>
-                        <ul class="toc-list" id="tocList"></ul>
-                    </aside>
-
                 </div>
+            </main>
+
+            <!-- ============================== TOC ============================== -->
+            <aside class="toc">
+                <p class="toc-title">Nesta página</p>
+                <ul class="toc-list" id="tocList"></ul>
+            </aside>
+
         </div>
+    </div>
 
         <div class="toast" id="toast">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
