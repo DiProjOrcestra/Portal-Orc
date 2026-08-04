@@ -51,7 +51,23 @@ Passos para a execução do caso de uso:
 - **RN02:** ...
 
 ## DoR (Definition of Ready)
-- [ ] O fluxo principal é executado com sucesso.
-- [ ] Os fluxos alternativos funcionam conforme esperado.
-- [ ] As regras de negócio são respeitadas.
-- [ ] Os testes automatizados foram adicionados ou atualizados.
+
+**Dimensão de Clareza**
+- [ ] Ator e objetivo de negócio estão descritos e são compreendidos de forma inequívoca por toda a equipe.
+- [ ] Os termos utilizados na descrição do item estão em conformidade com o glossário do projeto.
+- [ ] Prioridade classificada segundo o método MoSCoW e registrada no template do requisito.
+
+**Dimensão de Viabilidade**
+- [ ] Todas as regras de negócio relacionadas ao item estão catalogadas e vinculadas ao requisito correspondente.
+- [ ] Dependências técnicas (APIs, integrações, banco de dados) e impedimentos de infraestrutura (acessos, ambientes) foram identificados e não bloqueiam o início do desenvolvimento.
+
+**Dimensão de Estimabilidade**
+- [ ] Fluxo principal, alternativos e de exceção do caso de uso estão descritos com profundidade suficiente para estimar esforço e complexidade.
+
+**Dimensão de Escopo (INVEST)**
+- [ ] **Independente** — o item pode ser desenvolvido, testado e entregue sem depender de outro item ainda não concluído.
+- [ ] **Negociável** — a descrição não é um contrato fechado; detalhes de solução podem ser discutidos entre equipe e cliente até a entrega.
+- [ ] **Valiosa** — entrega valor claro e perceptível para o cliente ou para o negócio.
+- [ ] **Estimável** — a equipe possui informação suficiente para estimar o esforço com razoável confiança.
+- [ ] **Pequena (Small)** — o item é pequeno o bastante para ser planejado e concluído dentro de uma única iteração.
+- [ ] **Testável** — possui critérios de aceitação claros, que permitem verificar objetivamente se foi implementado corretamente.
