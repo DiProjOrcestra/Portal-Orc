@@ -173,7 +173,7 @@
                   <tr>
                     <td>RF01</td>
                     <td>Visualizar painel de prospecção</td>
-                    <td>Fornecer visualização por estágios do funil de vendas (Kanban), contemplando obrigatoriamente
+                    <td>Fornecer visualização por estágios do funil de vendas (KanBan), contemplando obrigatoriamente
                       as fases: Prospecção, Primeiro Contato, Reunião Agendada, Diagnóstico, Proposta Enviada,
                       Negociação e Fechado/Perdido.</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
@@ -200,15 +200,15 @@
                   <tr>
                     <td>RF04</td>
                     <td>Cadastrar Perfil individual dos membros</td>
-                    <td>Perfil individual dos membros contendo email, senha, nome, CPF, data de nascimento, semestre
-                      atual ou semestre de entrada e diretoria/cargo.</td>
+                    <td>Perfil individual dos membros contendo email, senha, nome, cpf, data de nascimento, semestre
+                      atual ou semestre de entrada, diretoria/cargo</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td>Nenhuma</td>
                   </tr>
                   <tr>
                     <td>RF05</td>
                     <td>Visualizar perfil individual dos membros</td>
-                    <td>Visualizar perfil individual dos membros contendo sobre mim, gostos, história na Orc,
+                    <td>Visualizar perfil individual dos membros contendo sobre mim, gostos, história na orc,
                       competências técnicas, Plano de Desenvolvimento Individual (PDI), áreas de interesse, foto de
                       perfil, histórico de alocação em projetos, status situacional (alocado em projeto, disponível,
                       em férias, afastado), ranking e emblemas.</td>
@@ -240,7 +240,7 @@
                   <tr>
                     <td>RF09</td>
                     <td>Editar painel informativo</td>
-                    <td>Editar painel informativo.</td>
+                    <td>Editar painel informativo</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td>RF08</td>
                   </tr>
@@ -257,7 +257,7 @@
                     <td>Fornecer um painel de Transparência Financeira com a consolidação de balanços e dados
                       orçamentários.</td>
                     <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
-                    <td>Nenhuma</td>
+                    <td>Nenhum</td>
                   </tr>
                 </tbody>
               </table>
@@ -286,7 +286,7 @@
                       prospecção, preservando o registro no banco de dados para alimentar o histórico de métricas
                       comerciais.</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td>RF01, RF08</td>
+                    <td>RF13</td>
                   </tr>
                   <tr>
                     <td>RF13</td>
@@ -295,7 +295,7 @@
                       identificadas, atas de reuniões, documentos enviados e agendamento de próximos passos (follow-up).
                     </td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td>Nenhuma</td>
+                    <td>Nenhum</td>
                   </tr>
                   <tr>
                     <td>RF14</td>
@@ -348,26 +348,17 @@
                       membros, exclusão de conta, edição do painel institucional e financeiro), permitindo consulta
                       posterior pelo núcleo TOPS/Direx.</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td>RF23</td>
+                    <td>RF06, RF08, RF09, RF22, RF24</td>
                   </tr>
                   <tr>
                     <td>RF18</td>
-                    <td>Cadastrar autenticador múltiplo fator (MFA)</td>
-                    <td>O usuário deve ser capaz de cadastrar o seu autenticador de múltiplo fator ao realizar o
-                      primeiro login na sua conta.</td>
+                    <td>Autenticar com múltiplo fator (MFA)</td>
+                    <td>O sistema deve exigir autenticação multifator (código enviado por e-mail) ao realizar login.</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td>RF23</td>
+                    <td>RF22</td>
                   </tr>
                   <tr>
                     <td>RF19</td>
-                    <td>Autenticar com múltiplo fator (MFA)</td>
-                    <td>O sistema deve exigir autenticação multifator (código enviado por e-mail) ao realizar login.
-                    </td>
-                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td>RF18, RF23</td>
-                  </tr>
-                  <tr>
-                    <td>RF20</td>
                     <td>Registrar consentimento LGPD</td>
                     <td>O sistema deve apresentar e registrar o consentimento explícito do usuário para o tratamento de
                       seus dados pessoais (CPF, data de nascimento, foto, etc.) no momento do cadastro do perfil,
@@ -376,49 +367,48 @@
                     <td>RF04</td>
                   </tr>
                   <tr>
-                    <td>RF21</td>
+                    <td>RF20</td>
                     <td>Expirar sessão por inatividade</td>
                     <td>O sistema deve encerrar automaticamente a sessão do usuário após um período definido de
                       inatividade, exigindo nova autenticação para continuar o uso da plataforma.</td>
                     <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
-                    <td>RF23</td>
+                    <td>RF22</td>
                   </tr>
                   <tr>
-                    <td>RF22</td>
+                    <td>RF21</td>
                     <td>Bloquear conta por tentativas de login malsucedidas</td>
                     <td>O sistema deve bloquear temporariamente o acesso à conta após um número determinado de
                       tentativas de login consecutivas malsucedidas, notificando o usuário por e-mail e exigindo
                       redefinição de senha ou aguardo do prazo de bloqueio.</td>
                     <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
-                    <td>RF23</td>
+                    <td>RF22</td>
                   </tr>
                   <tr>
-                    <td>RF23</td>
+                    <td>RF22</td>
                     <td>Realizar login</td>
                     <td>O sistema deve permitir que o usuário realize login utilizando e-mail corporativo e senha ou
                       pelo Google, validando as credenciais e concedendo acesso às funcionalidades de acordo com o
-                      perfil de permissão (RBAC) do usuário (Direx, TOPS, Diretoria específica, Membro ou Trainee).
-                    </td>
+                      perfil de permissão (RBAC) do usuário (Direx, TOPS, Diretoria específica, Membro ou Trainee).</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td>Nenhuma</td>
                   </tr>
                   <tr>
-                    <td>RF24</td>
+                    <td>RF23</td>
                     <td>Redefinir senha</td>
                     <td>O sistema deve permitir que o usuário solicite a redefinição de senha a partir do e-mail
                       cadastrado, enviando um link/token de verificação com prazo de validade limitado e exigindo a
                       criação de uma nova senha que atenda aos critérios mínimos de segurança.</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td>RF23</td>
+                    <td>RF04</td>
                   </tr>
                   <tr>
-                    <td>RF25</td>
+                    <td>RF24</td>
                     <td>Excluir conta</td>
                     <td>O sistema deve permitir que o usuário solicite a exclusão da própria conta e dos dados pessoais
                       associados, mediante confirmação, respeitando os prazos e critérios de retenção definidos pela
                       LGPD e submetendo a exclusão definitiva à aprovação do núcleo TOPS/Direx.</td>
                     <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
-                    <td>RF23</td>
+                    <td>RF22</td>
                   </tr>
                 </tbody>
               </table>
@@ -439,15 +429,15 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>RF26</td>
+                    <td>RF25</td>
                     <td>Criar Agenda</td>
-                    <td>Criar uma agenda para registro de reuniões com clientes, entregas de propostas, treinamentos,
-                      calendário editorial, eventos, reuniões da diretoria e RG.</td>
+                    <td>Criar uma agenda, para registro de reuniões com clientes, entregas de propostas, treinamentos,
+                      calendário editorial, eventos, reuniões da diretoria, RG.</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td>Nenhuma</td>
                   </tr>
                   <tr>
-                    <td>RF27</td>
+                    <td>RF26</td>
                     <td>Exibir Quadro Kanban de acompanhamento</td>
                     <td>Disponibilizar um quadro Kanban de acompanhamento de atividades das diretorias associado
                       diretamente às metas do planejamento estratégico e PDI.</td>
@@ -455,7 +445,7 @@
                     <td>RF08, RF05</td>
                   </tr>
                   <tr>
-                    <td>RF28</td>
+                    <td>RF27</td>
                     <td>Disponibilizar Calendário</td>
                     <td>Fornecer um Calendário Editorial para planejamento, agendamento e acompanhamento das
                       publicações institucionais, eventos, datas comemorativas e compromissos.</td>
@@ -463,7 +453,7 @@
                     <td>Nenhuma</td>
                   </tr>
                   <tr>
-                    <td>RF29</td>
+                    <td>RF28</td>
                     <td>Disponibilizar Jornal Orc</td>
                     <td>Manter o "Jornal Orc" para publicação de informes institucionais, notícias das diretorias,
                       encerramento de projetos e atualizações do MEJ, além de uma comunicação descontraída.</td>
@@ -490,16 +480,16 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>RF30</td>
+                    <td>RF29</td>
                     <td>Consultar página de projetos</td>
                     <td>Permitir a consulta aos projetos executados anteriormente. O sistema deve permitir o registro e
                       consulta de atas de Post-Mortem contendo aprendizados, dificuldades enfrentadas e recomendações
                       operacionais pós-projeto.</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td>RF31</td>
+                    <td>Nenhuma</td>
                   </tr>
                   <tr>
-                    <td>RF31</td>
+                    <td>RF30</td>
                     <td>Visualizar Catálogo de Serviços</td>
                     <td>Estruturar um Catálogo de Serviços detalhando cada solução, problema resolvido, benefícios,
                       cases de sucesso, etapas operacionais, tempo médio de execução e FAQ de apoio às vendas.</td>
@@ -507,7 +497,7 @@
                     <td>Nenhuma</td>
                   </tr>
                   <tr>
-                    <td>RF32</td>
+                    <td>RF31</td>
                     <td>Buscar perfis</td>
                     <td>Disponibilizar ferramentas de busca com filtragem avançada por competência, áreas de interesse
                       e disponibilidade para alocação eficiente de equipes de projeto.</td>
@@ -534,7 +524,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>RF33</td>
+                    <td>RF32</td>
                     <td>Cadastrar Módulos de Inteligência de Mercado</td>
                     <td>O sistema deve disponibilizar um módulo como uma base de conhecimento colaborativa
                       institucional. O módulo consolidará dados estratégicos de mercado inseridos manualmente pelos
@@ -543,7 +533,7 @@
                     <td>Nenhuma</td>
                   </tr>
                   <tr>
-                    <td>RF34</td>
+                    <td>RF33</td>
                     <td>Disponibilizar guias</td>
                     <td>O sistema deve fornecer um guia com as principais barreiras comerciais e as respostas
                       institucionais recomendadas: Afastamento temporário, Desligamento voluntário, Pedido de compra,
@@ -571,28 +561,28 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>RF35</td>
+                    <td>RF34</td>
                     <td>Atribuir Pontuação aos membros</td>
                     <td>Atribuir pontuação aos membros com base na execução comprovada de atividades operacionais,
-                      comerciais e de capacitação.</td>
+                      comerciais e de capacitação</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td>RF07, RF08, RF03, RF09</td>
+                    <td>RF04, RF05, RF06</td>
                   </tr>
                   <tr>
-                    <td>RF36</td>
+                    <td>RF35</td>
                     <td>Exibir Rankings periódicos</td>
                     <td>Gerar rankings periódicos, níveis de evolução, conquistas e medalhas personalizadas associadas
                       aos projetos executados, ao tempo de permanência na empresa e de tempo de capacitação.</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td>RF35</td>
+                    <td>RF34</td>
                   </tr>
                   <tr>
-                    <td>RF37</td>
+                    <td>RF36</td>
                     <td>Exibir Hall da Fama</td>
                     <td>Manter uma seção de "Hall da Fama" para destaque dos membros reconhecidos e permitir a
                       diferenciação visual de perfis e avatares através de cores.</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td>RF35, RF36</td>
+                    <td>RF34, RF35</td>
                   </tr>
                 </tbody>
               </table>
@@ -600,8 +590,7 @@
 
             <h2 id="requisitos-nao-funcionais">Requisitos não-funcionais</h2>
 
-            <p>Seguem, na tabela a seguir, os requisitos não-funcionais do projeto, classificados conforme o modelo
-              FURPS+ (Funcionalidade, Usabilidade, Confiabilidade, Desempenho, Segurança, etc.):</p>
+            <p>Seguem, na tabela a seguir, os requisitos não-funcionais do projeto:</p>
 
             <div class="table-wrap">
               <table>
@@ -629,7 +618,7 @@
                     <td>RNF03</td>
                     <td><span class="furps-badge furps-badge--confiabilidade">Confiabilidade</span></td>
                     <td>Manter padrão técnico e qualidade de código-fonte na aplicação. Métrica: Cobertura mínima de 80%
-                      em testes automatizados, a ser decidida pela equipe de DevOps.</td>
+                      em testes automatizados, que será decidido pela equipe de DevOps.</td>
                   </tr>
                   <tr>
                     <td>RNF04</td>
@@ -690,11 +679,6 @@
                     <td><span class="furps-badge furps-badge--funcionalidade">Funcionalidade</span></td>
                     <td>Emitir notificações e alertas automáticos aos responsáveis referentes a pendências e prazos
                       limite de follow-up.</td>
-                  </tr>
-                  <tr>
-                    <td>RNF13</td>
-                    <td><span class="furps-badge furps-badge--funcionalidade">Funcionalidade</span></td>
-                    <td>Ao adicionar um evento no Google Agenda, o sistema deve se atualizar automaticamente.</td>
                   </tr>
                 </tbody>
               </table>
