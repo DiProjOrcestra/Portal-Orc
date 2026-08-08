@@ -1091,6 +1091,30 @@ tbody td code {
   color: #e0ab49;
 }
 
+/* MVP — marcação de escopo mínimo viável (tabela de priorização dos requisitos) */
+.mvp-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 12px;
+  background: color-mix(in srgb, var(--brand-primary) 16%, var(--surface));
+  color: var(--brand-primary);
+}
+
+[data-theme="dark"] .mvp-mark {
+  background: color-mix(in srgb, var(--accent) 32%, var(--surface));
+  color: #cdeec2;
+}
+
+.mvp-cell {
+  text-align: center;
+}
+
 /* PREV/NEXT */
 .pager {
   display: grid;
