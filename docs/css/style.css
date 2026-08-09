@@ -455,6 +455,64 @@ input:focus-visible {
   display: none;
 }
 
+/* NAV DROPDOWN — grupo colapsável dentro da barra lateral (ex.: Atas de Reunião).
+   Usa <details>/<summary> nativos: acessível por teclado e sem depender de JS. */
+.nav-dropdown {
+  display: block;
+}
+
+.nav-details {
+  margin: 0;
+}
+
+.nav-details>summary.nav-dropdown-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.nav-details>summary.nav-dropdown-summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-details>summary.nav-dropdown-summary::marker {
+  content: none;
+}
+
+.nav-dropdown-chevron {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  color: var(--text-faint);
+  transition: transform .2s var(--ease), color .2s var(--ease);
+}
+
+.nav-details[open]>summary.nav-dropdown-summary .nav-dropdown-chevron {
+  transform: rotate(180deg);
+}
+
+.nav-details>summary.nav-dropdown-summary:hover .nav-dropdown-chevron {
+  color: var(--text);
+}
+
+.nav-sublist {
+  list-style: none;
+  margin: 2px 0 2px 14px;
+  padding: 0 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-left: 1px solid var(--border);
+}
+
+.nav-sublist .nav-link.nav-sublink {
+  font-size: 12.8px;
+  padding: 7px 12px;
+}
+
 /* MAIN CONTENT */
 .content {
   min-width: 0;
