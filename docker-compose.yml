@@ -1,0 +1,9 @@
+name: CI/CD Pipeline - Portal Orc Front-End
+version: '3.8'
+
+services:
+  frontend:
+    build: .
+    container_name: portal_orc_frontend
+    ports:
+      - "8080:80"
