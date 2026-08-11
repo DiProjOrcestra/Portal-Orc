@@ -1,4 +1,3 @@
-name: CI/CD Pipeline - Portal Orc Front-End
 version: '3.8'
 
 services:
