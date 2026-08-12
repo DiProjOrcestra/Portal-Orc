@@ -1,7 +1,13 @@
-# Servidor web leve para páginas estáticas
+# Build de aplicação React
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Server de prod: Nginx
 FROM nginx:alpine
-
-# Copia os arquivos do repositório para a pasta do Nginx
-COPY . /usr/share/nginx/html
-
+COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
