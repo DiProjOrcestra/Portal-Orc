@@ -14,8 +14,8 @@ jobs:
     - name: Baixar o codigo do repositorio
       uses: actions/checkout@v4
 
-    - name: Testar Build do Container Docker
+    - name: Testar Build do Container Docker Front-End
       run: docker build -t portal-orc-test ./frontend
     
-    - name: Testar Build do Container Docker
+    - name: Testar Build do Container Docker Back-End
       run: docker build -t portal-orc-test ./backend
