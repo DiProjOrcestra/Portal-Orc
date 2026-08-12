@@ -455,6 +455,64 @@ input:focus-visible {
   display: none;
 }
 
+/* NAV DROPDOWN — grupo colapsável dentro da barra lateral (ex.: Atas de Reunião).
+   Usa <details>/<summary> nativos: acessível por teclado e sem depender de JS. */
+.nav-dropdown {
+  display: block;
+}
+
+.nav-details {
+  margin: 0;
+}
+
+.nav-details>summary.nav-dropdown-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.nav-details>summary.nav-dropdown-summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-details>summary.nav-dropdown-summary::marker {
+  content: none;
+}
+
+.nav-dropdown-chevron {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  color: var(--text-faint);
+  transition: transform .2s var(--ease), color .2s var(--ease);
+}
+
+.nav-details[open]>summary.nav-dropdown-summary .nav-dropdown-chevron {
+  transform: rotate(180deg);
+}
+
+.nav-details>summary.nav-dropdown-summary:hover .nav-dropdown-chevron {
+  color: var(--text);
+}
+
+.nav-sublist {
+  list-style: none;
+  margin: 2px 0 2px 14px;
+  padding: 0 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-left: 1px solid var(--border);
+}
+
+.nav-sublist .nav-link.nav-sublink {
+  font-size: 12.8px;
+  padding: 7px 12px;
+}
+
 /* MAIN CONTENT */
 .content {
   min-width: 0;
@@ -938,7 +996,7 @@ h1.page-title {
 }
 
 table {
-  width: 100%;
+  width: 150%;
   border-collapse: collapse;
   font-size: 13.8px;
 }
@@ -1113,6 +1171,363 @@ tbody td code {
 
 .mvp-cell {
   text-align: center;
+}
+
+/* CYCLE ACCORDION — detalhamento de cada ciclo do cronograma, um <details> por ciclo.
+   Só o ciclo em andamento vem aberto por padrão; os demais ficam recolhidos. */
+.cycle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 0 28px;
+}
+
+.cycle-details {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.cycle-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 14px;
+  padding: 16px 20px;
+  cursor: pointer;
+  list-style: none;
+  scroll-margin-top: calc(var(--header-h) + 16px);
+}
+
+.cycle-summary::-webkit-details-marker {
+  display: none;
+}
+
+.cycle-summary::marker {
+  content: none;
+}
+
+.cycle-summary-main {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cycle-index {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15.5px;
+  color: var(--text-strong);
+}
+
+.cycle-period {
+  font-family: var(--font-heading);
+  font-size: 12.5px;
+  color: var(--text-faint);
+}
+
+.cycle-chevron {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--text-faint);
+  transition: transform .2s var(--ease), color .2s var(--ease);
+}
+
+.cycle-details[open]>.cycle-summary .cycle-chevron {
+  transform: rotate(180deg);
+}
+
+.cycle-summary:hover .cycle-chevron {
+  color: var(--text);
+}
+
+.cycle-body {
+  padding: 18px 20px 22px;
+  border-top: 1px solid var(--border);
+}
+
+.cycle-body>p:first-child {
+  margin-top: 0;
+}
+
+.cycle-subhead {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 11.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 20px 0 10px;
+}
+
+.cycle-subhead:first-child {
+  margin-top: 0;
+}
+
+.cycle-body .timeline {
+  margin-bottom: 4px;
+}
+
+.cycle-details.is-empty .cycle-index,
+.cycle-details.is-empty .cycle-period {
+  color: var(--text-faint);
+}
+
+.cycle-empty-note {
+  margin: 0;
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+@media (max-width: 560px) {
+  .cycle-summary {
+    flex-wrap: wrap;
+  }
+}
+
+/* STATUS BADGE — status de execução de um ciclo (tabela de cronograma) */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 11.5px;
+  letter-spacing: .02em;
+  padding: 5px 13px;
+  border-radius: 999px;
+}
+
+.status-badge::before {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.status-badge--andamento {
+  background: color-mix(in srgb, var(--brand-bright) 22%, var(--surface));
+  color: var(--brand-deep);
+}
+
+.status-badge--andamento::before {
+  animation: status-pulse 1.8s ease-in-out infinite;
+}
+
+.status-badge--concluido {
+  background: color-mix(in srgb, var(--brand-primary) 14%, var(--surface));
+  color: var(--brand-primary);
+}
+
+.status-badge--planejado {
+  background: var(--surface-alt);
+  color: var(--text-faint);
+}
+
+.status-badge--atrasado {
+  background: color-mix(in srgb, #d99a2b 20%, var(--surface));
+  color: #b8791e;
+}
+
+[data-theme="dark"] .status-badge--andamento {
+  background: color-mix(in srgb, var(--brand-bright) 30%, var(--surface));
+  color: #c8ffb8;
+}
+
+[data-theme="dark"] .status-badge--concluido {
+  background: color-mix(in srgb, var(--accent) 30%, var(--surface));
+  color: #cdeec2;
+}
+
+[data-theme="dark"] .status-badge--atrasado {
+  background: color-mix(in srgb, #d99a2b 30%, var(--surface));
+  color: #e0ab49;
+}
+
+@keyframes status-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-badge--andamento::before {
+    animation: none;
+  }
+}
+
+/* UC CHIPS — casos de uso associados a uma entrega (tabela de cronograma) */
+.uc-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.uc-chip {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--surface-alt);
+  color: var(--text-strong);
+  border: 1px solid var(--border);
+}
+
+/* placeholder de linha vazia/futura em tabelas (ex: próximo ciclo a definir) */
+.table-placeholder-row td {
+  text-align: center;
+  color: var(--text-faint);
+  font-style: italic;
+  padding: 18px 16px;
+}
+
+/* TIMELINE — linha do tempo horizontal das fases de um ciclo (cronograma) */
+.timeline {
+  display: flex;
+  gap: 4px;
+  margin: 0 0 32px;
+  padding: 4px 4px 8px;
+  overflow-x: auto;
+}
+
+.timeline-step {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 152px;
+  padding-right: 18px;
+}
+
+.timeline-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 23px;
+  right: -2px;
+  height: 2px;
+  background: var(--border);
+}
+
+.timeline-step.is-done:not(:last-child)::after {
+  background: var(--brand-mid);
+}
+
+.timeline-marker {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.timeline-step.is-done .timeline-marker {
+  background: var(--brand-mid);
+  border-color: var(--brand-mid);
+}
+
+.timeline-step.is-current .timeline-marker {
+  background: var(--surface);
+  border-color: var(--accent-live);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-live) 24%, transparent);
+}
+
+.timeline-dates {
+  font-family: var(--font-heading);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 0 0 4px;
+}
+
+.timeline-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.timeline-step.is-done .timeline-title {
+  color: var(--text);
+}
+
+.timeline-step.is-current .timeline-title {
+  color: var(--text-strong);
+  font-weight: 700;
+}
+
+.timeline-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  margin-bottom: 6px;
+  margin-left: -6px;
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--brand-bright) 22%, var(--surface));
+  color: var(--brand-deep);
+}
+
+[data-theme="dark"] .timeline-tag {
+  background: color-mix(in srgb, var(--brand-bright) 30%, var(--surface));
+  color: #c8ffb8;
+}
+
+@media (max-width: 700px) {
+  .timeline {
+    flex-direction: column;
+    gap: 20px;
+    overflow-x: visible;
+  }
+
+  .timeline-step {
+    min-width: 0;
+    padding-right: 0;
+    padding-left: 26px;
+  }
+
+  .timeline-marker {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    margin-bottom: 0;
+  }
+
+  .timeline-step:not(:last-child)::after {
+    top: 20px;
+    left: 7px;
+    right: auto;
+    width: 2px;
+    height: calc(100% + 4px);
+  }
 }
 
 /* PREV/NEXT */
@@ -1357,7 +1772,7 @@ tbody td code {
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1024px) {
   .nav-toggle {
     display: flex;
   }
