@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -23,8 +24,8 @@ public class TokenProvider {
     private String chave;
 
     public String gerarToken(Authentication authentication) {
-        UserDetails user = (UserDetails) authentication.getPrincipal();
-        return buildToken(user.getUsername());
+        UserDetails usuario = (UserDetails) authentication.getPrincipal();
+        return buildToken(usuario.getUsername());
     }
 
     private String buildToken(String username) {
@@ -43,4 +44,28 @@ public class TokenProvider {
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(chave.getBytes());
     }
+
+    public boolean ehTokenValido(String token){
+        try{
+            getClaims(token);
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
+    }
+
+    private String getUsername (String token){
+        return getClaims(token).getSubject();
+    }
+
+    private Claims getClaims(String token){
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+
 }
