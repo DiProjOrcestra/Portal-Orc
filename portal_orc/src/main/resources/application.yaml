@@ -1,3 +1,8 @@
 spring:
   application:
     name: portal_orc
+  
+jwt:
+  expiration: ${JWT_EXPIRATION:900000}
+  # depois do nome da variavel de ambiente, é uma chave forte gera aleatoriamente para garantir segunraça, ela esta sendo usada localmente
+  key: ${JWT_KEY:#YLrg&i-8frX5DW!ONeVvBCGduw8hPgX5QIwF7M!X0K$P2KCrGX_S_F#o14vBVPGdjlsWN3xCqcvw!Nvps3JkcFY#vBf$E6-SCYSzo8jf0JCYsQ9czbbpn$h7w6!PHpA8!gm6xiBTe3FpCSPGb#M-7XsOOenrAHCsW677W_5Aso5ass_A$ig#8fC25SkJkVg3I_FrdvfUK-#Vvb6=x0FRGF6lvX&4jNog28mJmAc1OZ1NI81Qtl-zPW4ByknVU0&iEccpx8X0YgxmqTbf6S16bRW=XKxvULa1BJj6Quy0qBG4CjaqFSWjCA8SGqLcwB4FyNC0OnH3!EEGteNm9CQ=rWs}
