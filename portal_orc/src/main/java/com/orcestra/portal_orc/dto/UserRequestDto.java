@@ -20,7 +20,7 @@ import lombok.Setter;
 public class UserRequestDto {
     
     @NotNull
-    private Integer cpf;
+    private Long cpf;
 
     @NotBlank
     private String email;
@@ -30,7 +30,7 @@ public class UserRequestDto {
     @NotBlank
     private String name;
 
-    private Integer phone;
+    private Long phone;
 
     private LocalDate entryDay;
 

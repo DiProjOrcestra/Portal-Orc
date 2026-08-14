@@ -36,7 +36,7 @@ import lombok.Setter;
 public class UserEntity implements UserDetails {
 
     @Id
-    private Integer cpf;
+    private Long cpf;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -48,7 +48,7 @@ public class UserEntity implements UserDetails {
     private String name;
 
     @Column(name = "telefone")
-    private Integer phone;
+    private Long phone;
 
     @Column(name = "dia_de_entrada")
     private LocalDate entryDay;
