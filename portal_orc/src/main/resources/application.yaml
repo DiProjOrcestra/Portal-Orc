@@ -2,6 +2,23 @@ spring:
   application:
     name: portal_orc
   
+  datasource: 
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/portal_orc}
+    username: ${DB_USERNAME:portal_orc}
+    password: ${DB_PASSWORD:orcestra}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format-sql: true
+
+
+  
 jwt:
   expiration: ${JWT_EXPIRATION:900000}
   # depois do nome da variavel de ambiente, é uma chave forte gera aleatoriamente para garantir segunraça, ela esta sendo usada localmente
