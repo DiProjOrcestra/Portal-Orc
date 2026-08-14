@@ -1,4 +1,4 @@
-package com.service;
+package com.orcestra.portal_orc.service;
 
 import java.util.Set;
 
