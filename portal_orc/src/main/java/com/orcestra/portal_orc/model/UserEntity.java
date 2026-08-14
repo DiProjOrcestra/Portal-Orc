@@ -1,5 +1,6 @@
 package com.orcestra.portal_orc.model;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -31,7 +32,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @NoArgsConstructor
-public class UsuarioEntity implements UserDetails {
+public class UserEntity implements UserDetails {
 
     @Id
     private Integer cpf;
@@ -39,38 +40,41 @@ public class UsuarioEntity implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
-    private Date dataNascimento;
+    @Column(name = "data_de_nascimento")
+    private Date birthDate;
+    
+    @Column(nullable = false, name = "nome")
+    private String name;
 
-    @Column(nullable = false)
-    private String nome;
+    @Column(name = "telefone")
+    private Integer phone;
 
-    private Integer telefone;
+    @Column(name = "dia_de_entrada")
+    private LocalDate entryDay;
 
-    @Column(name = "semestre_de_entrada")
-    private String semestreEntrada;
+    @Column(name = "funcao_na_empresa")
+    private String position;
 
-    private String funcao;
-
-    @Column(nullable = false)
-    private String senha;
+    @Column(nullable = false, name = "senha")
+    private String password;
 
     @ManyToOne
     @JoinColumn(name = "diretoria_id")
-    private DiretoriaEntity diretoria;
+    private DirectorateEntity directorate;
 
     @Builder.Default
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "cargo_usuario", joinColumns = @JoinColumn(name = "usuario_cpf"), inverseJoinColumns = @JoinColumn(name = "cargo_id"))
-    private Set<CargoEntity> cargos = new HashSet<>();
+    private Set<RoleEntity> roles = new HashSet<>(); //roles de autenticação
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.cargos;
+        return this.roles;
     }
 
     @Override
     public @Nullable String getPassword() {
-        return this.senha;
+        return this.password;
     }
 
     @Override

@@ -19,15 +19,15 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class CargoEntity implements GrantedAuthority{
+public class RoleEntity implements GrantedAuthority{
     
     @Id
     private Integer id;
 
-    private String nome;
+    private String name;
 
     @Override
     public @Nullable String getAuthority() {
-        return nome;
+        return name;
     }
 }

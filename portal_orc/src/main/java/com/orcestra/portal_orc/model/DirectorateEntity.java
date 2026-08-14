@@ -21,7 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class DiretoriaEntity {
+public class DirectorateEntity {
     
     @Id
     private Integer id;
@@ -29,8 +29,7 @@ public class DiretoriaEntity {
     private String nome;
 
     @Builder.Default
-    @OneToMany(mappedBy = "diretoria", fetch = FetchType.LAZY)
-    private Set<UsuarioEntity> usuarios = new HashSet<>();
-
+    @OneToMany(mappedBy = "directorate", fetch = FetchType.LAZY)
+    private Set<UserEntity> users = new HashSet<>();
 
 }
