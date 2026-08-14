@@ -18,10 +18,10 @@ import io.jsonwebtoken.security.Keys;
 public class TokenProvider {
     
     @Value("${jwt.expiration}")
-    private long tempoExpiracao;
+    private long expirationTime;
 
     @Value("${jwt.key}")
-    private String chave;
+    private String key;
 
     public String gerarToken(Authentication authentication) {
         UserDetails usuario = (UserDetails) authentication.getPrincipal();
@@ -29,23 +29,23 @@ public class TokenProvider {
     }
 
     private String buildToken(String username) {
-        Instant agora = Instant.now();
-        Instant expiracao = agora.plusMillis(tempoExpiracao);
+        Instant now = Instant.now();
+        Instant expiration = now.plusMillis(expirationTime);
 
         return Jwts.builder()
                 .subject(username)
-                .issuedAt(Date.from(agora))
-                .expiration(Date.from(expiracao))
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiration))
                 .signWith(getSigningKey())
                 .compact();
     
     }
 
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(chave.getBytes());
+        return Keys.hmacShaKeyFor(key.getBytes());
     }
 
-    public boolean ehTokenValido(String token){
+    public boolean isTokenValid(String token){
         try{
             getClaims(token);
             return true;
