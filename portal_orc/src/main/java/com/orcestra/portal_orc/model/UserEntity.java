@@ -2,13 +2,14 @@ package com.orcestra.portal_orc.model;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.orcestra.portal_orc.dto.UserRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,7 +42,7 @@ public class UserEntity implements UserDetails {
     private String email;
 
     @Column(name = "data_de_nascimento")
-    private Date birthDate;
+    private LocalDate birthDate;
     
     @Column(nullable = false, name = "nome")
     private String name;
@@ -66,6 +67,17 @@ public class UserEntity implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "cargo_usuario", joinColumns = @JoinColumn(name = "usuario_cpf"), inverseJoinColumns = @JoinColumn(name = "cargo_id"))
     private Set<RoleEntity> roles = new HashSet<>(); //roles de autenticação
+
+    public UserEntity(UserRequestDto userRequestDto){
+        this.cpf = userRequestDto.getCpf();
+        this.email = userRequestDto.getEmail();
+        this.birthDate = userRequestDto.getBirthDate();
+        this.name = userRequestDto.getName();
+        this.phone = userRequestDto.getPhone();
+        this.entryDay = userRequestDto.getEntryDay();
+        this.position = userRequestDto.getPosition();
+        this.directorate = userRequestDto.getDirectorate();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
