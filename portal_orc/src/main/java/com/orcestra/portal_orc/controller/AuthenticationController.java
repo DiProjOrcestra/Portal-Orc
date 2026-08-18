@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.orcestra.portal_orc.dto.UserRequestDto;
+import com.orcestra.portal_orc.dto.LoginRequestDto;
+import com.orcestra.portal_orc.dto.RegisterRequestDto;
+import com.orcestra.portal_orc.dto.TokenResponseDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.service.AuthenticationService;
-
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +27,13 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void register(@Valid @RequestBody UserRequestDto userRequestDto) throws BadRequestException{
+    public void register(@Valid @RequestBody RegisterRequestDto userRequestDto) throws BadRequestException{
         authenticationService.registerUser(userRequestDto);
     }
 
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public TokenResponseDto login(@Valid @RequestBody LoginRequestDto loginRequestDto) throws Exception{
+        return authenticationService.loginUser(loginRequestDto);
+    }
 }
