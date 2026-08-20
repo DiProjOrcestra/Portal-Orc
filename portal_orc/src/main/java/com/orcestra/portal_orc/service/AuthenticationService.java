@@ -29,6 +29,10 @@ public class AuthenticationService {
             throw new BadRequestException("Email já cadastrado");
         }
 
+        if (userRepository.existsByCpf(userRequestDto.getCpf().replaceAll("\\D", ""))) {
+            throw new BadRequestException("Esse CPF já foi cadastrado");
+        }
+
         RoleEntity role = roleRepository.findByName(RoleTypeEnum.USER.name())
                             .orElseGet(() -> roleRepository.save(RoleEntity.builder()
                                 .name(RoleTypeEnum.USER.name()).build()));

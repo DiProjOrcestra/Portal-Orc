@@ -36,7 +36,7 @@ import lombok.Setter;
 public class UserEntity implements UserDetails {
 
     @Id
-    private Long cpf;
+    private String cpf;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -69,7 +69,7 @@ public class UserEntity implements UserDetails {
     private Set<RoleEntity> roles = new HashSet<>(); //roles de autenticação
 
     public UserEntity(UserRequestDto userRequestDto){
-        this.cpf = userRequestDto.getCpf();
+        this.cpf = userRequestDto.getCpf().replaceAll("\\D", "");
         this.email = userRequestDto.getEmail();
         this.birthDate = userRequestDto.getBirthDate();
         this.name = userRequestDto.getName();

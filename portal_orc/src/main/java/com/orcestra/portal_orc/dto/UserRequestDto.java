@@ -1,11 +1,11 @@
 package com.orcestra.portal_orc.dto;
 
 import java.time.LocalDate;
+import org.hibernate.validator.constraints.br.CPF;
 
 import com.orcestra.portal_orc.model.DirectorateEntity;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,15 +19,16 @@ import lombok.Setter;
 @Builder
 public class UserRequestDto {
     
-    @NotNull
-    private Long cpf;
+    @NotBlank(message = "Esse campo não pode ser vazio")
+    @CPF(message = "Esse CPF não é válido")
+    private String cpf;
 
-    @NotBlank
+    @NotBlank(message = "Esse campo não pode ser vazio")
     private String email;
 
     private LocalDate birthDate;
 
-    @NotBlank
+    @NotBlank(message = "Esse campo não pode ser vazio")
     private String name;
 
     private Long phone;
@@ -36,7 +37,7 @@ public class UserRequestDto {
 
     private String position;
 
-    @NotBlank
+    @NotBlank(message = "Esse campo não pode ser vazio")
     private String password;
 
     private DirectorateEntity directorate;
