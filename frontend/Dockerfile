@@ -1,13 +1,5 @@
 # Build de aplicação React
-FROM node:20-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm install --legacy-peer-deps --no-audit --no-fund
-COPY . .
-RUN npm run build
-
-# Server de prod: Nginx
 FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY . /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
