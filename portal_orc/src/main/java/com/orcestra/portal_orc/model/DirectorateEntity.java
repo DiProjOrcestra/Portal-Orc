@@ -3,8 +3,14 @@ package com.orcestra.portal_orc.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.orcestra.portal_orc.enums.DirectorateEnum;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -24,9 +30,11 @@ import lombok.Setter;
 public class DirectorateEntity {
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String nome;
+    @Enumerated(EnumType.STRING)
+    private DirectorateEnum name;
 
     @Builder.Default
     @OneToMany(mappedBy = "directorate", fetch = FetchType.LAZY)
