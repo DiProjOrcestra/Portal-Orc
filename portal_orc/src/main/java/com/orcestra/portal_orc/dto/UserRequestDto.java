@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.br.CPF;
 
 import com.orcestra.portal_orc.enums.DirectorateEnum;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,6 +32,7 @@ public class UserRequestDto {
     @Email(message = "Esse email não é válido")
     private String email;
 
+    @Schema(example = "dd-MM-yyyy")
     @NotNull(message = "Esse campo não pode ser vazio")
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate birthDate;
@@ -41,6 +43,7 @@ public class UserRequestDto {
     @NotNull(message = "Esse campo não pode ser vazio")
     private Long phone;
 
+    @Schema(example = "dd-MM-yyyy")
     @NotNull(message = "Esse campo não pode ser vazio")
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate entryDay;
