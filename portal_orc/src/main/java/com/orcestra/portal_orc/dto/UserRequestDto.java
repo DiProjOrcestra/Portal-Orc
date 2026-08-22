@@ -48,6 +48,6 @@ public class UserRequestDto {
     @NotBlank(message = "Esse campo não pode ser vazio")
     private String password;
 
-    @NotBlank(message = "Esse campo não pode ser vazio")
+    @NotNull(message = "Esse campo não pode ser vazio")
     private DirectorateEnum directorate;
 }
