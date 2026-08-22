@@ -1,0 +1,16 @@
+.git
+.gitignore
+**/node_modules
+**/dist
+**/build
+.npm
+**/target
+**/.m2
+**/build
+**/.gradle
+.vscode
+.idea
+*.swp
+*.swo
+*.log
+.DS_Store
