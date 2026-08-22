@@ -22,7 +22,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserRequestDto {
+public class RegisterRequestDto {
     
     @Schema(example = "012.345.678-90")
     @NotBlank(message = "Esse campo não pode ser vazio")
