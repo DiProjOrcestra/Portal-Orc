@@ -24,6 +24,7 @@ import lombok.Setter;
 @Builder
 public class UserRequestDto {
     
+    @Schema(example = "012.345.678-90")
     @NotBlank(message = "Esse campo não pode ser vazio")
     @CPF(message = "Esse CPF não é válido")
     private String cpf;
