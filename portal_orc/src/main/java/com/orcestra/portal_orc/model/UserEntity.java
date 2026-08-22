@@ -48,7 +48,7 @@ public class UserEntity implements UserDetails {
     @Column(nullable = false, name = "nome")
     private String name;
 
-    @Column(name = "telefone")
+    @Column(name = "telefone", unique = true, nullable = false)
     private Long phone;
 
     @Column(name = "dia_de_entrada")
