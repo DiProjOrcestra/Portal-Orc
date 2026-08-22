@@ -9,6 +9,7 @@ import com.orcestra.portal_orc.enums.DirectorateEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +32,7 @@ public class UserRequestDto {
     private String email;
 
     @NotNull(message = "Esse campo não pode ser vazio")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate birthDate;
 
     @NotBlank(message = "Esse campo não pode ser vazio")
@@ -40,6 +42,7 @@ public class UserRequestDto {
     private Long phone;
 
     @NotNull(message = "Esse campo não pode ser vazio")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate entryDay;
 
     @NotBlank(message = "Esse campo não pode ser vazio")
