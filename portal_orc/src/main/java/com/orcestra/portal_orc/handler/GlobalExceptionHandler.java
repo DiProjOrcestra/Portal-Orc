@@ -1,6 +1,7 @@
 package com.orcestra.portal_orc.handler;
 
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -35,9 +36,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> methodArgumentNotValidException (MethodArgumentNotValidException methodArgumentNotValidException) {
+    public ResponseEntity<ErrorResponse> methodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
 
         ErrorResponse errorResponse = ErrorResponse.builder().message(methodArgumentNotValidException.getMessage()).status(HttpStatus.BAD_REQUEST.value()).build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> dataIntegrityViolationException(DataIntegrityViolationException exception) {
+        
+        ErrorResponse errorResponse = ErrorResponse.builder().message("Já existe um registro com esse valor").status(HttpStatus.BAD_REQUEST.value()).build();
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
