@@ -1,6 +1,9 @@
 package com.orcestra.portal_orc.service;
 
+import java.security.SecureRandom;
 import java.util.Set;
+
+import javax.print.DocFlavor.STRING;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,10 +48,29 @@ public class AuthenticationService {
                                             .name(registerRequestDto.getDirectorate()).build()));
                                 
         UserEntity userRegister = new UserEntity(registerRequestDto);
-        userRegister.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
         userRegister.setRoles(Set.of(role));
+        userRegister.setPassword(passwordEncoder.encode(genereateRandomPassword(15)));
         userRegister.setDirectorate(direcotrate);
+
         userRepository.save(userRegister);
     }
 
+    public String genereateRandomPassword(Integer length) {
+
+        String letters_up = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String letters_low = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        String symbols = "!@#$%^&*()-_=+";
+        String dictionary = letters_low + letters_up + numbers + symbols;
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(dictionary.length());
+            char randomCharacter = dictionary.charAt(randomIndex);
+            password.append(randomCharacter);
+        }
+        System.out.println("Sua senha é " + password);
+        return password.toString();       
+    }
 }

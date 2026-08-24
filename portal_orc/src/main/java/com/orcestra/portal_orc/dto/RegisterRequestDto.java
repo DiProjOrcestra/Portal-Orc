@@ -52,9 +52,6 @@ public class RegisterRequestDto {
     @NotBlank(message = "Esse campo não pode ser vazio")
     private String position;
 
-    @NotBlank(message = "Esse campo não pode ser vazio")
-    private String password;
-
     @NotNull(message = "Esse campo não pode ser vazio")
     private DirectorateEnum directorate;
 }
