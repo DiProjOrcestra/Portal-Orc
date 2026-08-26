@@ -28,6 +28,10 @@ public class TokenProvider {
         return buildToken(usuario.getUsername());
     }
 
+    public String gerarTokenPorEmail(String email) {
+        return buildToken(email);
+    }
+
     private String buildToken(String username) {
         Instant now = Instant.now();
         Instant expiration = now.plusMillis(expirationTime);
