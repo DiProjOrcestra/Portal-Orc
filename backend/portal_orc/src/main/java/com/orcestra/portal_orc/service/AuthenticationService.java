@@ -40,14 +40,14 @@ public class AuthenticationService {
                             .orElseGet(() -> roleRepository.save(RoleEntity.builder()
                                 .name(RoleTypeEnum.USER.name()).build()));
 
-        DirectorateEntity direcotrate = directorateRepository.findByName(userRequestDto.getDirectorate())
+        DirectorateEntity directorate = directorateRepository.findByDirectorateName(registerRequestDto.getDirectorate().name())
                                         .orElseGet(() -> directorateRepository.save(DirectorateEntity.builder()
-                                            .name(userRequestDto.getDirectorate()).build()));
+                                            .directorateName(registerRequestDto.getDirectorate().name()).build()));
                                 
         UserEntity userRegister = new UserEntity(registerRequestDto);
         userRegister.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
         userRegister.setRoles(Set.of(role));
-        userRegister.setDirectorate(direcotrate);
+        userRegister.setDirectorate(directorate);
         userRepository.save(userRegister);
     }
 
