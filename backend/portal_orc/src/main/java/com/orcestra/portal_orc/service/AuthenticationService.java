@@ -5,7 +5,7 @@ import java.util.Set;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.orcestra.portal_orc.dto.UserRequestDto;
+import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.model.DirectorateEntity;
@@ -26,13 +26,13 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final DirectorateRepository directorateRepository;
 
-    public void registerUser(UserRequestDto userRequestDto) throws BadRequestException{
-        UserEntity userEntity = userRepository.findByEmail(userRequestDto.getEmail()).orElse(null);
+    public void registerUser(RegisterRequestDto registerRequestDto) throws BadRequestException{
+        UserEntity userEntity = userRepository.findByEmail(registerRequestDto.getEmail()).orElse(null);
         if (userEntity != null){
             throw new BadRequestException("Email já cadastrado");
         }
 
-        if (userRepository.existsByCpf(userRequestDto.getCpf().replaceAll("\\D", ""))) {
+        if (userRepository.existsByCpf(registerRequestDto.getCpf().replaceAll("\\D", ""))) {
             throw new BadRequestException("Esse CPF já foi cadastrado");
         }
 
@@ -44,8 +44,8 @@ public class AuthenticationService {
                                         .orElseGet(() -> directorateRepository.save(DirectorateEntity.builder()
                                             .name(userRequestDto.getDirectorate()).build()));
                                 
-        UserEntity userRegister = new UserEntity(userRequestDto);
-        userRegister.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        UserEntity userRegister = new UserEntity(registerRequestDto);
+        userRegister.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
         userRegister.setRoles(Set.of(role));
         userRegister.setDirectorate(direcotrate);
         userRepository.save(userRegister);

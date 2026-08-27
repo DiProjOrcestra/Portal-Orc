@@ -9,7 +9,7 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.orcestra.portal_orc.dto.UserRequestDto;
+import com.orcestra.portal_orc.dto.RegisterRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -69,7 +69,7 @@ public class UserEntity implements UserDetails {
     @JoinTable(name = "cargo_usuario", joinColumns = @JoinColumn(name = "usuario_cpf"), inverseJoinColumns = @JoinColumn(name = "cargo_id"))
     private Set<RoleEntity> roles = new HashSet<>(); //roles de autenticação
 
-    public UserEntity(UserRequestDto userRequestDto){
+    public UserEntity(RegisterRequestDto userRequestDto){
         this.cpf = userRequestDto.getCpf().replaceAll("\\D", "");
         this.email = userRequestDto.getEmail();
         this.birthDate = userRequestDto.getBirthDate();
