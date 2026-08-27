@@ -36,7 +36,7 @@ import lombok.Setter;
 public class UserEntity implements UserDetails {
 
     @Id
-    @Column(length = 11)
+    @Column(length = 11, nullable = false)
     private String cpf;
 
     @Column(nullable = false, unique = true)
