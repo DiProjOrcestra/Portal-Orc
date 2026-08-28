@@ -1,6 +1,5 @@
 package com.orcestra.portal_orc.service;
 
-import java.security.SecureRandom;
 import java.util.Set;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +14,7 @@ import com.orcestra.portal_orc.model.UserEntity;
 import com.orcestra.portal_orc.repository.DirectorateRepository;
 import com.orcestra.portal_orc.repository.RoleRepository;
 import com.orcestra.portal_orc.repository.UserRepository;
+import com.orcestra.portal_orc.util.RandomPasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +26,8 @@ public class AuthenticationService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final DirectorateRepository directorateRepository;
+    private final RandomPasswordGenerator randomPasswordGenerator;
+    private final EmailSenderService emailSenderService;
 
     public void registerUser(RegisterRequestDto registerRequestDto) throws BadRequestException{
         UserEntity userEntity = userRepository.findByEmail(registerRequestDto.getEmail()).orElse(null);
@@ -45,30 +47,13 @@ public class AuthenticationService {
                                         .orElseGet(() -> directorateRepository.save(DirectorateEntity.builder()
                                             .name(registerRequestDto.getDirectorate()).build()));
                                 
+        String userPassword = randomPasswordGenerator.genereateRandomPassword(15);
         UserEntity userRegister = new UserEntity(registerRequestDto);
         userRegister.setRoles(Set.of(role));
-        userRegister.setPassword(passwordEncoder.encode(genereateRandomPassword(15)));
+        userRegister.setPassword(passwordEncoder.encode(userPassword));
         userRegister.setDirectorate(direcotrate);
-
         userRepository.save(userRegister);
+        emailSenderService.sendEmail(registerRequestDto.getEmail(), "Senha para primeiro cadastro", "Sua senha é " + userPassword);
     }
 
-    public String genereateRandomPassword(Integer length) {
-
-        String letters_up = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String letters_low = "abcdefghijklmnopqrstuvwxyz";
-        String numbers = "0123456789";
-        String symbols = "!@#$%^&*()-_=+";
-        String dictionary = letters_low + letters_up + numbers + symbols;
-        SecureRandom random = new SecureRandom();
-        StringBuilder password = new StringBuilder(length);
-
-        for (int i = 0; i < length; i++) {
-            int randomIndex = random.nextInt(dictionary.length());
-            char randomCharacter = dictionary.charAt(randomIndex);
-            password.append(randomCharacter);
-        }
-        System.out.println("Sua senha é " + password);
-        return password.toString();       
-    }
 }
