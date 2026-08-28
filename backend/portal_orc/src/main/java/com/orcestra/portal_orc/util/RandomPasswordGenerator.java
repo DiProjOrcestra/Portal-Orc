@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RandomPasswordGenerator {
     
-    public String genereateRandomPassword(Integer length) {
+    public String generateRandomPassword(Integer length) {
 
         String letters_up = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String letters_low = "abcdefghijklmnopqrstuvwxyz";
