@@ -9,6 +9,7 @@ import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
+import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.model.DirectorateEntity;
 import com.orcestra.portal_orc.model.RoleEntity;
 import com.orcestra.portal_orc.model.UserEntity;
@@ -57,4 +58,12 @@ public class AuthenticationService {
         emailSenderService.sendEmail(registerRequestDto.getEmail(), "Senha para primeiro cadastro", "Sua senha é " + userPassword);
     }
 
+    public void resendRandomPassword(ResendPasswordDto resendPasswordDto) throws NotFoundException {
+        UserEntity userEntity = userRepository.findByEmail(resendPasswordDto.getEmail()).orElseThrow(() -> new NotFoundException("Email não encontrado"));
+
+        String userPassword = randomPasswordGenerator.generateRandomPassword(15);
+        userEntity.setPassword(passwordEncoder.encode(userPassword));
+        userRepository.save(userEntity);
+        emailSenderService.sendEmail(resendPasswordDto.getEmail(), "Senha para primeiro cadastro", "Sua senha é " + userPassword);
+    }
 }
