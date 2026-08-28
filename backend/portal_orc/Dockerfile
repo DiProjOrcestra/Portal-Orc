@@ -1,7 +1,7 @@
 # =========================
 # ESTÁGIO DE BUILD
 # =========================
-FROM eclipse-temurin:21-jdk-alpine AS build
+FROM eclipse-temurin:25-jdk-alpine AS build
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ RUN chmod +x mvnw && ./mvnw clean package -DskipTests && mv target/*.war target/
 # =========================
 # ESTÁGIO DE EXECUÇÃO
 # =========================
-FROM eclipse-temurin:21-jdk-alpine
+FROM eclipse-temurin:25-jdk-alpine
 
 WORKDIR /app
 
