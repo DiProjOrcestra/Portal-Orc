@@ -56,7 +56,6 @@ public class RegisterRequestDto {
     private String position;
 
     @Schema(example = "orc'inho123")
-    @NotBlank(message = "Esse campo não pode ser vazio")
     private String password;
     
     @NotNull(message = "Esse campo não pode ser vazio")

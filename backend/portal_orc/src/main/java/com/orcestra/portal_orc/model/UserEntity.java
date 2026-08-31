@@ -57,7 +57,7 @@ public class UserEntity implements UserDetails {
     @Column(name = "funcao_na_empresa")
     private String position;
 
-    @Column(nullable = false, name = "senha")
+    @Column(name = "senha")
     private String password;
 
     @ManyToOne
