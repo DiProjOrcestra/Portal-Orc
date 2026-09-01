@@ -1,0 +1,28 @@
+.page {
+  position: relative;
+  min-height: 100svh;
+  background: #141414;
+  overflow-x: hidden;
+}
+
+.page__background {
+  position: fixed;
+  inset: 0;
+  background-image: url('../../assets/fundo.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  background-attachment: fixed;
+  z-index: 0;
+}
+
+.page__main {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
