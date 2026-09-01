@@ -19,8 +19,6 @@
 .custom-select__trigger--open {
   border-color: var(--green-400);
   box-shadow: 0 0 0 3px rgba(63, 204, 16, 0.18);
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
 }
 
 .custom-select__trigger--error {
@@ -54,10 +52,10 @@
   right: 0;
   z-index: 30;
   margin: 0;
+  margin-top: 8px;
   padding: 4px 0;
   list-style: none;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-radius: 20px;
   background:
     radial-gradient(140% 120% at 100% 100%, rgba(180, 224, 186, 0.95), transparent 60%),
     #b6b8b6;
@@ -70,7 +68,7 @@
 }
 
 .custom-select__panel li:last-child {
-  border-bottom: none;
+  border-bottom: 20px;
 }
 
 .custom-select__option {
