@@ -32,7 +32,7 @@ public class AuthenticationController {
         authenticationService.registerUser(registerRequestDto);
     }
 
-    @PostMapping("/resend")
+    @PostMapping("/resend/password")
     @ResponseStatus(HttpStatus.OK)
     public void resendRandomPassword(@Valid @RequestBody ResendPasswordDto resendPasswordDto) throws NotFoundException {
         authenticationService.resendRandomPassword(resendPasswordDto);
