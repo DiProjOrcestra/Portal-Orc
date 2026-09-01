@@ -8,7 +8,7 @@
   width: 70%;
   height: 142px;
   border-radius: 24px;
-  border: 1.5px solid rgba(63, 204, 16, 0.32);
+  border: 0.1px solid rgba(63, 204, 16, 0.32);
   border-bottom: 3px solid var(--green-400);
   background:
     radial-gradient(120% 90% at 50% 0%, rgba(63, 204, 16, 0.46), transparent 65%),

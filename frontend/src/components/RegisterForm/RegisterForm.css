@@ -5,6 +5,7 @@
   margin: 200px 0 auto;
   border-radius: 40px;
   border: 1px solid var(--border);
+  border-top: 4px solid var(--green-400);
   background: #0b0b0b;
 }
 

@@ -4,6 +4,7 @@
   max-width: 546px;
   border-radius: 32px;
   border: 1px solid var(--border);
+  border-top: 3px solid var(--green-400);
   background: #0b0b0b;
   overflow: hidden;
 }
