@@ -99,6 +99,7 @@
   height: 62px;
   min-width: 62px;
   border-radius: 50%;
+  border: 1px solid var(--green-400);
   background: var(--off-white);
   display: flex;
   align-items: center;
