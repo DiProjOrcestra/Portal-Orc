@@ -103,7 +103,7 @@ export default function MfaCodeForm({ email: emailProp, onVerified }) {
         )}
 
         <p className="mfa-card__resend">
-          Não recebeu?{' '}
+          Não recebeu? {'  '}
           <button
             type="button"
             className="mfa-card__resend-link"

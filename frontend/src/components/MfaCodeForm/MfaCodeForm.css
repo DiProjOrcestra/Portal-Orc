@@ -1,7 +1,8 @@
 .mfa-card {
   position: relative;
   width: 100%;
-  max-width: 546px;
+  max-width: 700px;
+  height: 100%;
   border-radius: 32px;
   border: 1px solid var(--border);
   border-top: 3px solid var(--green-400);
@@ -95,5 +96,18 @@
   .mfa-card__title {
     font-size: 22px;
     margin-bottom: 26px;
+  }
+
+  .mfa-card__resend-link {
+    font-size: 12px;
+  }
+
+  .mfa-card__resend {
+    font-size: 12.5px;
+  }
+
+  .mfa-card__error {
+    margin: 24px;
+    font-size: 11px;
   }
 }

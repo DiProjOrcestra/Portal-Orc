@@ -6,7 +6,7 @@
 
 .otp__box {
   width: 70%;
-  height: 142px;
+  height: 20svh;
   border-radius: 24px;
   border: 0.1px solid rgba(63, 204, 16, 0.32);
   border-bottom: 3px solid var(--green-400);
@@ -49,8 +49,8 @@
   }
 
   .otp__box {
-    width: 60px;
-    height: 108px;
+    min-width: 50px;
+    height: 12svh;
     font-size: 28px;
     border-radius: 16px;
   }
