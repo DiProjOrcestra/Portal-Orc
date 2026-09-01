@@ -1,0 +1,126 @@
+.login-card {
+  position: relative;
+  width: 100%;
+  max-width: 608px;
+  border: 1.8px solid var(--green-400);
+  border-radius: 43px;
+  background: #0b0b0b;
+  box-shadow: 0 0 67px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.login-card__content {
+  position: relative;
+  z-index: 1;
+  padding: 56px 48px 48px;
+}
+
+.login-card__title {
+  text-align: center;
+  font-size: 40px;
+  font-weight: 600;
+  margin-bottom: 40px;
+  background: linear-gradient(102deg, var(--off-white) 28%, var(--green-400) 65%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.login-card__banner {
+  margin: 0 0 20px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  text-align: center;
+}
+
+.login-card__banner--success {
+  background: rgba(63, 204, 16, 0.12);
+  border: 1px solid rgba(63, 204, 16, 0.5);
+  color: var(--green-400);
+}
+
+.login-card__banner--error {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.4);
+  color: var(--danger);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-form__submit {
+  height: 72px;
+  border: none;
+  border-radius: 14px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--off-white);
+  background: linear-gradient(102deg, var(--off-white) 15%, #10cd0a 45%, var(--green-700) 100%);
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.login-form__submit:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.login-form__submit:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.login-form__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-form__divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.login-form__divider img {
+  width: 100px;
+  height: auto;
+}
+
+.login-form__divider span {
+  font-size: 15px;
+  color: var(--text-muted);
+}
+
+.login-form__google {
+  height: 72px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(20, 20, 20, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 30px rgba(0, 189, 28, 0.25);
+  transition: border-color 0.15s ease;
+}
+
+.login-form__google:hover {
+  border-color: var(--green-400);
+}
+
+.login-form__google img {
+  height: 32px;
+  width: auto;
+}
+
+@media (max-width: 480px) {
+  .login-card__content {
+    padding: 40px 24px 32px;
+  }
+
+  .login-card__title {
+    font-size: 32px;
+  }
+}

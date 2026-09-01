@@ -1,0 +1,28 @@
+.login-page {
+  position: relative;
+  min-height: 100svh;
+  background: var(--bg);
+  overflow-x: hidden;
+}
+
+.login-page__background {
+  position: fixed;
+  inset: 0;
+  background-image: url('../../assets/fundo-login.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  background-attachment: fixed;
+  z-index: 0;
+}
+
+.login-page__main {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
