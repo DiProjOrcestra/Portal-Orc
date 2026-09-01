@@ -26,7 +26,19 @@ spring:
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: openid, profile, email
 
-  
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          localhost: localhost
+
 jwt:
   expiration: ${JWT_EXPIRATION:900000}
   # depois do nome da variavel de ambiente, é uma chave forte gera aleatoriamente para garantir segunraça, ela esta sendo usada localmente

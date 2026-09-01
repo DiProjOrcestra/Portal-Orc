@@ -4,13 +4,13 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.orcestra.portal_orc.config.TokenProvider;
+import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.TokenResponseDto;
@@ -32,6 +32,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
+    private final MfaService mfaService;
     @Value("${jwt.expiration}")
     private long expirationTime;
 
@@ -55,13 +56,10 @@ public class AuthenticationService {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
             String token = tokenProvider.gerarToken(authentication);
+            mfaService.generateAndSendCode(dto);
 
             return new TokenResponseDto(token, expirationTime);
-
         } 
-        catch (BadCredentialsException e){
-            throw new BadRequestException("Credenciais inválidas");
-        }
         catch (Exception e){
             throw e;
         }

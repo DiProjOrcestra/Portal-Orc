@@ -1,6 +1,7 @@
 package com.orcestra.portal_orc.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -67,6 +68,15 @@ public class UserEntity implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "cargo_usuario", joinColumns = @JoinColumn(name = "usuario_cpf"), inverseJoinColumns = @JoinColumn(name = "cargo_id"))
     private Set<RoleEntity> roles = new HashSet<>(); //roles de autenticação
+
+    @Column(name="mfa_code", length=100)
+    private String mfaCode;
+
+    @Column(name="mfa_code_expires_at")
+    private LocalDateTime mfaCodeExpiresAt;
+
+    @Column(name="mfa_attempts")
+    private Integer mfaAttempts;
 
     public UserEntity(RegisterRequestDto userRequestDto){
         this.cpf = userRequestDto.getCpf();
