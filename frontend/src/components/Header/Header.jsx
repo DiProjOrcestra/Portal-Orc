@@ -19,8 +19,12 @@ const AvatarIcon = () => (
   </svg>
 );
 
-export default function Header({ userName = 'Nome Sobrenome', userRole = 'Cargo' }) {
-  const [active, setActive] = useState('cadastro');
+export default function Header({
+  userName = 'Nome Sobrenome',
+  userRole = 'Cargo',
+  active = 'cadastro',
+  onNavigate,
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const nav = (
@@ -31,7 +35,7 @@ export default function Header({ userName = 'Nome Sobrenome', userRole = 'Cargo'
           type="button"
           className={`header__tab ${active === item.key ? 'header__tab--active' : ''}`}
           onClick={() => {
-            setActive(item.key);
+            onNavigate?.(item.key);
             setMenuOpen(false);
           }}
         >
