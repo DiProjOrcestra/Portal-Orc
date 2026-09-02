@@ -22,7 +22,7 @@ import lombok.ToString;
 public class RegisterRequestDto {
     
     @NotNull
-    private Long cpf;
+    private String cpf;
 
     @NotBlank
     private String email;

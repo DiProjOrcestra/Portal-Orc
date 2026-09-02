@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "usuario")
 @AllArgsConstructor
 @Getter
 @Setter
@@ -36,7 +36,7 @@ import lombok.Setter;
 public class UserEntity implements UserDetails {
 
     @Id
-    private Long cpf;
+    private String cpf;
 
     @Column(nullable = false, unique = true)
     private String email;
