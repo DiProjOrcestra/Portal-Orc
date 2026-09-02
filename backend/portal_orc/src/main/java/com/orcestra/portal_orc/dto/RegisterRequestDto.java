@@ -38,9 +38,11 @@ public class RegisterRequestDto {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate birthDate;
 
+    @Schema(example = "Orc'estra")
     @NotBlank(message = "Esse campo não pode ser vazio")
     private String name;
-
+    
+    @Schema(example = "61987654321")
     @NotNull(message = "Esse campo não pode ser vazio")
     private Long phone;
 
@@ -49,9 +51,13 @@ public class RegisterRequestDto {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate entryDay;
 
+    @Schema(example = "Presidente da Melhor EJ do Brasil")
     @NotBlank(message = "Esse campo não pode ser vazio")
     private String position;
 
+    @Schema(example = "orc'inho123")
+    private String password;
+    
     @NotNull(message = "Esse campo não pode ser vazio")
     private DirectorateEnum directorate;
 }
