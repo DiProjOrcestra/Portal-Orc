@@ -15,11 +15,11 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: frontend/Dockerfile
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: portal_orc_frontend
     ports:
-      - "3000:80"
+      - "5173:5173"
     depends_on:
       - backend
 

@@ -1,2 +1,6 @@
 .vscode
+<<<<<<< HEAD
 node_modules
+=======
+.env
+>>>>>>> origin/develop
