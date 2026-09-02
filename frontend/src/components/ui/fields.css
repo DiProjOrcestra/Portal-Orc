@@ -1,0 +1,130 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.field__label {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--green-400);
+}
+
+.field__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.field__control input,
+.field__control select {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field__control input::placeholder {
+  color: rgba(255, 251, 220, 0.35);
+}
+
+.field__control input:focus,
+.field__control select:focus {
+  outline: none;
+  border-color: var(--green-400);
+  box-shadow: 0 0 0 3px rgba(63, 204, 16, 0.18);
+}
+
+.field__control--error input,
+.field__control--error select {
+  border-color: var(--danger);
+}
+
+.field__control select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 40px;
+}
+
+.field__control select:invalid {
+  color: rgba(255, 251, 220, 0.35);
+}
+
+.field__control select option {
+  background: #1b1b1b;
+  color: var(--text);
+}
+
+.field__icon {
+  position: absolute;
+  right: 14px;
+  display: flex;
+  pointer-events: none;
+}
+
+.field__control input[type='text'] ~ .field__icon svg,
+.field__control input[type='tel'] ~ .field__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.field__calendar-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.field__calendar-btn:hover,
+.field__calendar-btn:focus-visible {
+  background: rgba(63, 204, 16, 0.14);
+}
+
+.field__calendar-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Invisible native date input, positioned so its built-in calendar button
+   sits exactly under our custom calendar icon; clicking the icon calls
+   showPicker() on it. Kept out of the tab order and off-screen otherwise. */
+.field__native-date {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  opacity: 0;
+  pointer-events: none;
+  border: none;
+  padding: 0;
+}
+
+.field__error {
+  font-size: 12.5px;
+  color: var(--danger);
+}
+
+.field__hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
