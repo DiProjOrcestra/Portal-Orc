@@ -4,8 +4,8 @@ import PasswordField from '../ui/PasswordField';
 import { login } from '../../services/authService';
 import { ApiError } from '../../services/api';
 import { isValidEmail } from '../../utils/formatters';
-import divider from '../../assets/linha-divisoria.svg';
-import googleIcon from '../../assets/google-icon.svg';
+import divider from '../../assets/linha-divisoria.png';
+import googleIcon from '../../assets/google-icon.png';
 import './LoginForm.css';
 
 const EMPTY_FORM = { email: '', password: '' };
@@ -61,6 +61,11 @@ export default function LoginForm() {
 
   return (
     <div className="login-card">
+      <div className="login-card__glow-layer" aria-hidden="true">
+        <div className="login-card__glow login-card__glow--top" />
+        <div className="login-card__glow login-card__glow--bottom" />
+      </div>
+
       <div className="login-card__content">
         <h1 className="login-card__title">Entrar</h1>
 
@@ -108,3 +113,4 @@ export default function LoginForm() {
     </div>
   );
 }
+

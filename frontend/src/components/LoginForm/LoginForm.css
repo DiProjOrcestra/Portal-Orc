@@ -4,9 +4,41 @@
   max-width: 608px;
   border: 1.8px solid var(--green-400);
   border-radius: 43px;
-  background: #0b0b0b;
+  background: rgba(11, 11, 11, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   box-shadow: 0 0 67px rgba(0, 0, 0, 0.4);
   overflow: hidden;
+}
+
+.login-card__glow-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.login-card__glow {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+}
+
+.login-card__glow--top {
+  top: -140px;
+  left: -120px;
+  background: radial-gradient(circle, rgba(63, 204, 16, 0.6), transparent 70%);
+}
+
+.login-card__glow--bottom {
+  bottom: -150px;
+  right: -110px;
+  background: radial-gradient(circle, rgba(46, 182, 0, 0.55), transparent 70%);
 }
 
 .login-card__content {
