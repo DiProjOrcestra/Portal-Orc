@@ -139,7 +139,7 @@
   transform: translateY(1px);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1099px) {
   .register-card {
     margin-top: 100px;
     border-radius: 28px;

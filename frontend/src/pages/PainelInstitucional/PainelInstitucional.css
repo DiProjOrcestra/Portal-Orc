@@ -14,6 +14,11 @@
   min-width: 0;
 }
 
+/* Header collapses to its short (hamburger-only) bar at this same breakpoint
+   (see Header.css), which is also where PainelInterno's sidebar disappears
+   (see PainelInterno.css) — keeping all three in sync is what lets the
+   hamburger's section subnav pick up switching between MVV and Golden Circle
+   right where the sidebar stops offering it. */
 @media (max-width: 1099px) {
   .painel-institucional {
     flex-direction: column;
@@ -25,14 +30,6 @@
        collapsing the whole content column to ~330px with empty space beside
        it. Restoring stretch makes it always fill the column's full width. */
     align-items: stretch;
-  }
-}
-
-/* Header collapses to its short (hamburger-only) bar at this same breakpoint
-   (see Header.css) — the top clearance must switch here too, not at 1099px,
-   or content sits behind the still-tall header between 861-1099px. */
-@media (max-width: 860px) {
-  .painel-institucional {
     margin-top: 100px;
   }
 }

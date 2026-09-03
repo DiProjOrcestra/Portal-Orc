@@ -167,7 +167,7 @@
   display: none;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1099px) {
   .header {
     padding: 20px 20px 0;
     background: transparent;
