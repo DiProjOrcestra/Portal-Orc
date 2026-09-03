@@ -167,6 +167,10 @@
   display: none;
 }
 
+.header__top-fade {
+  display: none;
+}
+
 @media (max-width: 1099px) {
   .header {
     padding: 20px 20px 0;
@@ -195,6 +199,21 @@
 
   .header__burger {
     display: flex;
+  }
+
+  /* Fills the transparent gap around the burger button with a fade of the
+     page background, so scrolled-up content dims out behind it instead of
+     the button sitting directly on top of whatever scrolls underneath. */
+  .header__top-fade {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 130px;
+    z-index: 19;
+    pointer-events: none;
+    background: linear-gradient(to bottom, var(--bg) 0%, var(--bg) 35%, transparent 100%);
   }
 
   .header__burger svg {

@@ -100,6 +100,7 @@ export default function Header({
 
   return (
     <>
+      <div className="header__top-fade" aria-hidden="true" />
       <header className="header">
       <div className="header__bar">
         <img src={logo} alt="Orc'estra" className="header__logo" />
