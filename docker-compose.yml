@@ -1,6 +1,18 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: portal_orc_db
+    environment:
+      POSTGRES_DB: portal_orc
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
   frontend:
     build:
       context: ./frontend
@@ -13,7 +25,7 @@ services:
 
   backend:
     build:
-      context: backend
+      context: ./backend/portal_orc
       dockerfile: Dockerfile
     container_name: portal_orc_backend
     ports:
