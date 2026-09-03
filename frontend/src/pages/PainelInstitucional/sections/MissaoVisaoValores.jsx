@@ -1,7 +1,7 @@
-import SectionHeader from './SectionHeader';
-import EmptyState from './EmpityState';
-import { CloverIcon, SunIcon, ShieldIcon, HeartIcon } from './icons';
-import { MVV_DATA } from './mockData';
+import SectionHeader from '../SectionHeader';
+import EmptyState from '../EmptyState';
+import { CloverIcon, SunIcon, ShieldIcon, HeartIcon } from '../icons';
+import { MVV_DATA } from '../mockData';
 import './MissaoVisaoValores.css';
 
 export default function MissaoVisaoValores() {

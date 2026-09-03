@@ -1,7 +1,7 @@
-import SectionHeader from './SectionHeader';
-import EmptyState from './EmpityState';
-import { TargetIcon } from './icons';
-import { GOLDEN_CIRCLE_DATA } from './mockData';
+import SectionHeader from '../SectionHeader';
+import EmptyState from '../EmptyState';
+import { TargetIcon } from '../icons';
+import { GOLDEN_CIRCLE_DATA } from '../mockData';
 import './GoldenCircle.css';
 
 export default function GoldenCircle() {
