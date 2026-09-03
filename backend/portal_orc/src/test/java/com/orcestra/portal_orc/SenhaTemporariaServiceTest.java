@@ -85,7 +85,7 @@ class SenhaTemporariaServiceTest {
 
         directorate = DirectorateEntity.builder()
                 .id(1)
-                .name(DirectorateEnum.DIPROJ)
+                .directorateName(DirectorateEnum.DIPROJ.name())
                 .build();
     }
 
@@ -99,7 +99,7 @@ class SenhaTemporariaServiceTest {
         when(userRepository.existsByCpf("52998224725")).thenReturn(false);
         when(roleRepository.findByName(RoleTypeEnum.USER.name()))
                 .thenReturn(Optional.of(userRole));
-        when(directorateRepository.findByName(DirectorateEnum.DIPROJ))
+        when(directorateRepository.findByDirectorateName(DirectorateEnum.DIPROJ.name()))
                 .thenReturn(Optional.of(directorate));
         when(randomPasswordGenerator.generateRandomPassword(15))
                 .thenReturn(temporaryPassword);
@@ -134,7 +134,7 @@ class SenhaTemporariaServiceTest {
         when(userRepository.existsByCpf("52998224725")).thenReturn(false);
         when(roleRepository.findByName(RoleTypeEnum.USER.name()))
                 .thenReturn(Optional.empty());
-        when(directorateRepository.findByName(DirectorateEnum.DIPROJ))
+        when(directorateRepository.findByDirectorateName(DirectorateEnum.DIPROJ.name()))
                 .thenReturn(Optional.empty());
         when(roleRepository.save(any(RoleEntity.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -153,7 +153,7 @@ class SenhaTemporariaServiceTest {
         ArgumentCaptor<DirectorateEntity> directorateCaptor =
                 ArgumentCaptor.forClass(DirectorateEntity.class);
         verify(directorateRepository).save(directorateCaptor.capture());
-        assertEquals(DirectorateEnum.DIPROJ, directorateCaptor.getValue().getName());
+        assertEquals(DirectorateEnum.DIPROJ, directorateCaptor.getValue().getDirectorateName());
 
         verify(userRepository).save(any(UserEntity.class));
         verify(emailSenderService).sendEmail(
