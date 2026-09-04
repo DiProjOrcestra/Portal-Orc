@@ -14,6 +14,7 @@ import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
 import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
+import com.orcestra.portal_orc.dto.ResendCodeRequestDto;
 import com.orcestra.portal_orc.dto.TokenResponseDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
@@ -58,7 +59,10 @@ public class AuthenticationService {
     public MfaTokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
-            mfaService.generateAndSendCode(dto);
+            UserEntity user = userRepository.findByEmail(dto.getEmail())
+                        .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));
+            
+            mfaService.generateAndSendCode(user);
 
             String mfaToken = tokenProvider.gerarTokenMfa(authentication);
 
@@ -82,6 +86,15 @@ public class AuthenticationService {
         
         String token = tokenProvider.gerarToken(user);
         return new TokenResponseDto(token, expirationTime);
+    }
+
+    public void resendCode(ResendCodeRequestDto resendCodeRequestDto) throws BadRequestException{
+        String email = tokenProvider.validarTokenMfa(resendCodeRequestDto.getMfaToken());
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));
+
+        mfaService.generateAndSendCode(user);
     }
 
 }

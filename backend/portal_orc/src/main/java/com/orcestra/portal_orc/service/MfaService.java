@@ -26,11 +26,9 @@ public class MfaService {
     private final RandomCodeGenerator randomCodeGenerator;
     private final PasswordEncoder passwordEncoder;
 
-    public void generateAndSendCode(LoginRequestDto dto) throws BadRequestException {
+    public void generateAndSendCode(UserEntity user) throws BadRequestException {
         String code = randomCodeGenerator.generateRandomCode(CODE_LENGTH);
         String hashedCode = passwordEncoder.encode(code);
-        UserEntity user = userRepository.findByEmail(dto.getEmail())
-                    .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));
 
         user.setMfaCode(hashedCode);
         user.setMfaCodeExpiresAt(LocalDateTime.now().plusMinutes(EXPIRATION_MINUTES));
