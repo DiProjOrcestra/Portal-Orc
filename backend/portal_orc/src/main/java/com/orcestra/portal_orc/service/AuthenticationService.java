@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.orcestra.portal_orc.config.TokenProvider;
 import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
+import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.TokenResponseDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
@@ -35,6 +36,8 @@ public class AuthenticationService {
     private final MfaService mfaService;
     @Value("${jwt.expiration}")
     private long expirationTime;
+    @Value("${jwt.mfa.expiration}")
+    private long mfaExpirationTime;
 
     public void registerUser(RegisterRequestDto userRequestDto) throws BadRequestException{
         UserEntity userEntity = userRepository.findByEmail(userRequestDto.getEmail()).orElse(null);
@@ -52,17 +55,33 @@ public class AuthenticationService {
         userRepository.save(userRegister);
     }
 
-    public TokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
+    public MfaTokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
-            String token = tokenProvider.gerarToken(authentication);
             mfaService.generateAndSendCode(dto);
 
-            return new TokenResponseDto(token, expirationTime);
+            String mfaToken = tokenProvider.gerarTokenMfa(authentication);
+
+            return new MfaTokenResponseDto(mfaToken, "Código de verificação enviado para o e-mail cadastrado", mfaExpirationTime);
         } 
         catch (Exception e){
             throw e;
         }
+    }
+
+    public TokenResponseDto validatingCode(CodeRequestDto codeRequestDto) throws Exception{
+        String email = tokenProvider.validarTokenMfa(codeRequestDto.getMfaToken());
+
+        Boolean isValid = mfaService.validateCode(email, codeRequestDto.getCode());
+        if(!isValid){
+            throw new BadRequestException("Código inválido.");
+        }
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));
+        
+        String token = tokenProvider.gerarToken(user);
+        return new TokenResponseDto(token, expirationTime);
     }
 
 }

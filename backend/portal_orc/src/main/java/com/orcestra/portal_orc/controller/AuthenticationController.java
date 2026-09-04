@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
+import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.TokenResponseDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
@@ -33,7 +35,13 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public TokenResponseDto login(@Valid @RequestBody LoginRequestDto loginRequestDto) throws Exception{
+    public MfaTokenResponseDto login(@Valid @RequestBody LoginRequestDto loginRequestDto) throws Exception{
         return authenticationService.loginUser(loginRequestDto);
+    }
+
+    @PostMapping("/login/mfa")
+    @ResponseStatus(HttpStatus.OK)
+    public TokenResponseDto mfa(@Valid @RequestBody CodeRequestDto codeRequestDto) throws Exception{
+        return authenticationService.validatingCode(codeRequestDto);
     }
 }

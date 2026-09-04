@@ -10,7 +10,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.orcestra.portal_orc.exception.BadRequestException;
+import com.orcestra.portal_orc.model.UserEntity;
+
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -23,13 +27,33 @@ public class TokenProvider {
     @Value("${jwt.key}")
     private String key;
 
-    public String gerarToken(Authentication authentication) {
+    @Value("${jwt.mfa.expiration}")
+    private long mfaExpiration;
+
+    public String gerarToken(UserEntity username) {
+        return buildToken(username.getUsername());
+    }
+
+    public String gerarTokenMfa(Authentication authentication) {
         UserDetails usuario = (UserDetails) authentication.getPrincipal();
-        return buildToken(usuario.getUsername());
+        return buildTokenMfa(usuario.getUsername());
     }
 
     public String gerarTokenPorEmail(String email) {
         return buildToken(email);
+    }
+
+    public String buildTokenMfa(String username) {
+        Instant now = Instant.now();
+        Instant expiration = now.plusMillis(mfaExpiration);
+
+        return Jwts.builder()
+                .subject(username)
+                .claim("scope", "mfa")
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiration))
+                .signWith(getSigningKey())
+                .compact();
     }
 
     private String buildToken(String username) {
@@ -57,6 +81,23 @@ public class TokenProvider {
         catch (Exception e){
             return false;
         }
+    }
+
+    public String validarTokenMfa(String token) throws BadRequestException {
+        Claims claims;
+        try {
+            claims = getClaims(token);
+        } catch (ExpiredJwtException e) {
+            throw new BadRequestException("Sessão de verificação expirada. Faça login novamente.");
+        } catch (Exception e) {
+            throw new BadRequestException("Token inválido");
+        }
+
+        if (!"mfa".equals(claims.get("scope"))) {
+            throw new BadRequestException("Token inválido para esta operação");
+        }
+
+        return claims.getSubject();
     }
 
     public String getUsername (String token){

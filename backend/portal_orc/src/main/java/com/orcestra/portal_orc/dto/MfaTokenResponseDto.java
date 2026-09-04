@@ -1,6 +1,5 @@
 package com.orcestra.portal_orc.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,12 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class CodeRequestDto {
-    @NotBlank(message="Token de verificação obrigatório")
+@NoArgsConstructor
+public class MfaTokenResponseDto {
     private String mfaToken;
 
-    @NotBlank(message = "Informe o código recebido no email")
-    private String code;
+    private String message;
+
+    private long mfaExpirationTime;
 }

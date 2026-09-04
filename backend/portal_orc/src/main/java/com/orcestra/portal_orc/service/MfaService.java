@@ -2,12 +2,11 @@ package com.orcestra.portal_orc.service;
 
 import java.time.LocalDateTime;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
+import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.model.UserEntity;
 import com.orcestra.portal_orc.repository.UserRepository;
 import com.orcestra.portal_orc.util.RandomCodeGenerator;
@@ -41,29 +40,36 @@ public class MfaService {
         mailSender.sendEmail(user.getEmail(), "Código de verificação", "Este é o seu código: " + code);
     }
 
-    public boolean validateCode(LoginRequestDto dto, CodeRequestDto codeRequestDto) throws BadRequestException {
-        UserEntity user = userRepository.findByEmail(dto.getEmail())
+    public boolean validateCode(String email, String inputCode) throws BadRequestException {
+        UserEntity user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));
 
-        String inputCode = codeRequestDto.getCode();
-
-        if (user.getMfaCode() == null
-                || user.getMfaCodeExpiresAt() == null
-                || user.getMfaCodeExpiresAt().isBefore(LocalDateTime.now())
-                || user.getMfaAttempts() >= MAX_ATTEMPTS) {
-            return false;
+        if (user.getMfaCode() == null || user.getMfaCodeExpiresAt() == null
+            || user.getMfaCodeExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("Código expirado ou não solicitado. Solicite um novo código.");
         }
 
-        user.setMfaAttempts(user.getMfaAttempts() + 1);
+        if (user.getMfaAttempts() >= MAX_ATTEMPTS) {
+            throw new BadRequestException("Número de tentativas excedido. Solicite um novo código.");
+        }
 
         boolean matches = passwordEncoder.matches(inputCode, user.getMfaCode());
+
         if (matches) {
             user.setMfaCode(null);
             user.setMfaCodeExpiresAt(null);
             user.setMfaAttempts(0);
+            userRepository.save(user);
+            return true;
         }
 
+        user.setMfaAttempts(user.getMfaAttempts() + 1);
         userRepository.save(user);
-        return matches;
+
+        if (user.getMfaAttempts() >= MAX_ATTEMPTS) {
+            throw new BadRequestException("Número de tentativas excedido. Solicite um novo código.");
+        }
+
+        return false;
     }
 }

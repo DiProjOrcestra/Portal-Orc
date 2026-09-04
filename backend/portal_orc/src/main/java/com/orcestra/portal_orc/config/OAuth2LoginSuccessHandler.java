@@ -26,7 +26,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         String token = tokenProvider.gerarTokenPorEmail(email);
 
-        String frontendUrl = "https://localhost:3000/oauth2/callback?token=" + token;
+        // String frontendUrl = "https://localhost:3000/oauth2/callback?token=" + token;
 
         getRedirectStrategy().sendRedirect(request, response, token);
     }
