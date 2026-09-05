@@ -9,9 +9,13 @@
   margin: 0;
   padding: 10px;
   border-radius: 36px;
-  filter: drop-shadow(10px 10px 25px rgba(8, 8, 8, 0.9)) drop-shadow(-10px 10px 20px rgba(8, 8, 8, 0.2)) drop-shadow(10px -10px 20px rgba(8, 8, 8, 0.2)) drop-shadow(-10px -10px 20px rgba(20, 20, 20, 0.9));
-  box-shadow: inset 1px 1px 2px rgba(20, 20, 20, 0.3),
-              inset -1px -1px 2px rgba(8, 8, 8, 0.5);
+  box-shadow:
+    10px 10px 25px rgba(8, 8, 8, 0.9),
+    -10px 10px 20px rgba(8, 8, 8, 0.2),
+    10px -10px 20px rgba(8, 8, 8, 0.2),
+    -10px -10px 20px rgba(20, 20, 20, 0.9),
+    inset 1px 1px 2px rgba(20, 20, 20, 0.3),
+    inset -1px -1px 2px rgba(8, 8, 8, 0.5);
   overflow: hidden;
 }
 
@@ -158,9 +162,12 @@
 
 .header__tab--active {
   background: #141414;
-  filter: drop-shadow(3px 3px 8px rgba(8, 8, 8, 0.9)) drop-shadow(-3px 3px 6px rgba(8, 8, 8, 0.2)) drop-shadow(3px -3px 6px rgba(8, 8, 8, 0.2)) drop-shadow(-3px -3px 6px rgba(20, 20, 20, 0.9));
-  box-shadow: inset 1px 1px 2px rgba(1b, 1b, 1b, 0.3),
-              inset -1px -1px 2px rgba(7, 7, 7, 0.5);
+  box-shadow:
+    3px 3px 8px rgba(8, 8, 8, 0.9),
+    -3px 3px 6px rgba(8, 8, 8, 0.2),
+    3px -3px 6px rgba(8, 8, 8, 0.2),
+    -3px -3px 6px rgba(20, 20, 20, 0.9),
+    inset -1px -1px 2px rgba(7, 7, 7, 0.5);
 }
 
 .header__mobile-overlay {
