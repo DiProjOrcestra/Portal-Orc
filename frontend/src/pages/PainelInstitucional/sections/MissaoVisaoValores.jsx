@@ -5,7 +5,13 @@ import { MVV_DATA } from '../mockData';
 import './MissaoVisaoValores.css';
 
 export default function MissaoVisaoValores() {
-  if (!MVV_DATA?.missao || !MVV_DATA?.visao || !MVV_DATA?.valores) {
+  if (
+    !MVV_DATA?.quote ||
+    !MVV_DATA?.missao ||
+    !MVV_DATA?.visao ||
+    !MVV_DATA?.valores?.text ||
+    !MVV_DATA?.valores?.tags?.length
+  ) {
     return (
       <section>
         <SectionHeader icon={CloverIcon} title="Missão, Visão e Valores" />

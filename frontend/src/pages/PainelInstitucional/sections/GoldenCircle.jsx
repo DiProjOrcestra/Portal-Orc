@@ -4,8 +4,15 @@ import { TargetIcon } from '../icons';
 import { GOLDEN_CIRCLE_DATA } from '../mockData';
 import './GoldenCircle.css';
 
+const REQUIRED_NUMBERS = [1, 2, 3];
+
 export default function GoldenCircle() {
-  if (!GOLDEN_CIRCLE_DATA || GOLDEN_CIRCLE_DATA.length === 0) {
+  const hasAllItems = REQUIRED_NUMBERS.every((number) => {
+    const item = GOLDEN_CIRCLE_DATA?.find((candidate) => candidate.number === number);
+    return item?.label && item?.text;
+  });
+
+  if (!hasAllItems) {
     return (
       <section>
         <SectionHeader icon={TargetIcon} title="Golden Circle" />
