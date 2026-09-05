@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import SectionHeader from '../SectionHeader';
-import EmptyState from '../EmpityState';
+import EmptyState from '../EmptyState';
 import { DocumentIcon, GearIcon, ChevronLeftIcon, ChevronRightIcon, EditIcon } from '../icons';
 import { PLANEJAMENTO_DATA, CICLO_TATICO_DATA } from '../mockData';
 import './PlanejamentoEstrategico.css';

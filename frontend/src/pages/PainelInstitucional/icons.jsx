@@ -1,4 +1,5 @@
-// Small line-style icons used across the Painel Institucional page (MVV + Golden Circle).
+// Small line-style icons used across the Painel Institucional page (MVV,
+// Golden Circle and Planejamento Estratégico).
 // Kept local to this page since they are not reused elsewhere yet.
 
 const base = {
