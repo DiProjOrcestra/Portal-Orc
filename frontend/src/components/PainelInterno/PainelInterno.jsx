@@ -8,8 +8,9 @@ const NAV_ITEMS = [
   { key: 'planos-acao', label: 'Planos de ação' },
 ];
 
-// Planos de ação (UC-18+) isn't built yet - only these three are wired.
-const ENABLED_KEYS = new Set(['mvv', 'golden-circle', 'planejamento']);
+// MVV/Golden Circle (UC-14) and Planos de ação (UC-18+) aren't built on this
+// branch yet - only planejamento is wired.
+const ENABLED_KEYS = new Set(['planejamento']);
 
 export default function PainelInterno({ active, onSelect }) {
   return (
