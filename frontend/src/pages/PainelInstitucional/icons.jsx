@@ -1,4 +1,5 @@
-// Small line-style icons used across the Painel Institucional page (MVV + Golden Circle).
+// Small line-style icons used across the Painel Institucional page (MVV,
+// Golden Circle and Planejamento Estratégico).
 // Kept local to this page since they are not reused elsewhere yet.
 
 const base = {
@@ -55,3 +56,30 @@ export const EditIcon = (props) => (
 );
 
 export const CompassIcon = TargetIcon;
+
+export const DocumentIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M6.5 3.5h8L19 8v12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z" />
+    <path d="M14 3.5V8h5" />
+    <path d="M8.5 12.5h7M8.5 15.8h7M8.5 19h4.5" />
+  </svg>
+);
+
+export const GearIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <circle cx="12" cy="12" r="3" />
+    <path d="M12 3.5v2.1M12 18.4v2.1M20.5 12h-2.1M5.6 12H3.5M17.7 6.3l-1.5 1.5M7.8 16.2l-1.5 1.5M17.7 17.7l-1.5-1.5M7.8 7.8 6.3 6.3" />
+  </svg>
+);
+
+export const ChevronLeftIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M15 5.5 8.5 12l6.5 6.5" />
+  </svg>
+);
+
+export const ChevronRightIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M9 5.5 15.5 12 9 18.5" />
+  </svg>
+);
