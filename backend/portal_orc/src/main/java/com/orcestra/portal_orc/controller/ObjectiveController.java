@@ -1,0 +1,41 @@
+package com.orcestra.portal_orc.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.orcestra.portal_orc.dto.ObjectiveRequestDto;
+import com.orcestra.portal_orc.dto.ObjectiveResponseDto;
+import com.orcestra.portal_orc.service.ObjectiveService;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
+@RestController 
+@RequiredArgsConstructor
+@Validated 
+@RequestMapping("/v1/objective")
+public class ObjectiveController {
+    
+    private final ObjectiveService objectiveService;
+
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createObjective(@Valid @RequestBody ObjectiveRequestDto objectiveRequestDto) {
+        objectiveService.createObjective(objectiveRequestDto);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<ObjectiveResponseDto> getAllObjective() {
+        return objectiveService.getAllObjective();
+    }
+
+}
