@@ -18,4 +18,4 @@ jobs:
       run: docker build -t portal-orc-test ./frontend
     
     - name: Testar Build do Container Docker Back-End
-      run: docker build -t portal-orc-test ./backend
+      run: docker build -t portal-orc-test ./backend/portal_orc
