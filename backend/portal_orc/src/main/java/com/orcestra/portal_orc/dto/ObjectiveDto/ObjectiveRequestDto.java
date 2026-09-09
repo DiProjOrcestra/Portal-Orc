@@ -1,4 +1,5 @@
-package com.orcestra.portal_orc.dto;
+package com.orcestra.portal_orc.dto.ObjectiveDto;
+
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,6 @@ import lombok.Setter;
 @Setter 
 public class ObjectiveRequestDto {
     
-    @NotBlank(message = "Esse campo não pode ser vazio")
+    @NotBlank(message = "O campo descrição não pode ser vazio")
     private String description;
 }

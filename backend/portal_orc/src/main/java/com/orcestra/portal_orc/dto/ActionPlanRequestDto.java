@@ -17,7 +17,6 @@ import lombok.Setter;
 @Setter
 public class ActionPlanRequestDto {
     
-    private Integer objectiveId;
     private String name;
 
     @JsonFormat(pattern = "dd-MM-yyyy")
