@@ -38,7 +38,11 @@ export default function PlanoDeAcao() {
         {PLANO_ACAO_DATA.map((diretoria) => (
           <article key={diretoria.directorate} className={`pa-card ${diretoria.capa ? 'pa-card--capa' : ''}`}>
             {diretoria.capa && (
-              <div className="pa-card__capa" style={{ backgroundImage: `url(${diretoria.capa})` }} aria-hidden="true" />
+              <div
+                className="pa-card__capa"
+                style={{ backgroundImage: `url(${diretoria.capa})`, '--pa-capa-ratio': diretoria.capaRatio }}
+                aria-hidden="true"
+              />
             )}
 
             <div className="pa-card__inner">

@@ -90,10 +90,12 @@
    edge-to-edge no topo do card. As imagens usadas aqui já são exportadas
    direto do node do Figma (não a foto crua), então já vêm com o efeito de
    opacidade/esmaecimento aplicado - por isso NÃO tem gradiente extra de CSS
-   aqui em cima, senão escureceria duas vezes. Altura aproximada; o Figma
-   varia entre ~380px e ~430px por card, sem um valor único consistente. */
+   aqui em cima, senão escureceria duas vezes.
+   A proporção (aspect-ratio) vem de cada diretoria via --pa-capa-ratio,
+   porque cada foto no Figma tem uma proporção diferente (782x430, 784x337,
+   782x380, 784x413) - uma altura fixa igual pra todas distorcia o recorte. */
 .pa-card--capa .pa-card__capa {
-  height: 240px;
+  aspect-ratio: var(--pa-capa-ratio, 16 / 9);
   background-size: cover;
   background-position: center;
 }

@@ -92,6 +92,7 @@ export const PLANO_ACAO_DATA = [
     directorate: 'Diretoria de Comunicações e Marketing',
     objetivo: 1,
     capa: '/planos-de-acao/comunicacoes.png',
+    capaRatio: '782 / 430',
     planos: [
       { id: 3, prazo: '14/08/2026', status: 'concluido', subtarefas: SUBTAREFAS_MOCK },
       { id: 4, prazo: '14/08/2026', status: 'andamento', subtarefas: SUBTAREFAS_MOCK },
@@ -101,6 +102,7 @@ export const PLANO_ACAO_DATA = [
     directorate: 'Diretoria de Negócios',
     objetivo: 1,
     capa: '/planos-de-acao/negocios.png',
+    capaRatio: '784 / 337',
     planos: [
       { id: 5, prazo: '14/08/2026', status: 'nao-concluido', subtarefas: SUBTAREFAS_MOCK },
       { id: 6, prazo: '14/08/2026', status: 'andamento', subtarefas: SUBTAREFAS_MOCK },
@@ -110,6 +112,7 @@ export const PLANO_ACAO_DATA = [
     directorate: 'Diretoria de Operações',
     objetivo: 1,
     capa: '/planos-de-acao/operacoes.png',
+    capaRatio: '782 / 380',
     planos: [
       { id: 7, prazo: '14/08/2026', status: 'andamento', subtarefas: SUBTAREFAS_MOCK },
       { id: 8, prazo: '14/08/2026', status: 'concluido', subtarefas: SUBTAREFAS_MOCK },
@@ -119,6 +122,7 @@ export const PLANO_ACAO_DATA = [
     directorate: 'Diretoria de Projetos',
     objetivo: 1,
     capa: '/planos-de-acao/projetos.png',
+    capaRatio: '784 / 413',
     planos: [
       { id: 9, prazo: '14/08/2026', status: 'concluido', subtarefas: SUBTAREFAS_MOCK },
       { id: 10, prazo: '14/08/2026', status: 'andamento', subtarefas: SUBTAREFAS_MOCK },
