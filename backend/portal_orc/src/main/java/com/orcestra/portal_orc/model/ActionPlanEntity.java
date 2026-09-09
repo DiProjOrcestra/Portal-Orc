@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.orcestra.portal_orc.dto.ActionPlanRequestDto;
+import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanRequestDto;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

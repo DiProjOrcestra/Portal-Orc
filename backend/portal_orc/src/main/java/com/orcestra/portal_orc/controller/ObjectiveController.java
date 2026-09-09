@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.orcestra.portal_orc.dto.ActionPlanRequestDto;    
+import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanRequestDto;
 import com.orcestra.portal_orc.dto.ObjectiveDto.ObjectiveRequestDto;
 import com.orcestra.portal_orc.dto.ObjectiveDto.ObjectiveResponseDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
