@@ -23,12 +23,16 @@ export const GOLDEN_CIRCLE_DATA = [
 const KR_TEXT =
   'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.';
 
+// Decorative-only extras for each objetivo (progress, deadline, key results):
+// com.orcestra.portal_orc.model.ObjectiveEntity only stores an id and a
+// description, so this data isn't persisted anywhere yet - it's matched to
+// the real objectives (fetched from /v1/objective) by list position, purely
+// to keep the existing card/calendar design filled in.
 export const PLANEJAMENTO_DATA = [
   {
     numero: 1,
     progresso: 50,
     prazo: 7,
-    descricao: KR_TEXT,
     resultadosChave: [
       { label: 'KR 1', texto: KR_TEXT },
       { label: 'KR 2', texto: KR_TEXT },
@@ -40,7 +44,6 @@ export const PLANEJAMENTO_DATA = [
     numero: 2,
     progresso: 35,
     prazo: 15,
-    descricao: KR_TEXT,
     resultadosChave: [
       { label: 'KR 1', texto: KR_TEXT },
       { label: 'KR 3', texto: KR_TEXT },
@@ -50,7 +53,6 @@ export const PLANEJAMENTO_DATA = [
     numero: 3,
     progresso: 20,
     prazo: 28,
-    descricao: KR_TEXT,
     resultadosChave: [{ label: 'KR 3', texto: KR_TEXT }],
   },
 ];

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SectionHeader from '../SectionHeader';
 import EmptyState from '../EmptyState';
 import { DocumentIcon, GearIcon, ChevronLeftIcon, ChevronRightIcon, EditIcon } from '../icons';
 import { PLANEJAMENTO_DATA, CICLO_TATICO_DATA } from '../mockData';
+import { getObjectives, updateObjective } from '../../../services/objectiveService';
 import './PlanejamentoEstrategico.css';
 
 const MONTH_NAMES = [
@@ -28,6 +29,23 @@ function getMonthGrid(year, month) {
   return cells;
 }
 
+// Fills in the decorative-only fields (progress, deadline, KRs) that live in
+// mockData.js, matching each real objective (id + description from the API)
+// to a slot by list position - see the comment on PLANEJAMENTO_DATA.
+function mergeWithMockExtras(objectives) {
+  return objectives.map((objective, index) => {
+    const extra = PLANEJAMENTO_DATA[index] ?? {};
+    return {
+      id: objective.id,
+      numero: index + 1,
+      descricao: objective.description,
+      progresso: extra.progresso ?? 0,
+      prazo: extra.prazo ?? null,
+      resultadosChave: extra.resultadosChave ?? [],
+    };
+  });
+}
+
 export default function PlanejamentoEstrategico() {
   // The mock objetivo deadlines (day-of-month only) are anchored to whichever
   // month the calendar opens on, so they're visible right away - navigating
@@ -39,7 +57,49 @@ export default function PlanejamentoEstrategico() {
   });
   const [viewDate, setViewDate] = useState(() => new Date());
 
-  if (!PLANEJAMENTO_DATA || PLANEJAMENTO_DATA.length === 0) {
+  const [objectives, setObjectives] = useState(null);
+  const [loadError, setLoadError] = useState(null);
+
+  const [editingId, setEditingId] = useState(null);
+  const [draftText, setDraftText] = useState('');
+  const [editError, setEditError] = useState(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    getObjectives()
+      .then((data) => {
+        if (!cancelled) setObjectives(data ?? []);
+      })
+      .catch((err) => {
+        if (!cancelled) setLoadError(err.message);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (loadError) {
+    return (
+      <section>
+        <SectionHeader icon={DocumentIcon} title="Planejamento estratégico" showEdit={false} />
+        <EmptyState message={loadError} />
+      </section>
+    );
+  }
+
+  if (objectives === null) {
+    return (
+      <section>
+        <SectionHeader icon={DocumentIcon} title="Planejamento estratégico" showEdit={false} />
+        <EmptyState message="Carregando conteúdo..." />
+      </section>
+    );
+  }
+
+  if (objectives.length === 0) {
     return (
       <section>
         <SectionHeader icon={DocumentIcon} title="Planejamento estratégico" showEdit={false} />
@@ -48,65 +108,130 @@ export default function PlanejamentoEstrategico() {
     );
   }
 
+  const objetivos = mergeWithMockExtras(objectives);
+
   const [ano, semestre] = CICLO_TATICO_DATA.ciclo.split('.');
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
   const isReferenceMonth = year === referenceMonth.year && month === referenceMonth.month;
   const objetivoPorPrazo = isReferenceMonth
-    ? new Map(PLANEJAMENTO_DATA.filter((o) => o.prazo).map((o) => [o.prazo, o]))
+    ? new Map(objetivos.filter((o) => o.prazo).map((o) => [o.prazo, o]))
     : new Map();
   const cells = getMonthGrid(year, month);
 
   const goToPrevMonth = () => setViewDate((d) => new Date(d.getFullYear(), d.getMonth() - 1, 1));
   const goToNextMonth = () => setViewDate((d) => new Date(d.getFullYear(), d.getMonth() + 1, 1));
 
+  const startEditing = (objetivo) => {
+    setEditingId(objetivo.id);
+    setDraftText(objetivo.descricao);
+    setEditError(null);
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setDraftText('');
+    setEditError(null);
+  };
+
+  // FE-E1: an objetivo's descrição is required - block the save and point
+  // out the problem instead of sending it to the backend.
+  const saveEditing = async (id) => {
+    const trimmed = draftText.trim();
+    if (!trimmed) {
+      setEditError('Esse campo não pode ser vazio.');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const updated = await updateObjective(id, trimmed);
+      setObjectives((prev) => prev.map((o) => (o.id === id ? updated : o)));
+      cancelEditing();
+    } catch (err) {
+      setEditError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <section>
       <SectionHeader icon={DocumentIcon} title="Planejamento estratégico" showEdit={false} />
 
       <div className="pe-objetivos">
-        {PLANEJAMENTO_DATA.map((objetivo) => (
-          <article key={objetivo.numero} className="pe-card">
-            <div className="pe-card__header">
-              <span className="pe-card__badge">
-                <GearIcon />
-                Objetivo {objetivo.numero}:
-              </span>
-              <div className="pe-progress">
-                <div className="pe-progress__track">
-                  <div className="pe-progress__fill" style={{ width: `${objetivo.progresso}%` }} />
+        {objetivos.map((objetivo) => {
+          const isEditing = editingId === objetivo.id;
+
+          return (
+            <article key={objetivo.id} className="pe-card">
+              <div className="pe-card__header">
+                <span className="pe-card__badge">
+                  <GearIcon />
+                  Objetivo {objetivo.numero}:
+                </span>
+                <div className="pe-progress">
+                  <div className="pe-progress__track">
+                    <div className="pe-progress__fill" style={{ width: `${objetivo.progresso}%` }} />
+                  </div>
+                  <span className="pe-progress__label">{objetivo.progresso}%</span>
                 </div>
-                <span className="pe-progress__label">{objetivo.progresso}%</span>
+                {!isEditing && (
+                  <button
+                    type="button"
+                    className="pe-card__edit"
+                    aria-label={`Editar Objetivo ${objetivo.numero}`}
+                    onClick={() => startEditing(objetivo)}
+                    disabled={editingId !== null}
+                  >
+                    <EditIcon />
+                  </button>
+                )}
               </div>
-              <button
-                type="button"
-                className="pe-card__edit"
-                aria-label={`Editar Objetivo ${objetivo.numero}`}
-                title="Edição disponível em breve"
-                disabled
-              >
-                <EditIcon />
-              </button>
-            </div>
 
-            <p className="pe-card__text">{objetivo.descricao}</p>
+              {isEditing ? (
+                <div className="pe-card__edit-form">
+                  <textarea
+                    className="pe-card__textarea"
+                    value={draftText}
+                    onChange={(e) => {
+                      setDraftText(e.target.value);
+                      setEditError(null);
+                    }}
+                    rows={4}
+                    autoFocus
+                  />
+                  {editError && <p className="pe-card__edit-error">{editError}</p>}
+                  <div className="pe-card__edit-actions">
+                    <button type="button" className="pe-btn pe-btn--ghost" onClick={cancelEditing} disabled={saving}>
+                      Cancelar
+                    </button>
+                    <button type="button" className="pe-btn" onClick={() => saveEditing(objetivo.id)} disabled={saving}>
+                      {saving ? 'Salvando...' : 'Salvar'}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <p className="pe-card__text">{objetivo.descricao}</p>
+              )}
 
-            <ul className="pe-kr-list">
-              {objetivo.resultadosChave.map((kr) => (
-                <li key={kr.label} className="pe-kr">
-                  <span className="pe-kr__badge">{kr.label}</span>
-                  <p className="pe-kr__text">{kr.texto}</p>
-                </li>
-              ))}
-            </ul>
+              <ul className="pe-kr-list">
+                {objetivo.resultadosChave.map((kr) => (
+                  <li key={kr.label} className="pe-kr">
+                    <span className="pe-kr__badge">{kr.label}</span>
+                    <p className="pe-kr__text">{kr.texto}</p>
+                  </li>
+                ))}
+              </ul>
 
-            <div className="pe-card__actions">
-              <button type="button" className="pe-btn">
-                Plano de ação
-              </button>
-            </div>
-          </article>
-        ))}
+              <div className="pe-card__actions">
+                <button type="button" className="pe-btn">
+                  Plano de ação
+                </button>
+              </div>
+            </article>
+          );
+        })}
       </div>
 
       <h2 className="pe-ciclo__title">
