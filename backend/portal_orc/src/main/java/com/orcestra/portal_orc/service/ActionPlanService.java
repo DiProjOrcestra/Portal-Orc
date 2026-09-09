@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.orcestra.portal_orc.dto.ActionPlanRequestDto;
+import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanRequestDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.model.ActionPlanEntity;
