@@ -1,4 +1,4 @@
-package com.orcestra.portal_orc.dto;
+package com.orcestra.portal_orc.dto.ObjectiveDto;
 
 import com.orcestra.portal_orc.model.ObjectiveEntity;
 

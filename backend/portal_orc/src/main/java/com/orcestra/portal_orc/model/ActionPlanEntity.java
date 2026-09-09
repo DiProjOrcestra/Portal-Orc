@@ -42,9 +42,6 @@ public class ActionPlanEntity {
     @Column(name = "proridade")
     private String priority;
     
-    @Column(name = "objetivo_id")
-    private Integer objectiveId;
-    
     @Column(name = "prazo")
     private LocalDate term;
 
@@ -59,9 +56,12 @@ public class ActionPlanEntity {
     @JoinColumn(name = "diretoria_id")
     private DirectorateEntity directorate; 
 
+    @ManyToOne
+    @JoinColumn(name = "objetivo_id")
+    private ObjectiveEntity objective;
+
     public ActionPlanEntity(ActionPlanRequestDto actionPlanRequestDto) {
         this.name = actionPlanRequestDto.getName();
-        this.objectiveId = actionPlanRequestDto.getObjectiveId();
         this.priority = actionPlanRequestDto.getPriority();
         this.progress = actionPlanRequestDto.getProgress();
         this.term = actionPlanRequestDto.getTerm();
