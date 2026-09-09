@@ -35,76 +35,88 @@ export default function PlanoDeAcao() {
       </div>
 
       <div className="pa-diretorias">
-        {PLANO_ACAO_DATA.map((diretoria) => (
-          <article key={diretoria.directorate} className={`pa-card ${diretoria.capa ? 'pa-card--capa' : ''}`}>
-            {diretoria.capa && (
-              <div
-                className="pa-card__capa"
-                style={{ backgroundImage: `url(${diretoria.capa})`, '--pa-capa-ratio': diretoria.capaRatio }}
-                aria-hidden="true"
-              />
-            )}
-
-            <div className="pa-card__inner">
-              <div className="pa-card__header">
-                <span className="pa-card__badge">
-                  <CampaignIcon />
-                  {diretoria.directorate}
-                </span>
-                <div className="pa-card__objetivo-group">
-                  <span className="pa-card__objetivo">Objetivo {diretoria.objetivo}</span>
-                  <button
-                    type="button"
-                    className="pa-card__edit"
-                    aria-label="Editar diretoria"
-                    title="Edição disponível em breve"
-                    disabled
-                  >
-                    <EditIcon />
-                  </button>
-                </div>
-              </div>
-
-              <div className="pa-planos">
-                {diretoria.planos.map((plano) => (
-                  <div key={plano.id} className="pa-plano">
-                    <div className="pa-plano__top">
-                      <span className="pa-plano__prazo">Prazo: {plano.prazo}</span>
-                      <span className={`pa-status pa-status--${plano.status}`}>
-                        {STATUS_LABEL[plano.status]}
-                        <span className="pa-status__dot" />
-                      </span>
-                    </div>
-
-                    {/* Fiel ao Figma: "Atividade" e "Subtarefas:" são dois
-                        rótulos estáticos empilhados, sem nenhum texto de
-                        descrição entre eles - o conteúdo real começa direto
-                        na lista abaixo. */}
-                    <div className="pa-plano__bloco">
-                      <h3 className="pa-plano__atividade">Atividade</h3>
-                      <h4 className="pa-plano__subtarefas-titulo">Subtarefas:</h4>
-                      <ul className="pa-subtarefas">
-                        {plano.subtarefas.map((tarefa) => (
-                          <li key={tarefa}>
-                            {/* Quadrado decorativo, não é um checkbox
-                                interativo - o design não distingue subtarefa
-                                concluída de pendente aqui. */}
-                            <span className="pa-subtarefa__box" aria-hidden="true" />
-                            <span>{tarefa}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* O Figma só mostra o rótulo "Responsáveis:", sem nomes
-                        preenchidos - mantido vazio de propósito. */}
-                    <div className="pa-plano__responsaveis">Responsáveis:</div>
-                  </div>
-                ))}
+        {PLANO_ACAO_DATA.map((diretoria) => {
+          const header = (
+            <div className="pa-card__header">
+              <span className="pa-card__badge">
+                <CampaignIcon />
+                {diretoria.directorate}
+              </span>
+              <div className="pa-card__objetivo-group">
+                <span className="pa-card__objetivo">Objetivo {diretoria.objetivo}</span>
+                <button
+                  type="button"
+                  className="pa-card__edit"
+                  aria-label="Editar diretoria"
+                  title="Edição disponível em breve"
+                  disabled
+                >
+                  <EditIcon />
+                </button>
               </div>
             </div>
-          </article>
-        ))}
+          );
+
+          return (
+            <article key={diretoria.directorate} className={`pa-card ${diretoria.capa ? 'pa-card--capa' : ''}`}>
+              {diretoria.capa && (
+                <div
+                  className="pa-card__capa"
+                  style={{ backgroundImage: `url(${diretoria.capa})`, '--pa-capa-ratio': diretoria.capaRatio }}
+                  aria-hidden="true"
+                >
+                  {/* Cabeçalho sobreposto no topo da foto, igual ao Figma -
+                      só quando a diretoria tem foto de capa. */}
+                  {header}
+                </div>
+              )}
+
+              <div className="pa-card__inner">
+                {/* Sem foto (Diretoria Executiva) - cabeçalho fica na posição
+                    normal, no topo do card. */}
+                {!diretoria.capa && header}
+
+                <div className="pa-planos">
+                  {diretoria.planos.map((plano) => (
+                    <div key={plano.id} className="pa-plano">
+                      <div className="pa-plano__top">
+                        <span className="pa-plano__prazo">Prazo: {plano.prazo}</span>
+                        <span className={`pa-status pa-status--${plano.status}`}>
+                          {STATUS_LABEL[plano.status]}
+                          <span className="pa-status__dot" />
+                        </span>
+                      </div>
+
+                      {/* Fiel ao Figma: "Atividade" e "Subtarefas:" são dois
+                          rótulos estáticos empilhados, sem nenhum texto de
+                          descrição entre eles - o conteúdo real começa direto
+                          na lista abaixo. */}
+                      <div className="pa-plano__bloco">
+                        <h3 className="pa-plano__atividade">Atividade</h3>
+                        <h4 className="pa-plano__subtarefas-titulo">Subtarefas:</h4>
+                        <ul className="pa-subtarefas">
+                          {plano.subtarefas.map((tarefa) => (
+                            <li key={tarefa}>
+                              {/* Quadrado decorativo, não é um checkbox
+                                  interativo - o design não distingue subtarefa
+                                  concluída de pendente aqui. */}
+                              <span className="pa-subtarefa__box" aria-hidden="true" />
+                              <span>{tarefa}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* O Figma só mostra o rótulo "Responsáveis:", sem nomes
+                          preenchidos - mantido vazio de propósito. */}
+                      <div className="pa-plano__responsaveis">Responsáveis:</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

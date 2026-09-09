@@ -95,13 +95,10 @@
    porque cada foto no Figma tem uma proporção diferente (782x430, 784x337,
    782x380, 784x413) - uma altura fixa igual pra todas distorcia o recorte. */
 .pa-card--capa .pa-card__capa {
+  position: relative;
   aspect-ratio: var(--pa-capa-ratio, 16 / 9);
   background-size: cover;
   background-position: center;
-}
-
-.pa-card--capa .pa-card__inner {
-  margin-top: -64px;
 }
 
 .pa-card__header {
@@ -111,6 +108,17 @@
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 20px;
+}
+
+/* Quando o card tem foto, o cabeçalho vira um overlay fixo no topo da
+   imagem (igual ao Figma), em vez de empurrar o conteúdo pra baixo. */
+.pa-card--capa .pa-card__capa .pa-card__header {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  margin-bottom: 0;
+  z-index: 1;
 }
 
 .pa-card__badge {
@@ -143,7 +151,7 @@
 .pa-card__objetivo {
   padding: 4px 16px;
   border-radius: 24px;
-  background: linear-gradient(101deg, var(--off-white) 28%, var(--green-400) 29%, #206608 100%);
+  background: linear-gradient(135deg, var(--green-400) 0%, #206608 100%);
   font-family: var(--font-body);
   font-size: 16px;
   color: var(--off-white);
