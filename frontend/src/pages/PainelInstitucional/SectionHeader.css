@@ -21,6 +21,12 @@
   color: var(--green-400);
 }
 
+.section-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .section-header__edit {
   display: flex;
   align-items: center;

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import SectionHeader from '../SectionHeader';
 import EmptyState from '../EmptyState';
-import { DocumentIcon, GearIcon, ChevronLeftIcon, ChevronRightIcon, EditIcon } from '../icons';
+import { DocumentIcon, GearIcon, TargetIcon, ChevronLeftIcon, ChevronRightIcon, EditIcon } from '../icons';
 import { PLANEJAMENTO_DATA, CICLO_TATICO_DATA } from '../mockData';
-import { getObjectives, updateObjective } from '../../../services/objectiveService';
+import { getObjectives, createObjective, updateObjective } from '../../../services/objectiveService';
 import './PlanejamentoEstrategico.css';
 
 const MONTH_NAMES = [
@@ -29,12 +29,38 @@ function getMonthGrid(year, month) {
   return cells;
 }
 
-// Fills in the decorative-only fields (progress, deadline, KRs) that live in
-// mockData.js, matching each real objective (id + description from the API)
-// to a slot by list position - see the comment on PLANEJAMENTO_DATA.
+// Decorative-only fields (progress, deadline, KRs) aren't part of the
+// backend's Objective model (see mockData.js), so KRs typed in while
+// creating an objetivo are kept here instead, keyed by the real id - the
+// only way to have them survive a reload without touching the backend.
+const EXTRAS_STORAGE_KEY = 'portal-orc:planejamento-objetivo-extras';
+
+function loadStoredExtras() {
+  try {
+    const raw = localStorage.getItem(EXTRAS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveStoredExtra(id, extra) {
+  try {
+    const all = loadStoredExtras();
+    all[id] = extra;
+    localStorage.setItem(EXTRAS_STORAGE_KEY, JSON.stringify(all));
+  } catch {
+    // localStorage unavailable (private mode, etc.) - the KRs just won't
+    // survive a reload, which is fine for this decorative-only data.
+  }
+}
+
+// Falls back to the static mockData slots (by list position) for objetivos
+// created before this storage existed.
 function mergeWithMockExtras(objectives) {
+  const stored = loadStoredExtras();
   return objectives.map((objective, index) => {
-    const extra = PLANEJAMENTO_DATA[index] ?? {};
+    const extra = stored[objective.id] ?? PLANEJAMENTO_DATA[index] ?? {};
     return {
       id: objective.id,
       numero: index + 1,
@@ -65,6 +91,12 @@ export default function PlanejamentoEstrategico() {
   const [editError, setEditError] = useState(null);
   const [saving, setSaving] = useState(false);
 
+  const [creating, setCreating] = useState(false);
+  const [newText, setNewText] = useState('');
+  const [newKrs, setNewKrs] = useState([]);
+  const [createError, setCreateError] = useState(null);
+  const [submittingCreate, setSubmittingCreate] = useState(false);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -81,10 +113,149 @@ export default function PlanejamentoEstrategico() {
     };
   }, []);
 
+  const startCreating = () => {
+    setCreating(true);
+    setNewText('');
+    setNewKrs(['']);
+    setCreateError(null);
+    setEditingId(null);
+  };
+
+  const cancelCreating = () => {
+    setCreating(false);
+    setNewText('');
+    setNewKrs([]);
+    setCreateError(null);
+  };
+
+  const addKrField = () => setNewKrs((prev) => [...prev, '']);
+  const updateKrField = (index, value) =>
+    setNewKrs((prev) => prev.map((kr, i) => (i === index ? value : kr)));
+  const removeKrField = (index) => setNewKrs((prev) => prev.filter((_, i) => i !== index));
+
+  // FE-E1 applies to novos objetivos too - an empty descrição can't be sent,
+  // and every objetivo needs at least one non-blank KR.
+  const submitCreate = async () => {
+    const trimmed = newText.trim();
+    if (!trimmed) {
+      setCreateError('Esse campo não pode ser vazio.');
+      return;
+    }
+
+    const trimmedKrs = newKrs.map((texto) => texto.trim());
+    if (trimmedKrs.length === 0) {
+      setCreateError('Adicione ao menos um resultado-chave (KR).');
+      return;
+    }
+    if (trimmedKrs.some((texto) => !texto)) {
+      setCreateError('Nenhum resultado-chave (KR) pode ficar vazio.');
+      return;
+    }
+
+    setSubmittingCreate(true);
+    try {
+      await createObjective(trimmed);
+      // The create endpoint returns no body, so the freshly-created id is
+      // only known by asking the list again - it's the highest id back.
+      const refreshed = await getObjectives();
+      const list = refreshed ?? [];
+      setObjectives(list);
+
+      const created = list.reduce((max, o) => (max === null || o.id > max.id ? o : max), null);
+      if (created) {
+        const resultadosChave = trimmedKrs.map((texto, i) => ({ label: `KR ${i + 1}`, texto }));
+        saveStoredExtra(created.id, { progresso: 0, prazo: null, resultadosChave });
+      }
+
+      cancelCreating();
+    } catch (err) {
+      setCreateError(err.message);
+    } finally {
+      setSubmittingCreate(false);
+    }
+  };
+
+  const addButton = (
+    <button
+      type="button"
+      className="pe-add-btn"
+      onClick={startCreating}
+      disabled={creating || editingId !== null || objectives === null || Boolean(loadError)}
+    >
+      <TargetIcon />
+      Adicionar objetivo
+    </button>
+  );
+
+  const createPanel = creating && (
+    <article className="pe-card">
+      <div className="pe-card__header">
+        <span className="pe-card__badge">
+          <GearIcon />
+          Novo objetivo:
+        </span>
+      </div>
+      <div className="pe-card__edit-form">
+        <textarea
+          className="pe-card__textarea"
+          value={newText}
+          onChange={(e) => {
+            setNewText(e.target.value);
+            setCreateError(null);
+          }}
+          rows={4}
+          placeholder="Descreva o novo objetivo..."
+          autoFocus
+        />
+        {createError && <p className="pe-card__edit-error">{createError}</p>}
+
+        <p className="pe-card__edit-label">Resultados-chave (ao menos um é obrigatório)</p>
+        <div className="pe-kr-form-list">
+          {newKrs.map((texto, index) => (
+            <div key={index} className="pe-kr-form-row">
+              <span className="pe-kr__badge">KR {index + 1}</span>
+              <textarea
+                className="pe-card__textarea pe-kr-form-textarea"
+                value={texto}
+                onChange={(e) => {
+                  updateKrField(index, e.target.value);
+                  setCreateError(null);
+                }}
+                rows={2}
+                placeholder="Descreva o resultado-chave..."
+              />
+              <button
+                type="button"
+                className="pe-kr-form-remove"
+                aria-label={`Remover KR ${index + 1}`}
+                onClick={() => removeKrField(index)}
+                disabled={newKrs.length === 1}
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+        <button type="button" className="pe-btn pe-btn--ghost pe-kr-add-btn" onClick={addKrField}>
+          + Adicionar KR
+        </button>
+
+        <div className="pe-card__edit-actions">
+          <button type="button" className="pe-btn pe-btn--ghost" onClick={cancelCreating} disabled={submittingCreate}>
+            Cancelar
+          </button>
+          <button type="button" className="pe-btn" onClick={submitCreate} disabled={submittingCreate}>
+            {submittingCreate ? 'Salvando...' : 'Adicionar'}
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+
   if (loadError) {
     return (
       <section>
-        <SectionHeader icon={DocumentIcon} title="Planejamento estratégico" showEdit={false} />
+        <SectionHeader icon={DocumentIcon} title="Planejamento estratégico" showEdit={false} action={addButton} />
         <EmptyState message={loadError} />
       </section>
     );
@@ -93,7 +264,7 @@ export default function PlanejamentoEstrategico() {
   if (objectives === null) {
     return (
       <section>
-        <SectionHeader icon={DocumentIcon} title="Planejamento estratégico" showEdit={false} />
+        <SectionHeader icon={DocumentIcon} title="Planejamento estratégico" showEdit={false} action={addButton} />
         <EmptyState message="Carregando conteúdo..." />
       </section>
     );
@@ -102,8 +273,10 @@ export default function PlanejamentoEstrategico() {
   if (objectives.length === 0) {
     return (
       <section>
-        <SectionHeader icon={DocumentIcon} title="Planejamento estratégico" showEdit={false} />
-        <EmptyState message="O conteúdo do Planejamento Estratégico e dos Objetivos do Ano ainda não foi configurado." />
+        <SectionHeader icon={DocumentIcon} title="Planejamento estratégico" showEdit={false} action={addButton} />
+        {creating ? <div className="pe-objetivos">{createPanel}</div> : (
+          <EmptyState message="O conteúdo do Planejamento Estratégico e dos Objetivos do Ano ainda não foi configurado." />
+        )}
       </section>
     );
   }
@@ -157,9 +330,10 @@ export default function PlanejamentoEstrategico() {
 
   return (
     <section>
-      <SectionHeader icon={DocumentIcon} title="Planejamento estratégico" showEdit={false} />
+      <SectionHeader icon={DocumentIcon} title="Planejamento estratégico" showEdit={false} action={addButton} />
 
       <div className="pe-objetivos">
+        {createPanel}
         {objetivos.map((objetivo) => {
           const isEditing = editingId === objetivo.id;
 
@@ -182,7 +356,7 @@ export default function PlanejamentoEstrategico() {
                     className="pe-card__edit"
                     aria-label={`Editar Objetivo ${objetivo.numero}`}
                     onClick={() => startEditing(objetivo)}
-                    disabled={editingId !== null}
+                    disabled={editingId !== null || creating}
                   >
                     <EditIcon />
                   </button>
