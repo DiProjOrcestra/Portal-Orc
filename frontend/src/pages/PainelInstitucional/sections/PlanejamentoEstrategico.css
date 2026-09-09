@@ -289,11 +289,90 @@
   cursor: default;
 }
 
-.pe-card__delete-confirm-text {
+.pe-modal-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(3px);
+  animation: pe-modal-fade-in 0.15s ease;
+}
+
+.pe-modal {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 28px 28px;
+  border-radius: 24px;
+  background: #141414;
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(255, 107, 107, 0.12);
+  text-align: center;
+  animation: pe-modal-scale-in 0.18s ease;
+}
+
+.pe-modal__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: rgba(255, 107, 107, 0.14);
+  border: 1px solid rgba(255, 107, 107, 0.4);
+  color: var(--danger);
+}
+
+.pe-modal__icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.pe-modal__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--off-white);
+  margin: 0 0 10px;
+}
+
+.pe-modal__message {
   font-size: 14.5px;
   line-height: 1.6;
-  color: var(--text);
+  color: var(--text-muted);
   margin: 0;
+}
+
+.pe-modal__actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+@keyframes pe-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pe-modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .pe-btn--ghost {

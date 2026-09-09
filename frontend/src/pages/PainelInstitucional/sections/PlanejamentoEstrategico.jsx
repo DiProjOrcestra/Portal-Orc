@@ -196,6 +196,19 @@ export default function PlanejamentoEstrategico() {
     };
   }, []);
 
+  // Lets Esc close the delete confirmation popup, same as clicking outside it.
+  useEffect(() => {
+    if (deletingId === null) return undefined;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setDeletingId(null);
+        setDeleteError(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [deletingId]);
+
   const startCreating = () => {
     setCreating(true);
     setNewText('');
@@ -353,6 +366,7 @@ export default function PlanejamentoEstrategico() {
   }
 
   const objetivos = mergeWithMockExtras(objectives);
+  const deletingObjetivo = deletingId !== null ? objetivos.find((o) => o.id === deletingId) : null;
 
   const [ano, semestre] = CICLO_TATICO_DATA.ciclo.split('.');
   const year = viewDate.getFullYear();
@@ -498,76 +512,52 @@ export default function PlanejamentoEstrategico() {
 
               {isEditing ? (
                 <div className="pe-card__edit-form">
-                  {deletingId === objetivo.id ? (
-                    <>
-                      <p className="pe-card__delete-confirm-text">
-                        Tem certeza que deseja excluir o Objetivo {objetivo.numero}? Essa ação não pode ser desfeita.
-                      </p>
-                      {deleteError && <p className="pe-card__edit-error">{deleteError}</p>}
-                      <div className="pe-card__edit-actions">
-                        <button type="button" className="pe-btn pe-btn--ghost" onClick={cancelDeleting} disabled={deleting}>
-                          Cancelar
-                        </button>
-                        <button
-                          type="button"
-                          className="pe-btn pe-btn--danger"
-                          onClick={() => confirmDelete(objetivo.id)}
-                          disabled={deleting}
-                        >
-                          {deleting ? 'Excluindo...' : 'Excluir'}
-                        </button>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <ObjetivoFormFields
-                        descricao={draftText}
-                        onDescricaoChange={(value) => {
-                          setDraftText(value);
-                          setEditError(null);
-                        }}
-                        descricaoPlaceholder="Descreva o objetivo..."
-                        prazo={draftPrazo}
-                        onPrazoChange={(value) => {
-                          setDraftPrazo(value);
-                          setEditError(null);
-                        }}
-                        prazoFieldName={`objetivo-${objetivo.id}-prazo`}
-                        krs={draftKrs}
-                        onKrChange={(index, value) => {
-                          updateDraftKr(index, value);
-                          setEditError(null);
-                        }}
-                        onAddKr={addDraftKr}
-                        onRemoveKr={removeDraftKr}
-                      />
-                      {editError && <p className="pe-card__edit-error">{editError}</p>}
-                      <div className="pe-card__edit-toolbar">
-                        <button
-                          type="button"
-                          className="pe-card__delete"
-                          aria-label={`Excluir Objetivo ${objetivo.numero}`}
-                          onClick={() => startDeleting(objetivo)}
-                          disabled={saving}
-                        >
-                          <TrashIcon />
-                        </button>
-                        <div className="pe-card__edit-actions">
-                          <button type="button" className="pe-btn pe-btn--ghost" onClick={cancelEditing} disabled={saving}>
-                            Cancelar
-                          </button>
-                          <button
-                            type="button"
-                            className="pe-btn"
-                            onClick={() => saveEditing(objetivo.id, objetivo.progresso)}
-                            disabled={saving}
-                          >
-                            {saving ? 'Salvando...' : 'Salvar'}
-                          </button>
-                        </div>
-                      </div>
-                    </>
-                  )}
+                  <ObjetivoFormFields
+                    descricao={draftText}
+                    onDescricaoChange={(value) => {
+                      setDraftText(value);
+                      setEditError(null);
+                    }}
+                    descricaoPlaceholder="Descreva o objetivo..."
+                    prazo={draftPrazo}
+                    onPrazoChange={(value) => {
+                      setDraftPrazo(value);
+                      setEditError(null);
+                    }}
+                    prazoFieldName={`objetivo-${objetivo.id}-prazo`}
+                    krs={draftKrs}
+                    onKrChange={(index, value) => {
+                      updateDraftKr(index, value);
+                      setEditError(null);
+                    }}
+                    onAddKr={addDraftKr}
+                    onRemoveKr={removeDraftKr}
+                  />
+                  {editError && <p className="pe-card__edit-error">{editError}</p>}
+                  <div className="pe-card__edit-toolbar">
+                    <button
+                      type="button"
+                      className="pe-card__delete"
+                      aria-label={`Excluir Objetivo ${objetivo.numero}`}
+                      onClick={() => startDeleting(objetivo)}
+                      disabled={saving || deletingId !== null}
+                    >
+                      <TrashIcon />
+                    </button>
+                    <div className="pe-card__edit-actions">
+                      <button type="button" className="pe-btn pe-btn--ghost" onClick={cancelEditing} disabled={saving}>
+                        Cancelar
+                      </button>
+                      <button
+                        type="button"
+                        className="pe-btn"
+                        onClick={() => saveEditing(objetivo.id, objetivo.progresso)}
+                        disabled={saving}
+                      >
+                        {saving ? 'Salvando...' : 'Salvar'}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <p className="pe-card__text">{objetivo.descricao}</p>
@@ -593,6 +583,42 @@ export default function PlanejamentoEstrategico() {
           );
         })}
       </div>
+
+      {deletingObjetivo && (
+        <div className="pe-modal-scrim" onClick={cancelDeleting}>
+          <div
+            className="pe-modal"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="pe-delete-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="pe-modal__icon">
+              <TrashIcon />
+            </span>
+            <h2 id="pe-delete-modal-title" className="pe-modal__title">
+              Excluir Objetivo {deletingObjetivo.numero}?
+            </h2>
+            <p className="pe-modal__message">
+              Tem certeza que deseja excluir este objetivo? Essa ação não pode ser desfeita.
+            </p>
+            {deleteError && <p className="pe-card__edit-error">{deleteError}</p>}
+            <div className="pe-modal__actions">
+              <button type="button" className="pe-btn pe-btn--ghost" onClick={cancelDeleting} disabled={deleting} autoFocus>
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="pe-btn pe-btn--danger"
+                onClick={() => confirmDelete(deletingObjetivo.id)}
+                disabled={deleting}
+              >
+                {deleting ? 'Excluindo...' : 'Excluir'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <h2 className="pe-ciclo__title">
         Ciclo tático {ano}
