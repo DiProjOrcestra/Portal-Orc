@@ -30,6 +30,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.orcestra.portal_orc.config.TokenProvider;
 import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
+import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.TokenResponseDto;
 import com.orcestra.portal_orc.model.UserEntity;
 import com.orcestra.portal_orc.repository.RoleRepository;
@@ -100,7 +101,7 @@ class MfaServiceTest {
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
         doNothing().when(mailSender).sendEmail(any(), any(), any());
 
-        mfaServiceUnderTest.generateAndSendCode(loginRequest);
+        mfaServiceUnderTest.generateAndSendCode(user);
 
         assertEquals("codigo-hash", user.getMfaCode());
         assertEquals(0, user.getMfaAttempts());
@@ -121,7 +122,7 @@ class MfaServiceTest {
 
         assertThrows(
                 BadRequestException.class,
-                () -> mfaServiceUnderTest.generateAndSendCode(loginRequest));
+                () -> mfaServiceUnderTest.generateAndSendCode(user));
 
         verify(userRepository, never()).save(any(UserEntity.class));
         verify(mailSender, never()).sendEmail(any(), any(), any());
@@ -136,9 +137,7 @@ class MfaServiceTest {
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("0123", "codigo-hash")).thenReturn(true);
 
-        boolean result = mfaServiceUnderTest.validateCode(
-                loginRequest,
-                CodeRequestDto.builder().code("0123").build());
+        boolean result = mfaServiceUnderTest.validateCode(EMAIL,"0123");
 
         assertTrue(result);
         assertNull(user.getMfaCode());
@@ -156,9 +155,7 @@ class MfaServiceTest {
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("9999", "codigo-hash")).thenReturn(false);
 
-        boolean result = mfaServiceUnderTest.validateCode(
-                loginRequest,
-                CodeRequestDto.builder().code("9999").build());
+        boolean result = mfaServiceUnderTest.validateCode(EMAIL, "9999");
 
         assertFalse(result);
         assertEquals(2, user.getMfaAttempts());
@@ -174,9 +171,7 @@ class MfaServiceTest {
         user.setMfaAttempts(0);
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
 
-        boolean result = mfaServiceUnderTest.validateCode(
-                loginRequest,
-                CodeRequestDto.builder().code("0123").build());
+        boolean result = mfaServiceUnderTest.validateCode(EMAIL, "0123");
 
         assertFalse(result);
         assertEquals(0, user.getMfaAttempts());
@@ -192,9 +187,7 @@ class MfaServiceTest {
         user.setMfaAttempts(3);
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
 
-        boolean result = mfaServiceUnderTest.validateCode(
-                loginRequest,
-                CodeRequestDto.builder().code("0123").build());
+        boolean result = mfaServiceUnderTest.validateCode(EMAIL, "0123");
 
         assertFalse(result);
         verify(passwordEncoder, never()).matches(any(), any());
@@ -206,14 +199,14 @@ class MfaServiceTest {
     void deveDispararMfaDepoisDoLogin() throws Exception {
         ReflectionTestUtils.setField(authenticationService, "expirationTime", 900000L);
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
-        when(tokenProvider.gerarToken(authentication)).thenReturn("jwt-de-teste");
-        doNothing().when(mfaService).generateAndSendCode(loginRequest);
+        when(tokenProvider.gerarToken(user)).thenReturn("jwt-de-teste");
+        doNothing().when(mfaService).generateAndSendCode(user);
 
-        TokenResponseDto response = authenticationService.loginUser(loginRequest);
+        MfaTokenResponseDto response = authenticationService.loginUser(loginRequest);
 
-        assertEquals("jwt-de-teste", response.getToken());
-        assertEquals(900000L, response.getExpiration());
-        verify(mfaService).generateAndSendCode(loginRequest);
-        verify(tokenProvider).gerarToken(authentication);
+        assertEquals("jwt-de-teste", response.getMfaToken());
+        assertEquals(900000L, response.getMfaExpirationTime());
+        verify(mfaService).generateAndSendCode(user);
+        verify(tokenProvider).gerarToken(user);
     }
 }
