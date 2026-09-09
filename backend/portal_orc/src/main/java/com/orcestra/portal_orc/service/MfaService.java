@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.orcestra.portal_orc.dto.LoginRequestDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.model.UserEntity;
 import com.orcestra.portal_orc.repository.UserRepository;

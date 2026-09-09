@@ -73,7 +73,7 @@ public class AuthenticationService {
         }
     }
 
-    public TokenResponseDto validatingCode(CodeRequestDto codeRequestDto) throws Exception{
+    public String validatingCode(CodeRequestDto codeRequestDto) throws Exception{
         String email = tokenProvider.validarTokenMfa(codeRequestDto.getMfaToken());
 
         Boolean isValid = mfaService.validateCode(email, codeRequestDto.getCode());
@@ -81,11 +81,7 @@ public class AuthenticationService {
             throw new BadRequestException("Código inválido.");
         }
 
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));
-        
-        String token = tokenProvider.gerarToken(user);
-        return new TokenResponseDto(token, expirationTime);
+        return String.valueOf(expirationTime);
     }
 
     public void resendCode(ResendCodeRequestDto resendCodeRequestDto) throws BadRequestException{
