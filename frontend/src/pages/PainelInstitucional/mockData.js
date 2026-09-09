@@ -23,6 +23,18 @@ export const GOLDEN_CIRCLE_DATA = [
 const KR_TEXT =
   'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.';
 
+// Builds an ISO (yyyy-MM-dd) deadline for the given day of the *current*
+// month, so the mock deadlines below are always visible right away instead
+// of only when the calendar happens to be showing some hardcoded month.
+function isoDateForDay(day) {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const clampedDay = Math.min(day, daysInMonth);
+  return `${year}-${String(month + 1).padStart(2, '0')}-${String(clampedDay).padStart(2, '0')}`;
+}
+
 // Decorative-only extras for each objetivo (progress, deadline, key results):
 // com.orcestra.portal_orc.model.ObjectiveEntity only stores an id and a
 // description, so this data isn't persisted anywhere yet - it's matched to
@@ -32,7 +44,7 @@ export const PLANEJAMENTO_DATA = [
   {
     numero: 1,
     progresso: 50,
-    prazo: 7,
+    prazo: isoDateForDay(7),
     resultadosChave: [
       { label: 'KR 1', texto: KR_TEXT },
       { label: 'KR 2', texto: KR_TEXT },
@@ -43,7 +55,7 @@ export const PLANEJAMENTO_DATA = [
   {
     numero: 2,
     progresso: 35,
-    prazo: 15,
+    prazo: isoDateForDay(15),
     resultadosChave: [
       { label: 'KR 1', texto: KR_TEXT },
       { label: 'KR 3', texto: KR_TEXT },
@@ -52,7 +64,7 @@ export const PLANEJAMENTO_DATA = [
   {
     numero: 3,
     progresso: 20,
-    prazo: 28,
+    prazo: isoDateForDay(28),
     resultadosChave: [{ label: 'KR 3', texto: KR_TEXT }],
   },
 ];

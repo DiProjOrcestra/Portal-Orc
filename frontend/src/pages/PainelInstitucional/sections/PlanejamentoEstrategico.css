@@ -182,6 +182,11 @@
   color: var(--text-muted);
 }
 
+.pe-card__prazo-field {
+  max-width: 220px;
+  margin-top: 16px;
+}
+
 .pe-kr-form-list {
   display: flex;
   flex-direction: column;
@@ -242,6 +247,55 @@
   margin-top: 12px;
 }
 
+/* Wraps the delete icon (left) and .pe-card__edit-actions (right, its own
+   margin-top zeroed below) so both sit on the same row while editing. */
+.pe-card__edit-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.pe-card__edit-toolbar .pe-card__edit-actions {
+  margin-top: 0;
+}
+
+.pe-card__delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid var(--danger);
+  background: rgba(255, 107, 107, 0.12);
+  color: var(--danger);
+}
+
+.pe-card__delete svg {
+  width: 17px;
+  height: 17px;
+}
+
+.pe-card__delete:not(:disabled):hover {
+  background: rgba(255, 107, 107, 0.22);
+}
+
+.pe-card__delete:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.pe-card__delete-confirm-text {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text);
+  margin: 0;
+}
+
 .pe-btn--ghost {
   background: none;
   box-shadow: none;
@@ -254,8 +308,19 @@
   border-color: var(--green-400);
 }
 
+.pe-btn--danger {
+  background: linear-gradient(135deg, #b3261e, var(--danger));
+  color: var(--off-white);
+  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.35);
+}
+
+.pe-btn--danger:not(:disabled):hover {
+  filter: brightness(1.08);
+}
+
 .pe-btn:disabled,
-.pe-btn--ghost:disabled {
+.pe-btn--ghost:disabled,
+.pe-btn--danger:disabled {
   opacity: 0.6;
   cursor: default;
   filter: none;

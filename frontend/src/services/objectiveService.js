@@ -18,3 +18,7 @@ export function createObjective(description) {
 export function updateObjective(id, description) {
   return apiRequest(`/v1/objective/${id}`, { method: 'PUT', body: { description } });
 }
+
+export function deleteObjective(id) {
+  return apiRequest(`/v1/objective/${id}`, { method: 'DELETE' });
+}
