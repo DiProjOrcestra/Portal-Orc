@@ -154,11 +154,11 @@
                     <div class="prose">
 
                         <p>Especificação dos casos de uso referentes ao <strong>primeiro ciclo</strong> de
-                            desenvolvimento, contemplando os requisitos funcionais RF04, RF08, RF09, RF18, RF19 e RF22. O identificador e o nome de cada caso de uso correspondem diretamente ao requisito
+                            desenvolvimento, contemplando os requisitos funcionais RF05, RF06, RF07, RF14, RF15 e RF16, RF17, RF18, RF19, RF20, RF21, RF33, RF34. O identificador e o nome de cada caso de uso correspondem diretamente ao requisito
                             funcional de origem, e as regras de negócio (RN) aplicáveis estão indicadas nas etapas
                             correspondentes de cada fluxo.</p>
 
-                            <h2 id="uc-04">UC-04: Cadastrar perfil individual dos membros</h2>
+                            <h2 id="uc-05">UC-05: Cadastrar perfil individual dos membros</h2>
 
                         <p><strong>Objetivo:</strong> Permitir o cadastro do perfil individual dos membros, registrando
                             as informações pessoais e institucionais necessárias para a criação da conta e o acesso à
@@ -173,11 +173,11 @@
                         <p><strong>Fluxo Principal</strong></p>
                         <ol>
                             <li>Usuário acessa a tela de cadastro de perfil.</li>
-                            <li>Sistema exibe o formulário solicitando e-mail, senha, nome, CPF, data de nascimento, telefone,
+                            <li>Sistema exibe o formulário solicitando e-mail, nome, CPF, data de nascimento, telefone,
                                 semestre atual ou semestre de entrada e diretoria/cargo.</li>
                             <li>Usuário fornece as informações solicitadas.</li>
                             <li>Sistema exibe e registra o consentimento explícito do usuário para o tratamento dos
-                                dados pessoais informados. (RN15) (UC-19) (FE-E1)</li>
+                                dados pessoais informados. (RN16) (FE-E1)</li>
                             <li>Sistema valida os dados informados, verificando formato, unicidade do e-mail/CPF e
                                 preenchimento dos campos obrigatórios. (FE-E2) (FE-E3)</li>
                             <li>Sistema processa o cadastro, criando a conta do usuário.</li>
@@ -191,7 +191,7 @@
                         <p><strong>FE-E1 — Usuário não consente com o tratamento de dados</strong></p>
                         <ol>
                             <li>Sistema identifica que o usuário não manifestou consentimento ao termo de tratamento de
-                                dados apresentado. (RN15)</li>
+                                dados apresentado. (RN16)</li>
                             <li>Sistema interrompe o cadastro.</li>
                             <li>Sistema informa que o consentimento é obrigatório para a conclusão do cadastro.</li>
                         </ol>
@@ -222,62 +222,195 @@
 
                         <p><strong>Casos de Uso Relacionados</strong></p>
                         <ul>
-                            <li><a href="#uc-19">UC-19</a></li>
-                            <li><a href="#uc-23">UC-23</a></li>
+                            <li><a href="#uc-06">UC-06</a></li>
+                            <li><a href="#uc-33">UC-33</a></li>
                         </ul>
 
-                        <h2 id="uc-08">UC-08: Exibir painel informativo</h2>
+                        <h2 id="uc-06">UC-06: Gerar e enviar senha temporária no cadastro do membro</h2>
 
-                        <p><strong>Objetivo:</strong> Exibir aos membros o painel informativo institucional, contendo
-                            Missão, Visão e Valores (MVV), Golden Circle, Planejamento Estratégico e os Objetivos do
-                            Ano.</p>
-                        <p><strong>Atores:</strong> Usuário (todos os perfis)</p>
+                        <p><strong>Objetivo:</strong> Gerar automaticamente uma senha temporária aleatória, com no
+                            exatamente 15 caracteres, e enviá-la por e-mail ao membro recém-cadastrado, para uso no
+                            primeiro acesso à plataforma.</p>
+                        <p><strong>Atores:</strong> Sistema (acionado automaticamente ao final do cadastro), Núcleo
+                            TOPS, Direx</p>
 
                         <p><strong>Pré-condições</strong></p>
                         <ul>
-                            <li>Usuário está autenticado na plataforma (UC-23).</li>
-                            <li>Conteúdo do painel institucional foi previamente cadastrado.</li>
+                            <li>Cadastro do perfil do membro foi concluído com sucesso (UC-05).</li>
+                            <li>Consentimento LGPD registrado.</li>
                         </ul>
 
                         <p><strong>Fluxo Principal</strong></p>
                         <ol>
-                            <li>Usuário acessa a área do painel informativo institucional.</li>
-                            <li>Sistema verifica a autenticação do usuário.</li>
-                            <li>Sistema busca o conteúdo vigente do painel (MVV, Golden Circle, Planejamento
-                                Estratégico, Objetivos do Ano). (FA-A1)(FE-E1)</li>
-                            <li>Sistema exibe o conteúdo do painel de forma visível e acessível a todos os membros da
-                                empresa. (RN08)</li>
-                            <li>Sistema disponibiliza o atalho de edição do conteúdo apenas para os perfis autorizados.
-                                (RN11) (FA-A2)</li>
+                            <li>Sistema identifica a conclusão do cadastro do perfil do membro. (UC-05)</li>
+                            <li>Sistema gera automaticamente uma senha temporária aleatória, com exatamente 15
+                                caracteres.</li>
+                            <li>Sistema associa a senha temporária gerada à conta do membro.</li>
+                            <li>Sistema envia a senha temporária para o e-mail cadastrado do membro. (FE-E1)</li>
+                            <li>Sistema registra o envio da senha temporária, incluindo data e hora.</li>
+                            <li>Sistema confirma a conclusão do processo de geração e envio da senha temporária.</li>
                         </ol>
 
                         <p><strong>Fluxos Alternativos</strong></p>
-                        <p><strong>FA-A1 — Painel institucional ainda não cadastrado</strong></p>
+                        <p><strong>FA-A1 — Reenvio da senha temporária</strong></p>
                         <ol>
-                            <li>Sistema identifica que não há conteúdo cadastrado para o painel informativo.</li>
+                            <li>Usuário responsável (TOPS/Direx) solicita o reenvio da senha temporária ao membro.</li>
+                            <li>Sistema invalida a senha temporária anteriormente gerada.</li>
+                            <li>Sistema gera uma nova senha temporária aleatória, com no exatamente 15 caracteres.</li>
+                            <li>Fluxo retorna ao passo 3 do Fluxo Principal.</li>
+                        </ol>
+
+                        <p><strong>Fluxos de Exceção</strong></p>
+                        <p><strong>FE-E1 — Falha no envio do e-mail</strong></p>
+                        <ol>
+                            <li>Sistema tenta enviar o e-mail com a senha temporária.</li>
+                            <li>Sistema identifica falha no envio (e-mail inválido ou serviço de envio
+                                indisponível).</li>
+                            <li>Sistema interrompe o envio.</li>
+                            <li>Sistema informa ao Núcleo TOPS/Direx responsável pelo cadastro sobre a falha,
+                                oferecendo a opção de reenvio. (FA-A1)</li>
+                        </ol>
+
+                        <p><strong>Pós-condições</strong></p>
+                        <p><strong>Sucesso</strong></p>
+                        <ul>
+                            <li>Senha temporária gerada e enviada ao e-mail do membro.</li>
+                            <li>Registro do envio armazenado.</li>
+                        </ul>
+                        <p><strong>Falha</strong></p>
+                        <ul>
+                            <li>Nenhuma senha temporária enviada.</li>
+                            <li>Membro não consegue realizar o primeiro acesso à plataforma.</li>
+                        </ul>
+
+                        <p><strong>Casos de Uso Relacionados</strong></p>
+                        <ul>
+                            <li><a href="#uc-05">UC-05</a></li>
+                            <li><a href="#uc-07">UC-07</a></li>
+                            <li><a href="#uc-33">UC-33</a></li>
+                        </ul>
+
+                        <h2 id="uc-07">UC-07: Exigir troca de senha no primeiro login</h2>
+
+                        <p><strong>Objetivo:</strong> Obrigar o membro a definir uma nova senha ao autenticar-se pela
+                            primeira vez com a senha temporária gerada, antes de liberar o acesso às demais
+                            funcionalidades da plataforma.</p>
+                        <p><strong>Atores:</strong> Usuário (todos os perfis, em primeiro acesso)</p>
+
+                        <p><strong>Pré-condições</strong></p>
+                        <ul>
+                            <li>Membro possui senha temporária gerada e enviada por e-mail (UC-06).</li>
+                            <li>Usuário realizou login com e-mail e senha temporária com sucesso (UC-33).</li>
+                        </ul>
+
+                        <p><strong>Fluxo Principal</strong></p>
+                        <ol>
+                            <li>Sistema identifica que o usuário está autenticando-se com a senha temporária gerada no
+                                cadastro. (UC-06)</li>
+                            <li>Sistema interrompe o acesso às demais funcionalidades da plataforma.</li>
+                            <li>Sistema exibe o formulário de definição de nova senha.</li>
+                            <li>Usuário informa a nova senha e a confirmação da nova senha.</li>
+                            <li>Sistema valida a nova senha informada, verificando os critérios de segurança e a
+                                correspondência entre os campos. (FE-E1)(FE-E2)</li>
+                            <li>Sistema processa a atualização, substituindo a senha temporária pela nova senha
+                                definida.</li>
+                            <li>Sistema invalida a senha temporária utilizada.</li>
+                            <li>Sistema registra a operação no log de auditoria, contendo usuário, ação e
+                                data/hora.</li>
+                            <li>Sistema confirma a troca de senha e libera o acesso às funcionalidades
+                                correspondentes ao perfil do usuário. (UC-33)</li>
+                        </ol>
+
+                        <p><strong>Fluxos Alternativos</strong></p>
+                        <p>Não se aplicam fluxos alternativos a este caso de uso.</p>
+
+                        <p><strong>Fluxos de Exceção</strong></p>
+                        <p><strong>FE-E1 — Nova senha não atende aos critérios de segurança</strong></p>
+                        <ol>
+                            <li>Sistema identifica que a senha informada não atende aos critérios mínimos de
+                                segurança definidos.</li>
+                            <li>Sistema interrompe a atualização da senha.</li>
+                            <li>Sistema informa o usuário sobre os critérios não atendidos e solicita nova
+                                tentativa.</li>
+                        </ol>
+                        <p><strong>FE-E2 — Confirmação de senha não corresponde</strong></p>
+                        <ol>
+                            <li>Sistema identifica que os campos de nova senha e confirmação de senha não
+                                correspondem.</li>
+                            <li>Sistema interrompe a atualização da senha.</li>
+                            <li>Sistema informa o usuário sobre a divergência e solicita nova tentativa.</li>
+                        </ol>
+
+                        <p><strong>Pós-condições</strong></p>
+                        <p><strong>Sucesso</strong></p>
+                        <ul>
+                            <li>Nova senha definida pelo membro.</li>
+                            <li>Senha temporária invalidada.</li>
+                            <li>Acesso às funcionalidades da plataforma liberado, conforme o perfil do usuário.</li>
+                        </ul>
+                        <p><strong>Falha</strong></p>
+                        <ul>
+                            <li>Nenhuma senha definida.</li>
+                            <li>Senha temporária permanece válida.</li>
+                            <li>Acesso às demais funcionalidades da plataforma permanece bloqueado.</li>
+                        </ul>
+
+                        <p><strong>Casos de Uso Relacionados</strong></p>
+                        <ul>
+                            <li><a href="#uc-06">UC-06</a></li>
+                            <li><a href="#uc-33">UC-33</a></li>
+                        </ul>
+
+                        <h2 id="uc-14">UC-14: Consultar MVV e Golden Circle</h2>
+
+                        <p><strong>Objetivo:</strong> Exibir aos membros o painel institucional com Missão, Visão,
+                            Valores (MVV) e Golden Circle.</p>
+                        <p><strong>Atores:</strong> Usuário (todos os perfis)</p>
+
+                        <p><strong>Pré-condições</strong></p>
+                        <ul>
+                            <li>Usuário está autenticado na plataforma (UC-33).</li>
+                            <li>Conteúdo de MVV e Golden Circle foi previamente cadastrado.</li>
+                        </ul>
+
+                        <p><strong>Fluxo Principal</strong></p>
+                        <ol>
+                            <li>Usuário acessa a área do painel institucional referente a MVV e Golden Circle.</li>
+                            <li>Sistema verifica a autenticação do usuário.</li>
+                            <li>Sistema busca o conteúdo vigente de MVV e Golden Circle. (FA-A1)(FE-E1)</li>
+                            <li>Sistema exibe o conteúdo de forma visível e acessível a todos os membros da empresa.
+                                (RN08)</li>
+                            <li>Sistema disponibiliza o atalho de edição do conteúdo apenas para os perfis
+                                autorizados. (RN11) (FA-A2)</li>
+                        </ol>
+
+                        <p><strong>Fluxos Alternativos</strong></p>
+                        <p><strong>FA-A1 — MVV e Golden Circle ainda não cadastrados</strong></p>
+                        <ol>
+                            <li>Sistema identifica que não há conteúdo cadastrado para MVV e Golden Circle.</li>
                             <li>Sistema interrompe a exibição do conteúdo.</li>
-                            <li>Sistema informa que o painel institucional ainda não foi configurado.</li>
+                            <li>Sistema informa que o conteúdo de MVV e Golden Circle ainda não foi configurado.</li>
                         </ol>
                         <p><strong>FA-A2 — Acesso de usuário autorizado à edição</strong></p>
                         <ol>
                             <li>Sistema identifica que o usuário pertence ao núcleo TOPS ou à Direx. (RN11)</li>
-                            <li>Sistema disponibiliza o atalho para a edição do painel informativo. (UC-09)</li>
+                            <li>Sistema disponibiliza o atalho para a edição de MVV e Golden Circle. (UC-15)</li>
                             <li>Fluxo retorna ao passo 4 do Fluxo Principal.</li>
                         </ol>
 
                         <p><strong>Fluxos de Exceção</strong></p>
-                        <p><strong>FE-E1 — Erro ao carregar os dados do painel</strong></p>
+                        <p><strong>FE-E1 — Erro ao carregar os dados de MVV e Golden Circle</strong></p>
                         <ol>
-                            <li>Sistema tenta carregar os dados do painel. </li>
-                            <li>Sistema identifica indisponibilidade do banco de dados. </li>
-                            <li>Sistema interrompe a operação. </li>
+                            <li>Sistema tenta carregar os dados de MVV e Golden Circle.</li>
+                            <li>Sistema identifica indisponibilidade do banco de dados.</li>
+                            <li>Sistema interrompe a operação.</li>
                             <li>Sistema informa erro ao carregar os dados.</li>
                         </ol>
 
                         <p><strong>Pós-condições</strong></p>
                         <p><strong>Sucesso</strong></p>
                         <ul>
-                            <li>Conteúdo do painel institucional exibido ao usuário.</li>
+                            <li>Conteúdo de MVV e Golden Circle exibido ao usuário.</li>
                         </ul>
                         <p><strong>Falha</strong></p>
                         <ul>
@@ -286,36 +419,35 @@
 
                         <p><strong>Casos de Uso Relacionados</strong></p>
                         <ul>
-                            <li><a href="#uc-09">UC-09</a></li>
-                            <li><a href="#uc-23">UC-23</a></li>
+                            <li><a href="#uc-15">UC-15</a></li>
+                            <li><a href="#uc-33">UC-33</a></li>
                         </ul>
 
-                        <h2 id="uc-09">UC-09: Editar painel informativo</h2>
+                        <h2 id="uc-15">UC-15: Editar MVV e Golden Circle</h2>
 
-                        <p><strong>Objetivo:</strong> Permitir que o núcleo TOPS e a Direx editem o conteúdo do painel
-                            informativo institucional, garantindo que apenas informações oficiais aprovadas sejam
-                            exibidas aos membros.</p>
+                        <p><strong>Objetivo:</strong> Permitir que o núcleo TOPS e a Direx editem o conteúdo de MVV e
+                            Golden Circle exibido no painel institucional, garantindo que apenas informações oficiais
+                            aprovadas sejam exibidas aos membros.</p>
                         <p><strong>Atores:</strong> Núcleo TOPS, Direx</p>
 
                         <p><strong>Pré-condições</strong></p>
                         <ul>
                             <li>Usuário está autenticado e possui perfil TOPS ou Direx. (RN11)</li>
-                            <li>Painel informativo institucional está previamente cadastrado (UC-08).</li>
+                            <li>Conteúdo de MVV e Golden Circle está previamente cadastrado (UC-14).</li>
                         </ul>
 
                         <p><strong>Fluxo Principal</strong></p>
                         <ol>
-                            <li>Usuário (TOPS/Direx) acessa a opção de edição do painel informativo.</li>
+                            <li>Usuário (TOPS/Direx) acessa a opção de edição de MVV e Golden Circle.</li>
                             <li>Sistema verifica se o perfil do usuário pertence ao núcleo TOPS ou à Direx. (RN11)</li>
-                            <li>Sistema exibe o conteúdo atual do painel para edição.</li>
-                            <li>Usuário edita as informações do MVV, Golden Circle, Planejamento Estratégico e/ou
-                                Objetivos do Ano.</li>
+                            <li>Sistema exibe o conteúdo atual de MVV e Golden Circle para edição.</li>
+                            <li>Usuário edita as informações de Missão, Visão, Valores e/ou Golden Circle.</li>
                             <li>Sistema valida as informações editadas. (FE-E1)</li>
                             <li>Sistema processa e salva as alterações realizadas.</li>
                             <li>Sistema registra a operação no log de auditoria, contendo usuário, ação, data/hora e
                                 módulo afetado.</li>
                             <li>Sistema confirma a atualização e disponibiliza o novo conteúdo a todos os membros.
-                                (RN08) (UC-08)</li>
+                                (RN08) (UC-14)</li>
                         </ol>
 
                         <p><strong>Fluxos Alternativos</strong></p>
@@ -324,8 +456,8 @@
                         <p><strong>Fluxos de Exceção</strong></p>
                         <p><strong>FE-E1 — Dados inválidos na edição</strong></p>
                         <ol>
-                            <li>Sistema identifica campos obrigatórios não preenchidos ou conteúdo em formato inválido.
-                            </li>
+                            <li>Sistema identifica campos obrigatórios não preenchidos ou conteúdo em formato
+                                inválido.</li>
                             <li>Sistema interrompe o salvamento das alterações.</li>
                             <li>Sistema informa o usuário sobre os campos que precisam de correção.</li>
                         </ol>
@@ -333,22 +465,492 @@
                         <p><strong>Pós-condições</strong></p>
                         <p><strong>Sucesso</strong></p>
                         <ul>
-                            <li>Conteúdo do painel institucional atualizado.</li>
+                            <li>Conteúdo de MVV e Golden Circle atualizado.</li>
                             <li>Alteração registrada no log de auditoria.</li>
                         </ul>
                         <p><strong>Falha</strong></p>
                         <ul>
                             <li>Nenhuma alteração salva.</li>
-                            <li>Conteúdo do painel permanece inalterado.</li>
+                            <li>Conteúdo de MVV e Golden Circle permanece inalterado.</li>
                         </ul>
 
                         <p><strong>Casos de Uso Relacionados</strong></p>
                         <ul>
-                            <li><a href="#uc-08">UC-08</a></li>
-                            <li><a href="#uc-23">UC-23</a></li>
+                            <li><a href="#uc-14">UC-14</a></li>
+                            <li><a href="#uc-33">UC-33</a></li>
                         </ul>
 
-                        <h2 id="uc-18">UC-18: Autenticar com múltiplo fator (MFA)</h2>
+                        <h2 id="uc-16">UC-16: Consultar planejamento estratégico e objetivos do ano</h2>
+
+                        <p><strong>Objetivo:</strong> Exibir aos membros o painel institucional com o Planejamento
+                            Estratégico e os Objetivos do Ano.</p>
+                        <p><strong>Atores:</strong> Usuário (todos os perfis)</p>
+
+                        <p><strong>Pré-condições</strong></p>
+                        <ul>
+                            <li>Usuário está autenticado na plataforma (UC-33).</li>
+                            <li>Conteúdo de Planejamento Estratégico e Objetivos do Ano foi previamente cadastrado.</li>
+                        </ul>
+
+                        <p><strong>Fluxo Principal</strong></p>
+                        <ol>
+                            <li>Usuário acessa a área do painel institucional referente ao Planejamento Estratégico e
+                                aos Objetivos do Ano.</li>
+                            <li>Sistema verifica a autenticação do usuário.</li>
+                            <li>Sistema busca o conteúdo vigente do Planejamento Estratégico e dos Objetivos do Ano.
+                                (FA-A1)(FE-E1)</li>
+                            <li>Sistema exibe o conteúdo de forma visível e acessível a todos os membros da empresa.
+                                (RN08)</li>
+                            <li>Sistema disponibiliza o atalho de edição do conteúdo apenas para os perfis
+                                autorizados. (RN11) (FA-A2)</li>
+                        </ol>
+
+                        <p><strong>Fluxos Alternativos</strong></p>
+                        <p><strong>FA-A1 — Planejamento Estratégico e Objetivos do Ano ainda não cadastrados</strong></p>
+                        <ol>
+                            <li>Sistema identifica que não há conteúdo cadastrado para o Planejamento Estratégico e os
+                                Objetivos do Ano.</li>
+                            <li>Sistema interrompe a exibição do conteúdo.</li>
+                            <li>Sistema informa que o conteúdo ainda não foi configurado.</li>
+                        </ol>
+                        <p><strong>FA-A2 — Acesso de usuário autorizado à edição</strong></p>
+                        <ol>
+                            <li>Sistema identifica que o usuário pertence ao núcleo TOPS ou à Direx. (RN11)</li>
+                            <li>Sistema disponibiliza o atalho para a edição do Planejamento Estratégico e dos
+                                Objetivos do Ano. (UC-17)</li>
+                            <li>Fluxo retorna ao passo 4 do Fluxo Principal.</li>
+                        </ol>
+
+                        <p><strong>Fluxos de Exceção</strong></p>
+                        <p><strong>FE-E1 — Erro ao carregar os dados do Planejamento Estratégico e dos Objetivos do
+                                Ano</strong></p>
+                        <ol>
+                            <li>Sistema tenta carregar os dados do Planejamento Estratégico e dos Objetivos do Ano.
+                            </li>
+                            <li>Sistema identifica indisponibilidade do banco de dados.</li>
+                            <li>Sistema interrompe a operação.</li>
+                            <li>Sistema informa erro ao carregar os dados.</li>
+                        </ol>
+
+                        <p><strong>Pós-condições</strong></p>
+                        <p><strong>Sucesso</strong></p>
+                        <ul>
+                            <li>Conteúdo do Planejamento Estratégico e dos Objetivos do Ano exibido ao usuário.</li>
+                        </ul>
+                        <p><strong>Falha</strong></p>
+                        <ul>
+                            <li>Nenhum conteúdo exibido ao usuário.</li>
+                        </ul>
+
+                        <p><strong>Casos de Uso Relacionados</strong></p>
+                        <ul>
+                            <li><a href="#uc-17">UC-17</a></li>
+                            <li><a href="#uc-33">UC-33</a></li>
+                        </ul>
+
+                        <h2 id="uc-17">UC-17: Editar planejamento estratégico e objetivos do ano</h2>
+
+                        <p><strong>Objetivo:</strong> Permitir que o núcleo TOPS e a Direx editem o Planejamento
+                            Estratégico e os Objetivos do Ano exibidos no painel institucional, garantindo que apenas
+                            informações oficiais aprovadas sejam exibidas aos membros.</p>
+                        <p><strong>Atores:</strong> Núcleo TOPS, Direx</p>
+
+                        <p><strong>Pré-condições</strong></p>
+                        <ul>
+                            <li>Usuário está autenticado e possui perfil TOPS ou Direx. (RN11)</li>
+                            <li>Conteúdo de Planejamento Estratégico e Objetivos do Ano está previamente cadastrado
+                                (UC-16).</li>
+                        </ul>
+
+                        <p><strong>Fluxo Principal</strong></p>
+                        <ol>
+                            <li>Usuário (TOPS/Direx) acessa a opção de edição do Planejamento Estratégico e dos
+                                Objetivos do Ano.</li>
+                            <li>Sistema verifica se o perfil do usuário pertence ao núcleo TOPS ou à Direx. (RN11)
+                            </li>
+                            <li>Sistema exibe o conteúdo atual do Planejamento Estratégico e dos Objetivos do Ano para
+                                edição.</li>
+                            <li>Usuário edita as informações do Planejamento Estratégico e/ou dos Objetivos do Ano.
+                            </li>
+                            <li>Sistema valida as informações editadas. (FE-E1)</li>
+                            <li>Sistema processa e salva as alterações realizadas.</li>
+                            <li>Sistema registra a operação no log de auditoria, contendo usuário, ação, data/hora e
+                                módulo afetado.</li>
+                            <li>Sistema confirma a atualização e disponibiliza o novo conteúdo a todos os membros.
+                                (RN08) (UC-16)</li>
+                        </ol>
+
+                        <p><strong>Fluxos Alternativos</strong></p>
+                        <p>Não se aplicam fluxos alternativos a este caso de uso.</p>
+
+                        <p><strong>Fluxos de Exceção</strong></p>
+                        <p><strong>FE-E1 — Dados inválidos na edição</strong></p>
+                        <ol>
+                            <li>Sistema identifica campos obrigatórios não preenchidos ou conteúdo em formato
+                                inválido.</li>
+                            <li>Sistema interrompe o salvamento das alterações.</li>
+                            <li>Sistema informa o usuário sobre os campos que precisam de correção.</li>
+                        </ol>
+
+                        <p><strong>Pós-condições</strong></p>
+                        <p><strong>Sucesso</strong></p>
+                        <ul>
+                            <li>Conteúdo do Planejamento Estratégico e dos Objetivos do Ano atualizado.</li>
+                            <li>Alteração registrada no log de auditoria.</li>
+                        </ul>
+                        <p><strong>Falha</strong></p>
+                        <ul>
+                            <li>Nenhuma alteração salva.</li>
+                            <li>Conteúdo do Planejamento Estratégico e dos Objetivos do Ano permanece inalterado.</li>
+                        </ul>
+
+                        <p><strong>Casos de Uso Relacionados</strong></p>
+                        <ul>
+                            <li><a href="#uc-16">UC-16</a></li>
+                            <li><a href="#uc-33">UC-33</a></li>
+                        </ul>
+
+                        <h2 id="uc-18">UC-18: Cadastrar plano de ação</h2>
+
+                        <p><strong>Objetivo:</strong> Permitir o cadastro de um plano de ação vinculado a um objetivo
+                            estratégico do ano, definindo as ações necessárias para alcançá-lo.</p>
+                        <p><strong>Atores:</strong> Núcleo TOPS, Direx</p>
+
+                        <p><strong>Pré-condições</strong></p>
+                        <ul>
+                            <li>Usuário está autenticado e possui perfil TOPS ou Direx. (RN11)</li>
+                            <li>Objetivo estratégico do ano está previamente cadastrado (UC-16)(UC-17).</li>
+                        </ul>
+
+                        <p><strong>Fluxo Principal</strong></p>
+                        <ol>
+                            <li>Usuário acessa a tela de cadastro de plano de ação.</li>
+                            <li>Sistema exibe a lista de objetivos estratégicos do ano cadastrados para seleção.</li>
+                            <li>Usuário seleciona o objetivo estratégico ao qual o plano de ação será vinculado.</li>
+                            <li>Sistema exibe o formulário solicitando as ações necessárias, prazo e demais
+                                informações do plano de ação.</li>
+                            <li>Usuário fornece as informações solicitadas.</li>
+                            <li>Sistema valida os dados informados, verificando o preenchimento dos campos
+                                obrigatórios. (FE-E1)</li>
+                            <li>Sistema processa o cadastro, vinculando o plano de ação ao objetivo estratégico
+                                selecionado.</li>
+                            <li>Sistema registra a operação no log de auditoria, contendo usuário, ação, data/hora e
+                                módulo afetado.</li>
+                            <li>Sistema confirma a criação do plano de ação.</li>
+                        </ol>
+
+                        <p><strong>Fluxos Alternativos</strong></p>
+                        <p>Não se aplicam fluxos alternativos a este caso de uso.</p>
+
+                        <p><strong>Fluxos de Exceção</strong></p>
+                        <p><strong>FE-E1 — Dados obrigatórios não informados</strong></p>
+                        <ol>
+                            <li>Sistema identifica que um ou mais campos obrigatórios não foram preenchidos.</li>
+                            <li>Sistema interrompe o cadastro.</li>
+                            <li>Sistema informa o usuário sobre os campos pendentes.</li>
+                        </ol>
+
+                        <p><strong>Pós-condições</strong></p>
+                        <p><strong>Sucesso</strong></p>
+                        <ul>
+                            <li>Plano de ação criado e vinculado ao objetivo estratégico correspondente.</li>
+                            <li>Cadastro registrado no log de auditoria.</li>
+                        </ul>
+                        <p><strong>Falha</strong></p>
+                        <ul>
+                            <li>Nenhum plano de ação criado.</li>
+                        </ul>
+
+                        <p><strong>Casos de Uso Relacionados</strong></p>
+                        <ul>
+                            <li><a href="#uc-16">UC-16</a></li>
+                            <li><a href="#uc-17">UC-17</a></li>
+                            <li><a href="#uc-19">UC-19</a></li>
+                        </ul>
+
+                        <h2 id="uc-19">UC-19: Vincular membros a plano de ação</h2>
+
+                        <p><strong>Objetivo:</strong> Permitir vincular um ou mais membros a um plano de ação,
+                            associando-os à execução do objetivo estratégico correspondente e refletindo esse vínculo
+                            no perfil do membro.</p>
+                        <p><strong>Atores:</strong> Núcleo TOPS, Direx</p>
+
+                        <p><strong>Pré-condições</strong></p>
+                        <ul>
+                            <li>Usuário está autenticado e possui perfil TOPS ou Direx. (RN11)</li>
+                            <li>Plano de ação está previamente cadastrado (UC-18).</li>
+                            <li>Membro(s) a serem vinculados possuem perfil cadastrado na plataforma (UC-05).</li>
+                        </ul>
+
+                        <p><strong>Fluxo Principal</strong></p>
+                        <ol>
+                            <li>Usuário acessa a tela de vinculação de membros ao plano de ação.</li>
+                            <li>Sistema exibe a lista de planos de ação cadastrados para seleção.</li>
+                            <li>Usuário seleciona o plano de ação desejado.</li>
+                            <li>Sistema exibe a lista de membros cadastrados para seleção. (FE-E2)</li>
+                            <li>Usuário seleciona um ou mais membros a serem vinculados. (FE-E1)</li>
+                            <li>Sistema valida a seleção realizada.</li>
+                            <li>Sistema processa o vínculo, associando o(s) membro(s) ao plano de ação e ao objetivo
+                                estratégico correspondente.</li>
+                            <li>Sistema atualiza o perfil de cada membro vinculado, refletindo a associação ao plano
+                                de ação.</li>
+                            <li>Sistema registra a operação no log de auditoria, contendo usuário, ação, data/hora e
+                                módulo afetado.</li>
+                            <li>Sistema confirma o vínculo realizado.</li>
+                        </ol>
+
+                        <p><strong>Fluxos Alternativos</strong></p>
+                        <p>Não se aplicam fluxos alternativos a este caso de uso.</p>
+
+                        <p><strong>Fluxos de Exceção</strong></p>
+                        <p><strong>FE-E1 — Membro já vinculado ao plano de ação</strong></p>
+                        <ol>
+                            <li>Sistema identifica que o membro selecionado já está vinculado ao plano de ação.</li>
+                            <li>Sistema interrompe a vinculação para o membro em questão.</li>
+                            <li>Sistema informa o usuário sobre a duplicidade do vínculo.</li>
+                        </ol>
+                        <p><strong>FE-E2 — Nenhum membro cadastrado disponível</strong></p>
+                        <ol>
+                            <li>Sistema identifica que não há membros cadastrados na plataforma. (UC-05)</li>
+                            <li>Sistema interrompe a operação.</li>
+                            <li>Sistema informa que não há membros disponíveis para vinculação.</li>
+                        </ol>
+
+                        <p><strong>Pós-condições</strong></p>
+                        <p><strong>Sucesso</strong></p>
+                        <ul>
+                            <li>Membro(s) vinculado(s) ao plano de ação e ao objetivo estratégico correspondente.</li>
+                            <li>Vínculo refletido no perfil de cada membro.</li>
+                            <li>Vinculação registrada no log de auditoria.</li>
+                        </ul>
+                        <p><strong>Falha</strong></p>
+                        <ul>
+                            <li>Nenhum vínculo realizado.</li>
+                            <li>Perfil do(s) membro(s) permanece inalterado.</li>
+                        </ul>
+
+                        <p><strong>Casos de Uso Relacionados</strong></p>
+                        <ul>
+                            <li><a href="#uc-05">UC-05</a></li>
+                            <li><a href="#uc-18">UC-18</a></li>
+                        </ul>
+
+                        <h2 id="uc-20">UC-20: Editar status do objetivo/plano de ação</h2>
+
+                        <p><strong>Objetivo:</strong> Permitir a atualização do status do objetivo estratégico e/ou de
+                            seu plano de ação (ex: não iniciado, em andamento, concluído, atrasado).</p>
+                        <p><strong>Atores:</strong> Núcleo TOPS, Direx, Membro (vinculado ao plano de ação)</p>
+
+                        <p><strong>Pré-condições</strong></p>
+                        <ul>
+                            <li>Usuário está autenticado. (UC-33)</li>
+                            <li>Usuário possui perfil TOPS/Direx ou está vinculado ao plano de ação como membro
+                                executor. (RN11) (UC-19)</li>
+                            <li>Objetivo estratégico e/ou plano de ação estão previamente cadastrados
+                                (UC-16)(UC-17)(UC-18).</li>
+                        </ul>
+
+                        <p><strong>Fluxo Principal</strong></p>
+                        <ol>
+                            <li>Usuário acessa a tela de acompanhamento do objetivo estratégico e/ou do plano de ação.
+                            </li>
+                            <li>Sistema verifica se o usuário pertence ao núcleo TOPS/Direx ou está vinculado ao plano
+                                de ação. (RN11) (FE-E2)</li>
+                            <li>Sistema exibe o status atual do objetivo estratégico e/ou do plano de ação.</li>
+                            <li>Usuário seleciona o novo status a ser atribuído (não iniciado, em andamento, concluído
+                                ou atrasado).</li>
+                            <li>Sistema valida a alteração informada. (FE-E1)</li>
+                            <li>Sistema processa e salva a atualização de status.</li>
+                            <li>Sistema registra a operação no log de auditoria, contendo usuário, ação, data/hora e
+                                módulo afetado.</li>
+                            <li>Sistema confirma a atualização e disponibiliza o novo status. (UC-21)</li>
+                        </ol>
+
+                        <p><strong>Fluxos Alternativos</strong></p>
+                        <p>Não se aplicam fluxos alternativos a este caso de uso.</p>
+
+                        <p><strong>Fluxos de Exceção</strong></p>
+                        <p><strong>FE-E1 — Status inválido</strong></p>
+                        <ol>
+                            <li>Sistema identifica que o status selecionado não corresponde a uma opção válida.</li>
+                            <li>Sistema interrompe o salvamento da alteração.</li>
+                            <li>Sistema informa o usuário sobre a necessidade de selecionar um status válido.</li>
+                        </ol>
+                        <p><strong>FE-E2 — Usuário não autorizado</strong></p>
+                        <ol>
+                            <li>Sistema identifica que o usuário não pertence ao núcleo TOPS/Direx e não está
+                                vinculado ao plano de ação. (RN11)</li>
+                            <li>Sistema interrompe o acesso à edição de status.</li>
+                            <li>Sistema informa o usuário que ele não possui permissão para realizar a alteração.</li>
+                        </ol>
+
+                        <p><strong>Pós-condições</strong></p>
+                        <p><strong>Sucesso</strong></p>
+                        <ul>
+                            <li>Status do objetivo estratégico e/ou do plano de ação atualizado.</li>
+                            <li>Alteração registrada no log de auditoria.</li>
+                        </ul>
+                        <p><strong>Falha</strong></p>
+                        <ul>
+                            <li>Nenhuma alteração salva.</li>
+                            <li>Status do objetivo estratégico e/ou do plano de ação permanece inalterado.</li>
+                        </ul>
+
+                        <p><strong>Casos de Uso Relacionados</strong></p>
+                        <ul>
+                            <li><a href="#uc-18">UC-18</a></li>
+                            <li><a href="#uc-19">UC-19</a></li>
+                            <li><a href="#uc-21">UC-21</a></li>
+                        </ul>
+
+                        <h2 id="uc-21">UC-21: Consultar plano de ação</h2>
+
+                        <p><strong>Objetivo:</strong> Exibir o status atual de cada objetivo estratégico e de seu(s)
+                            plano(s) de ação associado(s), permitindo acompanhar o progresso ao longo do ano.</p>
+                        <p><strong>Atores:</strong> Usuário (todos os perfis)</p>
+
+                        <p><strong>Pré-condições</strong></p>
+                        <ul>
+                            <li>Usuário está autenticado na plataforma (UC-33).</li>
+                            <li>Objetivo estratégico e/ou plano de ação foram previamente cadastrados
+                                (UC-16)(UC-18).</li>
+                        </ul>
+
+                        <p><strong>Fluxo Principal</strong></p>
+                        <ol>
+                            <li>Usuário acessa a área de acompanhamento dos objetivos estratégicos e planos de ação.
+                            </li>
+                            <li>Sistema verifica a autenticação do usuário.</li>
+                            <li>Sistema busca o status vigente de cada objetivo estratégico e de seu(s) plano(s) de
+                                ação associado(s). (FA-A1)(FE-E1)</li>
+                            <li>Sistema exibe o status de forma visível e acessível a todos os membros da empresa.
+                                (RN08)</li>
+                            <li>Sistema disponibiliza o atalho de edição de status apenas para os perfis autorizados
+                                ou membros vinculados ao plano de ação. (RN11) (FA-A2)</li>
+                        </ol>
+
+                        <p><strong>Fluxos Alternativos</strong></p>
+                        <p><strong>FA-A1 — Nenhum objetivo/plano de ação cadastrado</strong></p>
+                        <ol>
+                            <li>Sistema identifica que não há objetivo estratégico e/ou plano de ação cadastrado.</li>
+                            <li>Sistema interrompe a exibição do conteúdo.</li>
+                            <li>Sistema informa que ainda não há objetivos e/ou planos de ação cadastrados.</li>
+                        </ol>
+                        <p><strong>FA-A2 — Acesso de usuário autorizado à edição de status</strong></p>
+                        <ol>
+                            <li>Sistema identifica que o usuário pertence ao núcleo TOPS/Direx ou está vinculado ao
+                                plano de ação. (RN11) (UC-19)</li>
+                            <li>Sistema disponibiliza o atalho para a edição do status. (UC-20)</li>
+                            <li>Fluxo retorna ao passo 4 do Fluxo Principal.</li>
+                        </ol>
+
+                        <p><strong>Fluxos de Exceção</strong></p>
+                        <p><strong>FE-E1 — Erro ao carregar os dados de status</strong></p>
+                        <ol>
+                            <li>Sistema tenta carregar os dados de status dos objetivos estratégicos e planos de ação.
+                            </li>
+                            <li>Sistema identifica indisponibilidade do banco de dados.</li>
+                            <li>Sistema interrompe a operação.</li>
+                            <li>Sistema informa erro ao carregar os dados.</li>
+                        </ol>
+
+                        <p><strong>Pós-condições</strong></p>
+                        <p><strong>Sucesso</strong></p>
+                        <ul>
+                            <li>Status dos objetivos estratégicos e planos de ação exibido ao usuário.</li>
+                        </ul>
+                        <p><strong>Falha</strong></p>
+                        <ul>
+                            <li>Nenhum status exibido ao usuário.</li>
+                        </ul>
+
+                        <p><strong>Casos de Uso Relacionados</strong></p>
+                        <ul>
+                            <li><a href="#uc-18">UC-18</a></li>
+                            <li><a href="#uc-19">UC-19</a></li>
+                            <li><a href="#uc-20">UC-20</a></li>
+                        </ul>
+
+                        <h2 id="uc-33">UC-33: Realizar login</h2>
+
+                        <p><strong>Objetivo:</strong> Permitir que o usuário acesse a plataforma mediante validação de
+                            suas credenciais, concedendo acesso às funcionalidades de acordo com o seu perfil de
+                            permissão (RBAC).</p>
+                        <p><strong>Atores:</strong> Usuário (Direx, TOPS, Diretoria específica, Membro, Trainee)</p>
+
+                        <p><strong>Pré-condições</strong></p>
+                        <ul>
+                            <li>Usuário possui conta cadastrada na plataforma (UC-05).</li>
+                            <li>Usuário está na tela de login.</li>
+                        </ul>
+
+                        <p><strong>Fluxo Principal</strong></p>
+                        <ol>
+                            <li>Usuário acessa a tela de login.</li>
+                            <li>Usuário opta por autenticar-se com e-mail corporativo e senha. (FA-A1)</li>
+                            <li>Usuário informa as credenciais solicitadas.</li>
+                            <li>Sistema valida as credenciais informadas, verificando a existência da conta e a
+                                correspondência da senha. (FE-E1)</li>
+                            <li>Sistema verifica se o usuário já possui autenticador de múltiplo fator cadastrado.
+                                (RN12) (FA-A2)</li>
+                            <li>Sistema exige a autenticação multifator do usuário. (RN12) (UC-34) (FE-E2)</li>
+                            <li>Sistema concede acesso às funcionalidades de acordo com o perfil de permissão (RBAC) do
+                                usuário (Direx, TOPS, Diretoria específica, Membro ou Trainee).</li>
+                            <li>Sistema registra o acesso realizado.</li>
+                        </ol>
+
+                        <p><strong>Fluxos Alternativos</strong></p>
+                        <p><strong>FA-A1 — Autenticação via Google</strong></p>
+                        <ol>
+                            <li>Usuário seleciona a opção de login com a conta Google.</li>
+                            <li>Sistema redireciona o usuário para o provedor de autenticação do Google.</li>
+                            <li>Sistema recebe a confirmação de identidade do provedor.</li>
+                            <li>Fluxo retorna ao passo 7 do Fluxo Principal.</li>
+                        </ol>
+                        <p><strong>FA-A2 — Primeiro acesso do usuário</strong></p>
+                        <ol>
+                            <li>Sistema identifica que o usuário está realizando o primeiro login. (RN12)</li>
+                            <li>Sistema pede ao usuário o aceite dos Termos e Condições. (RN16) </li>
+                            <li>Fluxo retorna ao passo 6 do Fluxo Principal.</li>
+                        </ol>
+
+                        <p><strong>Fluxos de Exceção</strong></p>
+                        <p><strong>FE-E1 — Credenciais inválidas</strong></p>
+                        <ol>
+                            <li>Sistema identifica que o e-mail ou a senha informados não correspondem a uma conta
+                                válida.</li>
+                            <li>Sistema interrompe o processo de autenticação.</li>
+                            <li>Sistema informa ao usuário que as credenciais são inválidas e solicita nova tentativa.
+                            </li>
+                        </ol>
+                        <p><strong>FE-E2 — Falha na verificação do MFA</strong></p>
+                        <ol>
+                            <li>Sistema identifica que o código informado é inválido, expirado ou não foi informado
+                                dentro do prazo.</li>
+                            <li>Sistema interrompe a autenticação.</li>
+                            <li>Sistema informa o usuário sobre a falha, mantendo-o na etapa de verificação do MFA.
+                                (UC-34)</li>
+                        </ol>
+
+                        <p><strong>Pós-condições</strong></p>
+                        <p><strong>Sucesso</strong></p>
+                        <ul>
+                            <li>Sessão autenticada iniciada para o usuário.</li>
+                            <li>Acesso às funcionalidades correspondentes ao perfil liberado.</li>
+                        </ul>
+                        <p><strong>Falha</strong></p>
+                        <ul>
+                            <li>Nenhuma sessão é iniciada.</li>
+                            <li>Usuário permanece na tela de login.</li>
+                        </ul>
+
+                        <p><strong>Casos de Uso Relacionados</strong></p>
+                        <ul>
+                            <li><a href="#uc-05">UC-05</a></li>
+                            <li><a href="#uc-34">UC-34</a></li>
+                        </ul>
+
+                        <h2 id="uc-34">UC-34: Autenticar com múltiplo fator (MFA)</h2>
 
                         <p><strong>Objetivo:</strong> Exigir a validação de um segundo fator de autenticação, por meio
                             de código enviado por e-mail, para conceder acesso à plataforma, reforçando a segurança do
@@ -369,7 +971,7 @@
                             <li>Sistema valida o código informado, verificando a correspondência e o prazo de validade.
                                 (FE-E1)</li>
                             <li>Sistema confirma a autenticação multifator.</li>
-                            <li>Sistema concede acesso à plataforma, dando prosseguimento ao processo de login. (UC-23)
+                            <li>Sistema concede acesso à plataforma, dando prosseguimento ao processo de login. (UC-33)
                             </li>
                         </ol>
 
@@ -406,141 +1008,7 @@
 
                         <p><strong>Casos de Uso Relacionados</strong></p>
                         <ul>
-                            <li><a href="#uc-23">UC-23</a></li>
-                            <li><a href="#uc-18">UC-18</a></li>
-                        </ul>
-
-                        <h2 id="uc-19">UC-19: Registrar consentimento LGPD</h2>
-
-                        <p><strong>Objetivo:</strong> Apresentar e registrar o consentimento explícito do usuário para o
-                            tratamento dos seus dados pessoais no momento do cadastro do perfil, assegurando
-                            conformidade com a LGPD.</p>
-                        <p><strong>Atores:</strong> Usuário (novo membro em processo de cadastro)</p>
-
-                        <p><strong>Pré-condições</strong></p>
-                        <ul>
-                            <li>Usuário possui cadastro.</li>
-                        </ul>
-
-                        <p><strong>Fluxo Principal</strong></p>
-                        <ol>
-                            <li>Sistema exibe ao usuário o termo de tratamento de dados pessoais (CPF, data de
-                                nascimento, foto, etc.) durante o primeiro login.</li>
-                            <li>Usuário realiza a leitura do termo apresentado.</li>
-                            <li>Usuário manifesta o consentimento explícito ao tratamento dos dados. (FE-E1)</li>
-                            <li>Sistema valida o registro do consentimento fornecido.</li>
-                            <li>Sistema grava o registro de aceite, incluindo data e hora, vinculado à conta do usuário.
-                                (RN15)</li>
-                            <li>Sistema prossegue com a conclusão do cadastro do perfil. (UC-04)</li>
-                        </ol>
-
-                        <p><strong>Fluxos Alternativos</strong></p>
-                        <p>Não se aplicam fluxos alternativos a este caso de uso.</p>
-
-                        <p><strong>Fluxos de Exceção</strong></p>
-                        <p><strong>FE-E1 — Usuário não consente com o tratamento de dados</strong></p>
-                        <ol>
-                            <li>Sistema identifica que o usuário não manifestou consentimento ao termo apresentado.</li>
-                            <li>Sistema interrompe o processo de cadastro do perfil.</li>
-                            <li>Sistema informa o usuário de que o consentimento é obrigatório para a conclusão do
-                                cadastro. (UC-04)</li>
-                        </ol>
-
-                        <p><strong>Pós-condições</strong></p>
-                        <p><strong>Sucesso</strong></p>
-                        <ul>
-                            <li>Consentimento registrado com data e hora vinculados à conta do usuário.</li>
-                            <li>Cadastro do perfil pode prosseguir.</li>
-                        </ul>
-                        <p><strong>Falha</strong></p>
-                        <ul>
-                            <li>Nenhum consentimento registrado.</li>
-                            <li>Cadastro do perfil não é concluído.</li>
-                        </ul>
-
-                        <p><strong>Casos de Uso Relacionados</strong></p>
-                        <ul>
-                            <li><a href="#uc-04">UC-04</a></li>
-                        </ul>
-
-                        <h2 id="uc-22">UC-22: Realizar login</h2>
-
-                        <p><strong>Objetivo:</strong> Permitir que o usuário acesse a plataforma mediante validação de
-                            suas credenciais, concedendo acesso às funcionalidades de acordo com o seu perfil de
-                            permissão (RBAC).</p>
-                        <p><strong>Atores:</strong> Usuário (Direx, TOPS, Diretoria específica, Membro, Trainee)</p>
-
-                        <p><strong>Pré-condições</strong></p>
-                        <ul>
-                            <li>Usuário possui conta cadastrada na plataforma (UC-04).</li>
-                            <li>Usuário está na tela de login.</li>
-                        </ul>
-
-                        <p><strong>Fluxo Principal</strong></p>
-                        <ol>
-                            <li>Usuário acessa a tela de login.</li>
-                            <li>Usuário opta por autenticar-se com e-mail corporativo e senha. (FA-A1)</li>
-                            <li>Usuário informa as credenciais solicitadas.</li>
-                            <li>Sistema valida as credenciais informadas, verificando a existência da conta e a
-                                correspondência da senha. (FE-E1)</li>
-                            <li>Sistema verifica se o usuário já possui autenticador de múltiplo fator cadastrado.
-                                (RN12) (FA-A2)</li>
-                            <li>Sistema exige a autenticação multifator do usuário. (RN12) (UC-18) (FE-E2)</li>
-                            <li>Sistema concede acesso às funcionalidades de acordo com o perfil de permissão (RBAC) do
-                                usuário (Direx, TOPS, Diretoria específica, Membro ou Trainee).</li>
-                            <li>Sistema registra o acesso realizado.</li>
-                        </ol>
-
-                        <p><strong>Fluxos Alternativos</strong></p>
-                        <p><strong>FA-A1 — Autenticação via Google</strong></p>
-                        <ol>
-                            <li>Usuário seleciona a opção de login com a conta Google.</li>
-                            <li>Sistema redireciona o usuário para o provedor de autenticação do Google.</li>
-                            <li>Sistema recebe a confirmação de identidade do provedor.</li>
-                            <li>Fluxo retorna ao passo 7 do Fluxo Principal.</li>
-                        </ol>
-                        <p><strong>FA-A2 — Primeiro acesso do usuário</strong></p>
-                        <ol>
-                            <li>Sistema identifica que o usuário está realizando o primeiro login. (RN12)</li>
-                            <li>Sistema pede ao usuário o aceite dos Termos e Condições. (UC-19) </li>
-                            <li>Fluxo retorna ao passo 6 do Fluxo Principal.</li>
-                        </ol>
-
-                        <p><strong>Fluxos de Exceção</strong></p>
-                        <p><strong>FE-E1 — Credenciais inválidas</strong></p>
-                        <ol>
-                            <li>Sistema identifica que o e-mail ou a senha informados não correspondem a uma conta
-                                válida.</li>
-                            <li>Sistema interrompe o processo de autenticação.</li>
-                            <li>Sistema informa ao usuário que as credenciais são inválidas e solicita nova tentativa.
-                            </li>
-                        </ol>
-                        <p><strong>FE-E2 — Falha na verificação do MFA</strong></p>
-                        <ol>
-                            <li>Sistema identifica que o código informado é inválido, expirado ou não foi informado
-                                dentro do prazo.</li>
-                            <li>Sistema interrompe a autenticação.</li>
-                            <li>Sistema informa o usuário sobre a falha, mantendo-o na etapa de verificação do MFA.
-                                (UC-18)</li>
-                        </ol>
-
-                        <p><strong>Pós-condições</strong></p>
-                        <p><strong>Sucesso</strong></p>
-                        <ul>
-                            <li>Sessão autenticada iniciada para o usuário.</li>
-                            <li>Acesso às funcionalidades correspondentes ao perfil liberado.</li>
-                        </ul>
-                        <p><strong>Falha</strong></p>
-                        <ul>
-                            <li>Nenhuma sessão é iniciada.</li>
-                            <li>Usuário permanece na tela de login.</li>
-                        </ul>
-
-                        <p><strong>Casos de Uso Relacionados</strong></p>
-                        <ul>
-                            <li><a href="#uc-04">UC-04</a></li>
-                            <li><a href="#uc-18">UC-18</a></li>
-                            <li><a href="#uc-19">UC-19</a></li>
+                            <li><a href="#uc-33">UC-33</a></li>
                         </ul>
 
                     </div>

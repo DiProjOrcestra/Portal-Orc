@@ -22,7 +22,7 @@
         document.getElementById("sidebar-container").innerHTML = html;
       });
   </script>
-  <title>Tecnologias utilizadas — Portal Orc</title>
+  <title>Priorização dos Requisitos — Portal Orc</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="../css/style.css">
 </head>
 
-<body data-page="tecnologias">
+<body data-page="priorizacao">
   <svg class="watermark" viewBox="0 0 1786 1786" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path
       d="M747.206 1290.27C751.078 1288.57 753.364 1285.07 753.325 1280.82L747.08 1059.87C746.997 1056.54 745.376 1053.5 742.669 1051.63L617.478 964.644C611.112 960.233 607.322 952.989 607.322 945.21V895.638L552.093 802.536L570.449 1123.71C570.575 1126.38 571.696 1128.83 573.569 1130.62L735.968 1288.19C739.049 1291.19 743.251 1291.94 747.206 1290.23" />
@@ -51,7 +51,6 @@
       d="M722.609 795.378C720.071 795.378 717.529 796.334 715.574 798.207L623.931 884.899C621.889 886.816 620.724 889.519 620.724 892.352V943.749C620.724 947.121 622.35 950.285 625.135 952.158L750.326 1039.14C756.528 1043.43 760.317 1050.51 760.482 1058.04L766.727 1278.99C766.766 1280.24 766.683 1281.49 766.518 1282.66C765.519 1290.98 760.4 1297.97 752.49 1301.43C749.37 1302.8 746.08 1303.46 742.878 1303.46C736.924 1303.46 731.14 1301.14 726.564 1296.72L595.254 1169.33V1331.56H669.879V1406.18H1117.7V1331.56H1192.32V1168.08L1059.68 1296.76C1055.1 1301.17 1049.32 1303.51 1043.37 1303.51H1043.33C1040.12 1303.51 1036.88 1302.84 1033.75 1301.47C1024.81 1297.55 1019.36 1289.07 1019.56 1279.28L1025.85 1058.2C1026.01 1050.71 1029.8 1043.63 1036 1039.35L1161.19 952.366C1163.94 950.45 1165.61 947.286 1165.61 943.958V892.557C1165.61 889.727 1164.44 887.024 1162.4 885.108L1070.75 798.416C1068.76 796.543 1066.26 795.587 1063.72 795.587C1061.18 795.587 1058.6 796.543 1056.6 798.459L968.246 883.735H968.411L967.955 1256.44H819.167V884.608L729.728 798.29C727.729 796.377 725.191 795.421 722.609 795.421V795.378Z" />
   </svg>
 
-  <!-- ============================== HEADER ============================== -->
   <header class="topbar">
     <button class="nav-toggle" id="navToggle" aria-label="Abrir navegação" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -173,217 +172,325 @@
                 <tbody>
                   <tr>
                     <td>RF01</td>
-                    <td>Visualizar painel de prospecção</td>
+                    <td>Consultar funil de vendas</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF02</td>
-                    <td>Visualizar Dashboard Analytics Comercial</td>
+                    <td>Consultar dashboard de métricas comerciais</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF03</td>
-                    <td>Centralizar Arquivos</td>
+                    <td>Cadastrar arquivos</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF04</td>
-                    <td>Cadastrar Perfil individual dos membros</td>
+                    <td>Consultar e baixar arquivos</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF05</td>
-                    <td>Visualizar perfil individual dos membros</td>
+                    <td>Cadastrar Perfil dos membros</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF06</td>
-                    <td>Editar perfil</td>
+                    <td>Gerar e enviar senha temporária no cadastro do membro</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF07</td>
-                    <td>Centralizar formulários</td>
+                    <td>Exigir troca de senha no primeiro login</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td class="mvp-cell"></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF08</td>
-                    <td>Exibir painel informativo</td>
+                    <td>Consultar dados pessoais do perfil</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF09</td>
-                    <td>Editar painel informativo</td>
+                    <td>Consultar dados profissionais do perfil</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF10</td>
-                    <td>Preencher a Orc'ronologia</td>
-                    <td><span class="moscow-badge moscow-badge--could">Could have</span></td>
-                    <td class="mvp-cell"></td>
+                    <td>Consultar status de alocação do membro</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF11</td>
-                    <td>Visualizar Painel de Transparência Financeira</td>
-                    <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
-                    <td class="mvp-cell"></td>
+                    <td>Consultar planos de ação estratégicos vinculados ao membro</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF12</td>
-                    <td>Criar painel de oportunidades comerciais</td>
+                    <td>Editar perfil do membro</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF13</td>
-                    <td>Registrar perfil do cliente</td>
+                    <td>Centralizar formulários</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
+                    <td>RF14</td>
+                    <td>Consultar MVV e Golden Circle</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
-                    <td>RF14</td>
-                    <td>Disponibilizar Trilhas de Aprendizagem</td>
-                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td class="mvp-cell"></td>
-                  </tr>
-                  <tr>
                     <td>RF15</td>
-                    <td>Simulador Comercial</td>
-                    <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
-                    <td class="mvp-cell"></td>
+                    <td>Editar MVV e Golden Circle</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF16</td>
-                    <td>Registrar presença nas Reuniões Gerais</td>
-                    <td><span class="moscow-badge moscow-badge--could">Could have</span></td>
-                    <td class="mvp-cell"></td>
+                    <td>Consultar planejamento estratégico e objetivos do ano</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF17</td>
-                    <td>Registrar log de auditoria</td>
+                    <td>Editar planejamento estratégico e objetivos do ano</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF18</td>
-                    <td>Autenticar com múltiplo fator (MFA)</td>
+                    <td>Cadastrar plano de ação por objetivo estratégico</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF19</td>
-                    <td>Registrar consentimento LGPD</td>
+                    <td>Vincular membros a plano de ação</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF20</td>
-                    <td>Expirar sessão por inatividade</td>
-                    <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
+                    <td>Editar status do objetivo/plano de ação</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF21</td>
-                    <td>Bloquear conta por tentativas de login malsucedidas</td>
-                    <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
+                    <td>Consultar plano de ação</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF22</td>
-                    <td>Realizar login</td>
-                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
-                  </tr>
-                  <tr>
-                    <td>RF23</td>
-                    <td>Redefinir senha</td>
-                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td>Preencher a Orc'ronologia</td>
+                    <td><span class="moscow-badge moscow-badge--could">Could have</span></td>
                     <td class="mvp-cell"></td>
                   </tr>
                   <tr>
-                    <td>RF24</td>
-                    <td>Excluir conta</td>
+                    <td>RF23</td>
+                    <td>Consultar painel de transparência financeira</td>
                     <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
                     <td class="mvp-cell"></td>
                   </tr>
                   <tr>
+                    <td>RF24</td>
+                    <td>Cadastrar oportunidade comercial no funil</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
+                  </tr>
+                  <tr>
                     <td>RF25</td>
-                    <td>Criar Agenda</td>
+                    <td>Editar dados de oportunidade comercial</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF26</td>
-                    <td>Exibir Quadro Kanban de acompanhamento</td>
-                    <td><span class="moscow-badge moscow-badge--could">Could have</span></td>
-                    <td class="mvp-cell"></td>
+                    <td>Mover oportunidade comercial entre estágios do funil</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF27</td>
-                    <td>Disponibilizar Calendário</td>
-                    <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
+                    <td>Registrar perfil 360° do cliente</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF28</td>
-                    <td>Disponibilizar Jornal Orc</td>
-                    <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
-                    <td class="mvp-cell"></td>
-                  </tr>
-                  <tr>
-                    <td>RF29</td>
-                    <td>Consultar página de projetos</td>
+                    <td>Agendar follow-up com cliente</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
+                    <td>RF29</td>
+                    <td>Disponibilizar Trilhas de Aprendizagem</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
                     <td>RF30</td>
-                    <td>Visualizar Catálogo de Serviços</td>
-                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td class="mvp-cell"></td>
-                  </tr>
-                  <tr>
-                    <td>RF31</td>
-                    <td>Buscar perfis</td>
-                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
-                    <td class="mvp-cell"></td>
-                  </tr>
-                  <tr>
-                    <td>RF32</td>
-                    <td>Cadastrar Módulos de Inteligência de Mercado</td>
+                    <td>Simular negociações comerciais com IA</td>
                     <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
                     <td class="mvp-cell"></td>
                   </tr>
                   <tr>
+                    <td>RF31</td>
+                    <td>Registrar presença nas Reuniões Gerais</td>
+                    <td><span class="moscow-badge moscow-badge--could">Could have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
+                    <td>RF32</td>
+                    <td>Registrar log de auditoria</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
+                  </tr>
+                  <tr>
                     <td>RF33</td>
-                    <td>Disponibilizar guias</td>
+                    <td>Realizar login</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF34</td>
-                    <td>Atribuir Pontuação aos membros</td>
+                    <td>Autenticar com múltiplo fator (MFA)</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF35</td>
-                    <td>Exibir Rankings periódicos</td>
-                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td>Expirar sessão por inatividade</td>
+                    <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
                   <tr>
                     <td>RF36</td>
-                    <td>Exibir Hall da Fama</td>
+                    <td>Bloquear conta por tentativas de login malsucedidas</td>
+                    <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
+                  </tr>
+                  <tr>
+                    <td>RF37</td>
+                    <td>Redefinir senha via e-mail</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
+                    <td>RF38</td>
+                    <td>Excluir conta e dados pessoais</td>
+                    <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
+                    <td>RF39</td>
+                    <td>Criar Agenda</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
+                  </tr>
+                  <tr>
+                    <td>RF40</td>
+                    <td>Acompanhar Kanban de metas estratégicas</td>
+                    <td><span class="moscow-badge moscow-badge--could">Could have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
+                    <td>RF41</td>
+                    <td>Disponibilizar Calendário</td>
+                    <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
+                  </tr>
+                  <tr>
+                    <td>RF42</td>
+                    <td>Disponibilizar Jornal Orc</td>
+                    <td><span class="moscow-badge moscow-badge--should">Should have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
+                    <td>RF43</td>
+                    <td>Consultar histórico de projetos executados</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
+                  </tr>
+                  <tr>
+                    <td>RF44</td>
+                    <td>Registrar ata de post-mortem de projeto</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
+                    <td>RF45</td>
+                    <td>Consultar atas de post-mortem</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
+                    <td>RF46</td>
+                    <td>Consultar catálogo de serviços</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
+                    <td>RF47</td>
+                    <td>Buscar membros</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
+                    <td>RF48</td>
+                    <td>Cadastrar dados de inteligência de mercado manualmente</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
+                    <td>RF49</td>
+                    <td>Coletar dados de mercado automaticamente (IA / web scraping)</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
+                    <td>RF50</td>
+                    <td>Consultar base de inteligência de mercado</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"></td>
+                  </tr>
+                  <tr>
+                    <td>RF51</td>
+                    <td>Consultar guias de processos internos</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
+                  </tr>
+                  <tr>
+                    <td>RF52</td>
+                    <td>Atribuir Pontuação aos membros</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
+                  </tr>
+                  <tr>
+                    <td>RF53</td>
+                    <td>Consultar ranking, níveis e conquistas</td>
+                    <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
+                    <td class="mvp-cell"><span class="mvp-mark">X</span></td>
+                  </tr>
+                  <tr>
+                    <td>RF54</td>
+                    <td>Consultar Hall da Fama</td>
                     <td><span class="moscow-badge moscow-badge--must">Must have</span></td>
                     <td class="mvp-cell"><span class="mvp-mark">X</span></td>
                   </tr>
