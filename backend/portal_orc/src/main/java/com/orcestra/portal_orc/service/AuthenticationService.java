@@ -14,14 +14,18 @@ import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
 import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
+import com.orcestra.portal_orc.dto.ResendPasswordDto;
 import com.orcestra.portal_orc.dto.ResendCodeRequestDto;
 import com.orcestra.portal_orc.dto.TokenResponseDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
+import com.orcestra.portal_orc.exception.NotFoundException;
+import com.orcestra.portal_orc.model.DirectorateEntity;
 import com.orcestra.portal_orc.model.RoleEntity;
 import com.orcestra.portal_orc.model.UserEntity;
 import com.orcestra.portal_orc.repository.RoleRepository;
 import com.orcestra.portal_orc.repository.UserRepository;
+import com.orcestra.portal_orc.util.RandomPasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +43,8 @@ public class AuthenticationService {
     private long expirationTime;
     @Value("${jwt.mfa.expiration}")
     private long mfaExpirationTime;
+    private final RandomPasswordGenerator randomPasswordGenerator;
+    private final EmailSenderService emailSenderService;
 
     public void registerUser(RegisterRequestDto userRequestDto) throws BadRequestException{
         UserEntity userEntity = userRepository.findByEmail(userRequestDto.getEmail()).orElse(null);
@@ -50,12 +56,27 @@ public class AuthenticationService {
                             .orElseGet(() -> roleRepository.save(RoleEntity.builder()
                                 .name(RoleTypeEnum.USER.name()).build()));
 
-        UserEntity userRegister = new UserEntity(userRequestDto);
-        userRegister.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        DirectorateEntity direcotrate = directorateRepository.findByDirectorateName(registerRequestDto.getDirectorate().name())
+                                        .orElseGet(() -> directorateRepository.save(DirectorateEntity.builder()
+                                            .directorateName(registerRequestDto.getDirectorate().name()).build()));
+                                
+        String userPassword = randomPasswordGenerator.generateRandomPassword(15);
+        UserEntity userRegister = new UserEntity(registerRequestDto);
         userRegister.setRoles(Set.of(role));
+        userRegister.setPassword(passwordEncoder.encode(userPassword));
+        userRegister.setDirectorate(direcotrate);
         userRepository.save(userRegister);
+        emailSenderService.sendEmail(registerRequestDto.getEmail(), "Senha para primeiro cadastro", "Sua senha é " + userPassword);
     }
 
+    public void resendRandomPassword(ResendPasswordDto resendPasswordDto) throws NotFoundException {
+        UserEntity userEntity = userRepository.findByEmail(resendPasswordDto.getEmail()).orElseThrow(() -> new NotFoundException("Email não encontrado"));
+
+        String userPassword = randomPasswordGenerator.generateRandomPassword(15);
+        userEntity.setPassword(passwordEncoder.encode(userPassword));
+        userRepository.save(userEntity);
+        emailSenderService.sendEmail(resendPasswordDto.getEmail(), "Senha para primeiro cadastro", "Sua senha é " + userPassword);
+    }
     public MfaTokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));

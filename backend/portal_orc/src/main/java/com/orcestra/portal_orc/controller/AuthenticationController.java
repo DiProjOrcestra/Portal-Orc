@@ -15,8 +15,10 @@ import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
 import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
+import com.orcestra.portal_orc.dto.ResendPasswordDto;
 import com.orcestra.portal_orc.dto.ResendCodeRequestDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
+import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.service.AuthenticationService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,6 +44,12 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public MfaTokenResponseDto login(@Valid @RequestBody LoginRequestDto loginRequestDto) throws Exception{
         return authenticationService.loginUser(loginRequestDto);
+    }
+
+    @PostMapping("/resend/password")
+    @ResponseStatus(HttpStatus.OK)
+    public void resendRandomPassword(@Valid @RequestBody ResendPasswordDto resendPasswordDto) throws NotFoundException {
+        authenticationService.resendRandomPassword(resendPasswordDto);
     }
 
     @PostMapping("/login/mfa")

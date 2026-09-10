@@ -1,11 +1,18 @@
-FROM nginx:alpine
+FROM node:20-alpine
 
-# Limpa os arquivos padrão do Nginx
-RUN rm -rf /usr/share/nginx/html/*
+WORKDIR /app
 
-# Copia os arquivos estáticos da pasta docs para o Nginx
-COPY docs/ /usr/share/nginx/html
+# Copia os arquivos de dependência
+COPY package*.json ./
 
-EXPOSE 80
+# Instala as dependências
+RUN npm install
 
-CMD ["nginx", "-g", "daemon off;"]
+# Copia todo o código-fonte do frontend
+COPY . .
+
+# Expõe a porta padrão do Vite
+EXPOSE 5173
+
+# Inicia o servidor de desenvolvimento do Vite escutando em todas as interfaces
+CMD ["npm", "run", "dev", "--", "--host"]

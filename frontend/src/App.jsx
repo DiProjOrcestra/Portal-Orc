@@ -1,16 +1,15 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
+import PainelInstitucional from './pages/PainelInstitucional/PainelInstitucional';
 import CadastrarMembro from './pages/CadastrarMembro/CadastrarMembro';
 import VerificarCodigo from './pages/VerificarCodigo/VerificarCodigo';
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/cadastrar-membro" element={<CadastrarMembro />} />
-        <Route path="/verificar-codigo" element={<VerificarCodigo />} />
-      </Routes>
-    </BrowserRouter>
-  );
+  const [page, setPage] = useState('painel');
+
+  if (page === 'cadastro') {
+    return <CadastrarMembro activeTab={page} onNavigate={setPage} />;
+  }
+  return <PainelInstitucional activeTab={page} onNavigate={setPage} />;
 }
 
 export default App;

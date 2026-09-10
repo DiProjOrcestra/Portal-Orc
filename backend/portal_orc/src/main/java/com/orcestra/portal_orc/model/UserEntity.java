@@ -78,15 +78,14 @@ public class UserEntity implements UserDetails {
     @Column(name="mfa_attempts")
     private Integer mfaAttempts;
 
-    public UserEntity(RegisterRequestDto userRequestDto){
-        this.cpf = userRequestDto.getCpf();
-        this.email = userRequestDto.getEmail();
-        this.birthDate = userRequestDto.getBirthDate();
-        this.name = userRequestDto.getName();
-        this.phone = userRequestDto.getPhone();
-        this.entryDay = userRequestDto.getEntryDay();
-        this.position = userRequestDto.getPosition();
-        this.directorate = userRequestDto.getDirectorate();
+    public UserEntity(RegisterRequestDto registerRequestDto){
+        this.cpf = registerRequestDto.getCpf().replaceAll("\\D", "");
+        this.email = registerRequestDto.getEmail();
+        this.birthDate = registerRequestDto.getBirthDate();
+        this.name = registerRequestDto.getName();
+        this.phone = registerRequestDto.getPhone();
+        this.entryDay = registerRequestDto.getEntryDay();
+        this.position = registerRequestDto.getPosition();
     }
 
     @Override
