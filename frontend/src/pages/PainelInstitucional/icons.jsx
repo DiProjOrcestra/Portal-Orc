@@ -112,3 +112,16 @@ export const CampaignIcon = (props) => (
     <path d="M16.5 9v6.4a3 3 0 0 0 0-6.4Z" />
   </svg>
 );
+
+export const PlusIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+
+export const WarningIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M12 4.5 21 19.5H3Z" />
+    <path d="M12 10v4M12 16.5h.01" />
+  </svg>
+);
