@@ -21,8 +21,8 @@ import lombok.ToString;
 @Builder
 public class RegisterRequestDto {
     
-    @NotNull
-    private Long cpf;
+    @NotBlank 
+    private String cpf;
 
     @NotBlank
     private String email;

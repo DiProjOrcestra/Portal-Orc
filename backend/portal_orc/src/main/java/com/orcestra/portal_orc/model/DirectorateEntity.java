@@ -26,7 +26,7 @@ public class DirectorateEntity {
     @Id
     private Integer id;
 
-    private String nome;
+    private String name;
 
     @Builder.Default
     @OneToMany(mappedBy = "directorate", fetch = FetchType.LAZY)
