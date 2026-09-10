@@ -81,7 +81,10 @@ public class AuthenticationService {
             throw new BadRequestException("Código inválido.");
         }
 
-        return String.valueOf(expirationTime);
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));
+
+        return tokenProvider.gerarToken(user);
     }
 
     public void resendCode(ResendCodeRequestDto resendCodeRequestDto) throws BadRequestException{
