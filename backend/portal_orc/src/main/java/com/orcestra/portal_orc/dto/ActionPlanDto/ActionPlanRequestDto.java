@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.orcestra.portal_orc.dto.SubtaskRequestDto;
+import com.orcestra.portal_orc.dto.SubtaskDto.SubtaskRequestDto;
 import com.orcestra.portal_orc.enums.DirectorateEnum;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +22,7 @@ import lombok.Setter;
 @Setter
 public class ActionPlanRequestDto {
     
+    @Schema(example = "Reuniões peródicas com o cliente para aumentar sua satisfação")
     @NotBlank(message =  "O campo nome não pode ser vazio")
     private String name;
 
@@ -30,12 +31,15 @@ public class ActionPlanRequestDto {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate term;
 
+    @Schema(example = "Em andamento")
     @NotBlank(message = "O campo progresso não pode ser vazio")
     private String progress;
     
+    @Schema(example = "DIPROJ")
     @NotNull(message = "O campo diretoria não pode ser vazio")
     private DirectorateEnum directorate;
 
+    @Schema(example = "Urgente")
     @NotBlank(message = "O campo prioridade não pode ser vazio")
     private String priority;
 

@@ -47,13 +47,13 @@ public class ObjectiveController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ObjectiveResponseDto updateObjective(@PathVariable Integer id, @RequestBody ObjectiveRequestDto objectiveRequestDto) throws NotFoundException {
+    public ObjectiveResponseDto updateObjective(@PathVariable Integer id, @Valid @RequestBody ObjectiveRequestDto objectiveRequestDto) throws NotFoundException {
         return objectiveService.updateObjective(id, objectiveRequestDto);
     }
 
     @PostMapping("/{objectiveId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createActionPlan(@PathVariable() Integer objectiveId, @RequestBody ActionPlanRequestDto actionPlanRequestDto) throws BadRequestException, NotFoundException {
+    public void createActionPlan(@PathVariable() Integer objectiveId, @Valid @RequestBody ActionPlanRequestDto actionPlanRequestDto) throws BadRequestException, NotFoundException {
         actionPlanService.createActionPlan(objectiveId, actionPlanRequestDto);
     }
 }
