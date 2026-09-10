@@ -1,4 +1,4 @@
-package com.orcestra.portal_orc.dto;
+package com.orcestra.portal_orc.dto.SubtaskDto;
 
 import com.orcestra.portal_orc.model.SubtaskEntity;
 
