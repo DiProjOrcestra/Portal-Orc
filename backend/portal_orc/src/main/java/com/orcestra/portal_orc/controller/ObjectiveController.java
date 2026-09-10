@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,5 +46,11 @@ public class ObjectiveController {
     @ResponseStatus(HttpStatus.OK)
     public ObjectiveResponseDto updateObjective(@PathVariable Integer id, @RequestBody ObjectiveRequestDto objectiveRequestDto) throws NotFoundException {
         return objectiveService.updateObjective(id, objectiveRequestDto);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteObjective(@PathVariable Integer id) throws NotFoundException {
+        objectiveService.deleteObjective(id);
     }
 }

@@ -37,4 +37,9 @@ public class ObjectiveService {
 
         return new ObjectiveResponseDto(objective);
     }
+
+    public void deleteObjective(Integer id) throws NotFoundException {
+        objectiveRepository.delete(objectiveRepository.findById(id).orElseThrow(() -> new 
+        NotFoundException(String.format("Objetivo com id %d não encontrado", id))));
+    }
 }
