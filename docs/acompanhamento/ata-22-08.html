@@ -5,8 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>
-    // Aplica o tema salvo (ou a preferência do sistema) antes da 1ª pintura,
-    // para não haver "flash" de tema errado ao trocar de página.
     (function () {
       try {
         var saved = localStorage.getItem('docs-theme');
@@ -15,15 +13,16 @@
         } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
           document.documentElement.setAttribute('data-theme', 'dark');
         }
-      } catch (e) { /* localStorage indisponível */ }
+      } catch (e) { }
     })();
+
     fetch("../components/sidebar.html")
       .then(response => response.text())
       .then(html => {
         document.getElementById("sidebar-container").innerHTML = html;
       });
   </script>
-  <title>Cronograma e Entregas — Portal Orc</title>
+  <title>Ata Reunião 5 — Portal Orc</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -32,9 +31,7 @@
   <link rel="stylesheet" href="../css/style.css">
 </head>
 
-<body data-page="cronograma">
-
-  <!-- marca d'água decorativa a partir do símbolo institucional -->
+<body data-page="ata-5">
   <svg class="watermark" viewBox="0 0 1786 1786" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path
       d="M747.206 1290.27C751.078 1288.57 753.364 1285.07 753.325 1280.82L747.08 1059.87C746.997 1056.54 745.376 1053.5 742.669 1051.63L617.478 964.644C611.112 960.233 607.322 952.989 607.322 945.21V895.638L552.093 802.536L570.449 1123.71C570.575 1126.38 571.696 1128.83 573.569 1130.62L735.968 1288.19C739.049 1291.19 743.251 1291.94 747.206 1290.23" />
@@ -147,160 +144,90 @@
         <div class="content-inner">
 
           <p class="breadcrumb">
-            <a href="index.html">Acompanhamento</a><span class="sep">/</span>
-            <span class="current">Cronograma e Entregas</span>
+            <a href="../acompanhamento/atas.html">Acompanhamento</a><span class="sep">/</span>
+            <span class="current">Ata Reunião 5</span>
           </p>
 
-          <p class="eyebrow">Acompanhamento</p>
-          <h1 class="page-title">Cronograma e Entregas</h1>
-          <p class="lead">Visão geral dos ciclos de desenvolvimento do projeto, com prazos, entregas previstas e o
-            estágio atual de cada fase.</p>
+          <p class="eyebrow">Acompanhamento — Atas de Reunião</p>
+          <h1 class="page-title">Ata Reunião 5 — 22/08/26</h1>
+          <p class="lead">Reunião de alinhamento semanal, realizada em 22 de agosto de 2026.</p>
 
           <div class="prose">
 
-            <h2 id="visao-geral-dos-ciclos">Visão geral dos ciclos</h2>
+            <h2 id="participantes">Participantes</h2>
+            <ul>
+              <li>Fábio Alessandro</li>
+              <li>Thiago Alencar de Oliveira</li>
+              <li>Júlia Amanda Silva Lima</li>
+              <li>Yasmim de Souza Santos</li>
+              <li>Graziele</li>
+            </ul>
 
+            <h2 id="resumo">Resumo</h2>
+            <p>Reunião de alinhamento semanal das frentes técnicas e acompanhamento de prazos. O DevOps reportou a correção do Dockerfile e da esteira de CD, o Back-end avançou no Cadastro e no Login, e o Front-end comunicou que o protótipo no Figma está na reta final. A gestão anunciou o acesso à plataforma Udemy para capacitação e reforçou o cronograma: duas semanas de desenvolvimento seguidas de uma semana de vacância para testes e correções.</p>
+
+            <h2 id="pauta-e-discussoes">Pauta e Discussões</h2>
+
+            <h3 id="alinhamento-semanal">Alinhamento Semanal</h3>
+            <p>Apresentação do progresso de cada equipe e planejamento para a semana seguinte.</p>
+            <ul>
+              <li><strong>DevOps:</strong> correção do Dockerfile e dos testes automatizados de CD; aguardo de atualizações do Back-end para retomar a integração.</li>
+              <li><strong>Back-end:</strong> Cadastro implementado; Login em refinamento; reestruturação das pastas no monorepo.</li>
+              <li><strong>Front-end:</strong> protótipo no Figma quase concluído, restando a tela de edição dos planos de ação.</li>
+            </ul>
+
+            <h3 id="estrutura-de-pastas">Estrutura de Pastas e Branches</h3>
+            <p>Validação da divisão entre Front e Back e reforço da regra de criar branches específicas para cada caso de uso.</p>
+
+            <h3 id="capacitacao-udemy">Capacitação — Assinatura Udemy</h3>
+            <p>Disponibilização da plataforma Udemy para a equipe, incentivando cursos voltados a Figma e desenvolvimento.</p>
+
+            <h3 id="prazos-e-encerramento">Prazos e Encerramento</h3>
+            <p>Confirmação de duas semanas restantes de desenvolvimento antes da apresentação final, seguidas de uma semana de vacância para feedbacks e ajustes.</p>
+
+            <h2 id="decisoes">Decisões</h2>
+            <ul>
+              <li><strong>Fluxo de Branches:</strong> cada funcionalidade deve ser desenvolvida na branch do respectivo caso de uso.</li>
+              <li><strong>Back-end:</strong> reorganizar as pastas na estrutura do monorepo antes de novos commits.</li>
+              <li><strong>Figma:</strong> finalizar a tela de edição dos planos de ação para fechar a prototipação.</li>
+              <li><strong>Capacitação:</strong> membros devem utilizar a conta da Orc'estra na Udemy para realizar cursos técnicos.</li>
+              <li><strong>Testes Automatizados:</strong> finalização autorizada durante a semana de vacância.</li>
+            </ul>
+
+            <h2 id="plano-de-acao">Plano de Ação (Próximas Etapas)</h2>
             <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th>Ciclo</th>
-                    <th>Escopo</th>
-                    <th>Período</th>
-                    <th>Casos de uso</th>
-                    <th>Status</th>
+                    <th>Responsável</th>
+                    <th>Tarefa</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a href="#ciclo-1">Ciclo 1</a></td>
-                    <td>Priorização dos requisitos, definição do MVP e prototipação/implementação dos casos de uso
-                      prioritários.</td>
-                    <td>03/08 a 03/09/2026</td>
-                    <td>
-                      <div class="uc-chip-group">
-                        <span class="uc-chip">UC-05</span>
-                        <span class="uc-chip">UC-06</span>
-                        <span class="uc-chip">UC-07</span>
-                        <span class="uc-chip">UC-14</span>
-                        <span class="uc-chip">UC-15</span>
-                        <span class="uc-chip">UC-16</span>
-                        <span class="uc-chip">UC-17</span>
-                        <span class="uc-chip">UC-18</span>
-                        <span class="uc-chip">UC-19</span>
-                        <span class="uc-chip">UC-20</span>
-                        <span class="uc-chip">UC-21</span>
-                        <span class="uc-chip">UC-33</span>
-                        <span class="uc-chip">UC-34</span>
-                      </div>
-                    </td>
-                    <td><span class="status-badge status-badge--andamento">Em andamento</span></td>
+                    <td>DevOps</td>
+                    <td>Aguardar atualizações do Back-end para retomar integração e pipeline.</td>
                   </tr>
-                  <tr class="table-placeholder-row">
-                    <td colspan="5">Ciclo 2 — escopo, datas e casos de uso serão definidos ao final do Ciclo 1.</td>
+                  <tr>
+                    <td>Back-end</td>
+                    <td>Finalizar revisão do Cadastro, refinar Login e reestruturar pastas no repositório.</td>
+                  </tr>
+                  <tr>
+                    <td>Front-end</td>
+                    <td>Concluir tela de edição dos planos de ação no Figma e iniciar desenvolvimento.</td>
+                  </tr>
+                  <tr>
+                    <td>Todos</td>
+                    <td>Acessar a Udemy e realizar cursos de capacitação técnica.</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <h2 id="detalhamento-por-ciclo">Detalhamento por ciclo</h2>
-
-            <div class="cycle-list">
-
-              <details class="cycle-details" id="ciclo-1" open>
-                <summary class="cycle-summary">
-                  <span class="cycle-summary-main">
-                    <span class="cycle-index">Ciclo 1</span>
-                    <span class="cycle-period">03/08 – 03/09/2026</span>
-                  </span>
-                  <span class="status-badge status-badge--andamento">Em andamento</span>
-                  <svg class="cycle-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" aria-hidden="true">
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </summary>
-                <div class="cycle-body">
-
-                  <p class="cycle-subhead">Casos de uso</p>
-                  <div class="uc-chip-group">
-                    <span class="uc-chip">UC-05</span>
-                    <span class="uc-chip">UC-06</span>
-                    <span class="uc-chip">UC-07</span>
-                    <span class="uc-chip">UC-14</span>
-                    <span class="uc-chip">UC-15</span>
-                    <span class="uc-chip">UC-16</span>
-                    <span class="uc-chip">UC-17</span>
-                    <span class="uc-chip">UC-18</span>
-                    <span class="uc-chip">UC-19</span>
-                    <span class="uc-chip">UC-20</span>
-                    <span class="uc-chip">UC-21</span>
-                    <span class="uc-chip">UC-33</span>
-                    <span class="uc-chip">UC-34</span>
-                  </div>
-
-                  <br>
-
-                  <p class="cycle-subhead">Fases</p>
-                  <div class="timeline" role="list">
-                    <div class="timeline-step is-done" role="listitem">
-                      <div class="timeline-marker"></div>
-                      <p class="timeline-dates">03/08 – 06/08</p>
-                      <p class="timeline-title">Planejamento dos requisitos</p>
-                    </div>
-                    <div class="timeline-step is-current" role="listitem">
-                      <div class="timeline-marker"></div>
-                      <p class="timeline-dates">07/08 – 14/08</p>
-                      <p class="timeline-title" style="color: #01571e">Modelagem e prototipação</p>
-                      <span class="timeline-tag">Em andamento</span>
-                    </div>
-                    <div class="timeline-step" role="listitem">
-                      <div class="timeline-marker"></div>
-                      <p class="timeline-dates">15/08 – 28/08</p>
-                      <p class="timeline-title">Construção</p>
-                    </div>
-                    <div class="timeline-step" role="listitem">
-                      <div class="timeline-marker"></div>
-                      <p class="timeline-dates">28/08 – 03/09</p>
-                      <p class="timeline-title">Cutover</p>
-                    </div>
-                  </div>
-                </div>
-              </details>
-
-              <details class="cycle-details is-empty" id="ciclo-2">
-                <summary class="cycle-summary">
-                  <span class="cycle-summary-main">
-                    <span class="cycle-index">Ciclo 2</span>
-                    <span class="cycle-period">A definir</span>
-                  </span>
-                  <span class="status-badge status-badge--planejado">Não iniciado</span>
-                  <svg class="cycle-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" aria-hidden="true">
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </summary>
-                <div class="cycle-body">
-                  <p class="cycle-empty-note">Escopo, datas, casos de uso e fases serão definidos ao final do Ciclo 1.
-                  </p>
-                </div>
-              </details>
-
-            </div>
-
-            <div class="callout callout--tip">
-              <svg class="callout__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 18h6" />
-                <path d="M10 22h4" />
-                <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2.3h6c0-1.1.4-1.8 1-2.3A7 7 0 0 0 12 2Z" />
-              </svg>
-              <div class="callout__body">
-                <p class="callout__title">Critério de conclusão de um ciclo</p>
-                <p>Um ciclo só é considerado <strong>concluído</strong> quando todos os seus casos de uso estiverem
-                  <strong>prototipados</strong>, <strong>implementados</strong>, <strong>testados</strong> e <strong>validados</strong> — não basta
-                  estarem apenas codificados.</p>
-              </div>
-            </div>
+            <h2 id="gravacao">Gravação da Reunião</h2>
+            <iframe src="https://drive.google.com/file/d/1igCWRAqOThwl_U54S5jLJyF-t-p2RkbG/preview"
+              width="100%" height="400" style="border: none; border-radius: 16px" allow="autoplay"
+              allowfullscreen></iframe>
 
           </div>
 
