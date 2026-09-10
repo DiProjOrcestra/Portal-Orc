@@ -2,7 +2,7 @@ import { useState } from 'react';
 import FormField from '../ui/FormField';
 import PasswordField from '../ui/PasswordField';
 import { login } from '../../services/authService';
-import { ApiError } from '../../services/api';
+import { ApiError, API_BASE_URL } from '../../services/api';
 import { isValidEmail } from '../../utils/formatters';
 import divider from '../../assets/linha-divisoria.png';
 import googleIcon from '../../assets/google-icon.png';
@@ -59,6 +59,10 @@ export default function LoginForm() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
+  };
+
   return (
     <div className="login-card">
       <div className="login-card__glow-layer" aria-hidden="true">
@@ -105,7 +109,7 @@ export default function LoginForm() {
             <img src={divider} alt="" aria-hidden="true" />
           </div>
 
-          <button type="button" className="login-form__google">
+          <button type="button" className="login-form__google" onClick={handleGoogleLogin}>
             <img src={googleIcon} alt="" aria-hidden="true" />
           </button>
         </form>
@@ -113,4 +117,3 @@ export default function LoginForm() {
     </div>
   );
 }
-
