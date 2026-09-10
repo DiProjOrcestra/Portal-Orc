@@ -1,6 +1,6 @@
 package com.orcestra.portal_orc.model;
 
-import com.orcestra.portal_orc.dto.SubtaskRequestDto;
+import com.orcestra.portal_orc.dto.SubtaskDto.SubtaskRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
