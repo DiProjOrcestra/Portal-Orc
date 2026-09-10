@@ -20,6 +20,7 @@ export async function apiRequest(path, { method = 'GET', body, headers } = {}) {
   try {
     response = await fetch(`${API_BASE_URL}${path}`, {
       method,
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         ...headers,
