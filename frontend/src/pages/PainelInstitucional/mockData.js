@@ -84,8 +84,8 @@ export const PLANO_ACAO_DATA = [
     objetivo: 1,
     capa: null,
     planos: [
-      { id: 1, prazo: '14/08/2026', status: 'concluido', subtarefas: SUBTAREFAS_MOCK },
-      { id: 2, prazo: '14/08/2026', status: 'andamento', subtarefas: SUBTAREFAS_MOCK },
+      { id: 1, prazo: '14/08/2026', status: 'concluido', subtarefas: [...SUBTAREFAS_MOCK], responsaveis: [], atividade: '', prioridade: 'alta' },
+      { id: 2, prazo: '14/08/2026', status: 'andamento', subtarefas: [...SUBTAREFAS_MOCK], responsaveis: [], atividade: '', prioridade: 'alta' },
     ],
   },
   {
@@ -94,8 +94,8 @@ export const PLANO_ACAO_DATA = [
     capa: '/planos-de-acao/comunicacoes.png',
     capaRatio: '782 / 430',
     planos: [
-      { id: 3, prazo: '14/08/2026', status: 'concluido', subtarefas: SUBTAREFAS_MOCK },
-      { id: 4, prazo: '14/08/2026', status: 'andamento', subtarefas: SUBTAREFAS_MOCK },
+      { id: 3, prazo: '14/08/2026', status: 'concluido', subtarefas: [...SUBTAREFAS_MOCK], responsaveis: [], atividade: '', prioridade: 'alta' },
+      { id: 4, prazo: '14/08/2026', status: 'andamento', subtarefas: [...SUBTAREFAS_MOCK], responsaveis: [], atividade: '', prioridade: 'alta' },
     ],
   },
   {
@@ -104,8 +104,8 @@ export const PLANO_ACAO_DATA = [
     capa: '/planos-de-acao/negocios.png',
     capaRatio: '784 / 337',
     planos: [
-      { id: 5, prazo: '14/08/2026', status: 'nao-concluido', subtarefas: SUBTAREFAS_MOCK },
-      { id: 6, prazo: '14/08/2026', status: 'andamento', subtarefas: SUBTAREFAS_MOCK },
+      { id: 5, prazo: '14/08/2026', status: 'nao-concluido', subtarefas: [...SUBTAREFAS_MOCK], responsaveis: [], atividade: '', prioridade: 'alta' },
+      { id: 6, prazo: '14/08/2026', status: 'andamento', subtarefas: [...SUBTAREFAS_MOCK], responsaveis: [], atividade: '', prioridade: 'alta' },
     ],
   },
   {
@@ -114,8 +114,8 @@ export const PLANO_ACAO_DATA = [
     capa: '/planos-de-acao/operacoes.png',
     capaRatio: '782 / 380',
     planos: [
-      { id: 7, prazo: '14/08/2026', status: 'andamento', subtarefas: SUBTAREFAS_MOCK },
-      { id: 8, prazo: '14/08/2026', status: 'concluido', subtarefas: SUBTAREFAS_MOCK },
+      { id: 7, prazo: '14/08/2026', status: 'andamento', subtarefas: [...SUBTAREFAS_MOCK], responsaveis: [], atividade: '', prioridade: 'alta' },
+      { id: 8, prazo: '14/08/2026', status: 'concluido', subtarefas: [...SUBTAREFAS_MOCK], responsaveis: [], atividade: '', prioridade: 'alta' },
     ],
   },
   {
@@ -124,8 +124,8 @@ export const PLANO_ACAO_DATA = [
     capa: '/planos-de-acao/projetos.png',
     capaRatio: '784 / 413',
     planos: [
-      { id: 9, prazo: '14/08/2026', status: 'concluido', subtarefas: SUBTAREFAS_MOCK },
-      { id: 10, prazo: '14/08/2026', status: 'andamento', subtarefas: SUBTAREFAS_MOCK },
+      { id: 9, prazo: '14/08/2026', status: 'concluido', subtarefas: [...SUBTAREFAS_MOCK], responsaveis: [], atividade: '', prioridade: 'alta' },
+      { id: 10, prazo: '14/08/2026', status: 'andamento', subtarefas: [...SUBTAREFAS_MOCK], responsaveis: [], atividade: '', prioridade: 'alta' },
     ],
   },
 ];
