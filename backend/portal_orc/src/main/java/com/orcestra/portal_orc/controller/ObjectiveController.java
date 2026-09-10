@@ -51,7 +51,7 @@ public class ObjectiveController {
         return objectiveService.updateObjective(id, objectiveRequestDto);
     }
 
-    @PostMapping("/{objectiveId}")
+    @PostMapping("/{objectiveId}/action-plan")
     @ResponseStatus(HttpStatus.CREATED)
     public void createActionPlan(@PathVariable() Integer objectiveId, @Valid @RequestBody ActionPlanRequestDto actionPlanRequestDto) throws BadRequestException, NotFoundException {
         actionPlanService.createActionPlan(objectiveId, actionPlanRequestDto);
