@@ -1,17 +1,25 @@
-import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon } from '../icons';
+import { useState } from 'react';
+import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, PlusIcon, WarningIcon } from '../icons';
 import { PLANO_ACAO_DATA } from '../mockData';
+import { STATUS_LABEL } from './planoDeAcaoConstants';
+import PlanoDeAcaoEditModal from './PlanoDeAcaoEditModal';
 import './PlanoDeAcao.css';
 
-// Mesmo mapeamento de status usado no backend (ActionPlanRequestDto.progress
-// é uma String livre, ainda sem enum) - centralizado aqui pra já ficar fácil
-// de trocar por um enum de verdade quando o back definir um.
-const STATUS_LABEL = {
-  concluido: 'Concluído',
-  andamento: 'Em andamento',
-  'nao-concluido': 'Não Concluído',
-};
-
 export default function PlanoDeAcao() {
+  // UC-20: os planos viram estado local pra dar pra editar de verdade na
+  // tela. Ainda não persiste em backend (não existe endpoint de GET nem de
+  // PUT pra plano de ação ainda) - quando existir, isso troca por
+  // fetch/PUT de verdade, mas a interação já funciona igual.
+  const [diretorias, setDiretorias] = useState(PLANO_ACAO_DATA);
+  const [editando, setEditando] = useState(null); // índice da diretoria sendo editada, ou null
+
+  const salvarEdicao = (planosAtualizados) => {
+    setDiretorias((atual) =>
+      atual.map((diretoria, index) => (index === editando ? { ...diretoria, planos: planosAtualizados } : diretoria))
+    );
+    setEditando(null);
+  };
+
   return (
     <section>
       <div className="pa-header">
@@ -35,7 +43,7 @@ export default function PlanoDeAcao() {
       </div>
 
       <div className="pa-diretorias">
-        {PLANO_ACAO_DATA.map((diretoria) => {
+        {diretorias.map((diretoria, directorateIndex) => {
           const header = (
             <div className="pa-card__header">
               <span className="pa-card__badge">
@@ -44,12 +52,24 @@ export default function PlanoDeAcao() {
               </span>
               <div className="pa-card__objetivo-group">
                 <span className="pa-card__objetivo">Objetivo {diretoria.objetivo}</span>
+                {/* UC-18 (cadastrar novo plano) fica pra outra branch - aqui
+                    o botão só existe visualmente, sem função. */}
                 <button
                   type="button"
                   className="pa-card__edit"
-                  aria-label="Editar diretoria"
-                  title="Edição disponível em breve"
+                  aria-label="Novo plano de ação"
+                  title="Cadastro disponível em breve"
                   disabled
+                >
+                  <PlusIcon />
+                </button>
+                {/* UC-20: editar o(s) plano(s) de ação desta diretoria. */}
+                <button
+                  type="button"
+                  className="pa-card__edit"
+                  aria-label="Editar plano de ação"
+                  title="Editar plano de ação"
+                  onClick={() => setEditando(directorateIndex)}
                 >
                   <EditIcon />
                 </button>
@@ -65,15 +85,11 @@ export default function PlanoDeAcao() {
                   style={{ backgroundImage: `url(${diretoria.capa})`, '--pa-capa-ratio': diretoria.capaRatio }}
                   aria-hidden="true"
                 >
-                  {/* Cabeçalho sobreposto no topo da foto, igual ao Figma -
-                      só quando a diretoria tem foto de capa. */}
                   {header}
                 </div>
               )}
 
               <div className="pa-card__inner">
-                {/* Sem foto (Diretoria Executiva) - cabeçalho fica na posição
-                    normal, no topo do card. */}
                 {!diretoria.capa && header}
 
                 <div className="pa-planos">
@@ -81,25 +97,27 @@ export default function PlanoDeAcao() {
                     <div key={plano.id} className="pa-plano">
                       <div className="pa-plano__top">
                         <span className="pa-plano__prazo">Prazo: {plano.prazo}</span>
-                        <span className={`pa-status pa-status--${plano.status}`}>
-                          {STATUS_LABEL[plano.status]}
-                          <span className="pa-status__dot" />
-                        </span>
+                        <div className="pa-plano__top-direita">
+                          {plano.prioridade && (
+                            <span className={`pa-prioridade pa-prioridade--${plano.prioridade}`}>
+                              <WarningIcon />
+                              {plano.prioridade === 'alta' ? 'Alta' : plano.prioridade === 'media' ? 'Média' : 'Baixa'}
+                            </span>
+                          )}
+                          <span className={`pa-status pa-status--${plano.status}`}>
+                            {STATUS_LABEL[plano.status]}
+                            <span className="pa-status__dot" />
+                          </span>
+                        </div>
                       </div>
 
-                      {/* Fiel ao Figma: "Atividade" e "Subtarefas:" são dois
-                          rótulos estáticos empilhados, sem nenhum texto de
-                          descrição entre eles - o conteúdo real começa direto
-                          na lista abaixo. */}
                       <div className="pa-plano__bloco">
                         <h3 className="pa-plano__atividade">Atividade</h3>
+                        {plano.atividade && <p className="pa-plano__atividade-texto">{plano.atividade}</p>}
                         <h4 className="pa-plano__subtarefas-titulo">Subtarefas:</h4>
                         <ul className="pa-subtarefas">
-                          {plano.subtarefas.map((tarefa) => (
-                            <li key={tarefa}>
-                              {/* Quadrado decorativo, não é um checkbox
-                                  interativo - o design não distingue subtarefa
-                                  concluída de pendente aqui. */}
+                          {plano.subtarefas.map((tarefa, index) => (
+                            <li key={`${tarefa}-${index}`}>
                               <span className="pa-subtarefa__box" aria-hidden="true" />
                               <span>{tarefa}</span>
                             </li>
@@ -107,9 +125,10 @@ export default function PlanoDeAcao() {
                         </ul>
                       </div>
 
-                      {/* O Figma só mostra o rótulo "Responsáveis:", sem nomes
-                          preenchidos - mantido vazio de propósito. */}
-                      <div className="pa-plano__responsaveis">Responsáveis:</div>
+                      <div className="pa-plano__responsaveis">
+                        Responsáveis:
+                        {plano.responsaveis?.length > 0 && ` ${plano.responsaveis.join(', ')}`}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -118,6 +137,14 @@ export default function PlanoDeAcao() {
           );
         })}
       </div>
+
+      {editando !== null && (
+        <PlanoDeAcaoEditModal
+          diretoria={diretorias[editando]}
+          onSave={salvarEdicao}
+          onClose={() => setEditando(null)}
+        />
+      )}
     </section>
   );
 }
