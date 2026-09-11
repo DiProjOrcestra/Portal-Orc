@@ -37,12 +37,6 @@ public class ActionPlanController {
         return actionPlanService.getAllActionPlan();
     }
 
-    @PutMapping("/{id}/link-user")
-    @ResponseStatus(HttpStatus.OK)
-    public void linkUserToActionPlan(@PathVariable Integer id, @RequestBody LinkUsersToActionPlanRequestDto requestDto) throws NotFoundException {
-        actionPlanService.linkUserToActionPlan(id, requestDto);
-    }
-
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateActionPlan(@PathVariable Integer id, @Valid @RequestBody ActionPlanRequestDto actionPlanRequestDto) throws NotFoundException, BadRequestException {
@@ -65,5 +59,9 @@ public class ActionPlanController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteActionPlan(@PathVariable Integer id) throws NotFoundException {
         actionPlanService.deleteActionPlan(id);
+    }
+    @PutMapping("/{id}")
+    public void linkUserToActionPlan(@PathVariable Integer id, @RequestBody LinkUsersToActionPlanRequestDto requestDto) throws NotFoundException {
+        actionPlanService.linkUserToActionPlan(id, requestDto);
     }
 }
