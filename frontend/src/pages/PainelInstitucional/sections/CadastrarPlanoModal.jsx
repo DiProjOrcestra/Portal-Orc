@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { CampaignIcon, ChecklistIcon, CloseIcon, PersonIcon } from '../icons';
 import { STATUS_LABEL } from './PlanoDeAcaoConstants';
+import { fetchObjetivos, criarPlanoDeAcao } from './PlanoDeAcaoApi';
 import './CadastrarPlanoModal.css';
 
 const STATUS_OPTIONS = Object.entries(STATUS_LABEL).map(([value, label]) => ({ value, label }));
@@ -14,6 +15,7 @@ const PRIORIDADE_OPTIONS = [
 function novaAtividadeVazia(id) {
   return {
     rascunhoId: id,
+    objetivoId: '',
     nome: '',
     prazo: '',
     status: '',
@@ -25,19 +27,29 @@ function novaAtividadeVazia(id) {
   };
 }
 
-// UC-18: Cadastrar plano de ação. Segue o fluxo da especificação: objetivo
-// fica pré-selecionado (só existe "Objetivo 1" cadastrado hoje, por isso o
-// seletor mostra um único valor em vez de uma lista real pra escolher -
-// quando existirem outros objetivos, esse <select> já suporta mais opções
-// sem mudar de estrutura), diretoria vem fixa de qual card o usuário clicou
-// no "+", e o formulário pede nome/prazo/status/prioridade/subtarefas/
-// responsáveis de cada atividade. "+ Adicionar atividade" permite cadastrar
-// mais de uma ação pro mesmo objetivo numa única operação de salvar, igual
-// ao Figma.
+// UC-18: Cadastrar plano de ação, agora conectado de verdade ao backend:
+// - GET /v1/objective busca os objetivos estratégicos reais pra popular o
+//   seletor (antes era um valor fixo "Objetivo 1", porque um objetivo de
+//   verdade é uma descrição cadastrada à parte, não um número).
+// - POST /v1/objective/{objectiveId}/action-plan cadastra cada atividade.
+//   O endpoint cadastra uma atividade por vez, então "Salvar e sair" manda
+//   uma requisição por atividade adicionada, em sequência.
 export default function CadastrarPlanoModal({ diretoria, onSave, onClose }) {
   const [atividades, setAtividades] = useState([novaAtividadeVazia(0)]);
   const [erros, setErros] = useState({});
+  const [objetivos, setObjetivos] = useState([]);
+  const [carregandoObjetivos, setCarregandoObjetivos] = useState(true);
+  const [erroObjetivos, setErroObjetivos] = useState(null);
+  const [enviando, setEnviando] = useState(false);
+  const [erroEnvio, setErroEnvio] = useState(null);
   let proximoRascunhoId = atividades.length;
+
+  useEffect(() => {
+    fetchObjetivos()
+      .then(setObjetivos)
+      .catch((err) => setErroObjetivos(err.message ?? 'Não foi possível carregar os objetivos estratégicos.'))
+      .finally(() => setCarregandoObjetivos(false));
+  }, []);
 
   const atualizarAtividade = (index, campo, valor) => {
     setAtividades((atual) => atual.map((a, i) => (i === index ? { ...a, [campo]: valor } : a)));
@@ -81,16 +93,17 @@ export default function CadastrarPlanoModal({ diretoria, onSave, onClose }) {
     );
   };
 
-  const handleSalvar = () => {
-    // FE-E1 da UC-18: dados obrigatórios não informados - interrompe o
-    // cadastro e avisa quais campos faltam, sem fechar o formulário.
+  const handleSalvar = async () => {
+    // FE-E1 da UC-18: dados obrigatórios não informados.
     const novosErros = {};
     atividades.forEach((atividade, index) => {
       const errosAtividade = {};
+      if (!atividade.objetivoId) errosAtividade.objetivoId = 'Selecione o objetivo estratégico.';
       if (!atividade.nome.trim()) errosAtividade.nome = 'Informe o nome da atividade.';
       if (!atividade.prazo) errosAtividade.prazo = 'Informe o prazo.';
       if (!atividade.status) errosAtividade.status = 'Selecione um status.';
       if (!atividade.prioridade) errosAtividade.prioridade = 'Selecione uma prioridade.';
+      if (atividade.subtarefas.length === 0) errosAtividade.subtarefas = 'Adicione ao menos uma subtarefa.';
       if (Object.keys(errosAtividade).length > 0) novosErros[index] = errosAtividade;
     });
 
@@ -99,16 +112,49 @@ export default function CadastrarPlanoModal({ diretoria, onSave, onClose }) {
       return;
     }
 
-    onSave(
-      atividades.map((atividade) => ({
-        atividade: atividade.nome.trim(),
-        prazo: atividade.prazo,
-        status: atividade.status,
-        prioridade: atividade.prioridade,
-        subtarefas: atividade.subtarefas,
-        responsaveis: atividade.responsaveis,
-      }))
-    );
+    setErroEnvio(null);
+    setEnviando(true);
+
+    const atividadesCadastradas = [];
+    try {
+      // O endpoint cadastra uma atividade por vez - manda em sequência (não
+      // Promise.all) pra, se uma falhar, saber exatamente qual foi e não
+      // perder o rastro das que já tinham sido salvas antes dela.
+      for (const atividade of atividades) {
+        await criarPlanoDeAcao(atividade.objetivoId, diretoria.directorate, {
+          nome: atividade.nome.trim(),
+          prazo: atividade.prazo,
+          statusLabel: STATUS_LABEL[atividade.status],
+          prioridadeLabel: PRIORIDADE_OPTIONS.find((o) => o.value === atividade.prioridade)?.label,
+          subtarefas: atividade.subtarefas,
+        });
+        atividadesCadastradas.push({
+          atividade: atividade.nome.trim(),
+          prazo: atividade.prazo,
+          status: atividade.status,
+          prioridade: atividade.prioridade,
+          subtarefas: atividade.subtarefas,
+          responsaveis: atividade.responsaveis,
+        });
+      }
+      onSave(atividadesCadastradas);
+    } catch (err) {
+      setErroEnvio(
+        `${err.message ?? 'Não foi possível cadastrar o plano de ação.'} ${
+          atividadesCadastradas.length > 0
+            ? `(${atividadesCadastradas.length} de ${atividades.length} atividades já foram cadastradas antes desse erro.)`
+            : ''
+        }`
+      );
+      // Mantém na tela só as atividades que ainda não foram cadastradas com
+      // sucesso, pra não mandar a mesma atividade duas vezes se tentar de novo.
+      if (atividadesCadastradas.length > 0) {
+        onSave(atividadesCadastradas);
+        setAtividades((atual) => atual.slice(atividadesCadastradas.length));
+      }
+    } finally {
+      setEnviando(false);
+    }
   };
 
   return createPortal(
@@ -127,6 +173,8 @@ export default function CadastrarPlanoModal({ diretoria, onSave, onClose }) {
           Cadastrar Plano de Ação
         </h2>
 
+        {erroObjetivos && <p className="cpm-erro cpm-erro--bloco">{erroObjetivos}</p>}
+
         {atividades.map((atividade, index) => (
           <div key={atividade.rascunhoId} className="cpm-atividade">
             <div className="cpm-atividade__topo">
@@ -135,15 +183,21 @@ export default function CadastrarPlanoModal({ diretoria, onSave, onClose }) {
                 {diretoria.directorate}
               </span>
 
-              {/* Só existe "Objetivo 1" cadastrado hoje - o seletor já vem
-                  com esse valor único selecionado. */}
               <select
                 className="cpm-objetivo-select"
-                value={diretoria.objetivo}
-                onChange={() => {}}
+                value={atividade.objetivoId}
+                onChange={(event) => atualizarAtividade(index, 'objetivoId', event.target.value)}
                 aria-label="Objetivo estratégico"
+                disabled={carregandoObjetivos}
               >
-                <option value={diretoria.objetivo}>Objetivo {diretoria.objetivo}</option>
+                <option value="" disabled>
+                  {carregandoObjetivos ? 'Carregando...' : 'Selecionar objetivo'}
+                </option>
+                {objetivos.map((objetivo) => (
+                  <option key={objetivo.id} value={objetivo.id}>
+                    {objetivo.description}
+                  </option>
+                ))}
               </select>
 
               {atividades.length > 1 && (
@@ -157,6 +211,7 @@ export default function CadastrarPlanoModal({ diretoria, onSave, onClose }) {
                 </button>
               )}
             </div>
+            {erros[index]?.objetivoId && <span className="cpm-erro">{erros[index].objetivoId}</span>}
 
             <div className="cpm-linha-topo">
               <div className="cpm-campo cpm-campo--inline">
@@ -234,6 +289,7 @@ export default function CadastrarPlanoModal({ diretoria, onSave, onClose }) {
                   </li>
                 ))}
               </ul>
+              {erros[index]?.subtarefas && <span className="cpm-erro">{erros[index].subtarefas}</span>}
               <div className="cpm-adicionar-linha">
                 <input
                   type="text"
@@ -284,17 +340,19 @@ export default function CadastrarPlanoModal({ diretoria, onSave, onClose }) {
           </div>
         ))}
 
-        <button type="button" className="cpm-adicionar-atividade" onClick={adicionarAtividade}>
+        <button type="button" className="cpm-adicionar-atividade" onClick={adicionarAtividade} disabled={enviando}>
           <CampaignIcon />
           Adicionar atividade
         </button>
 
+        {erroEnvio && <p className="cpm-erro cpm-erro--bloco">{erroEnvio}</p>}
+
         <div className="cpm-acoes">
-          <button type="button" className="cpm-cancelar" onClick={onClose}>
+          <button type="button" className="cpm-cancelar" onClick={onClose} disabled={enviando}>
             Cancelar alterações
           </button>
-          <button type="button" className="cpm-salvar" onClick={handleSalvar}>
-            Salvar e sair
+          <button type="button" className="cpm-salvar" onClick={handleSalvar} disabled={enviando}>
+            {enviando ? 'Salvando...' : 'Salvar e sair'}
           </button>
         </div>
       </div>

@@ -193,6 +193,15 @@
   color: #ff6b6b;
 }
 
+.cpm-erro--bloco {
+  display: block;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.4);
+}
+
 .cpm-bloco {
   padding: 21px 0 20px;
   border-top: 1px solid var(--green-400);
@@ -381,6 +390,13 @@
   background: linear-gradient(135deg, var(--green-400) 0%, #206608 100%);
   color: var(--off-white);
   font-weight: 600;
+}
+
+.cpm-cancelar:disabled,
+.cpm-salvar:disabled,
+.cpm-adicionar-atividade:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 @media (max-width: 480px) {
