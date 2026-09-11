@@ -8,8 +8,6 @@
   position: relative;
   container-type: inline-size;
   width: 100%;
-  max-width: 420px;
-  margin: 0 auto;
   aspect-ratio: 1;
   border-radius: 28px;
   background: #141414;
@@ -252,5 +250,91 @@
 
   .gc-edit-actions .gc-btn {
     width: 100%;
+  }
+}
+
+.gc-modal-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(3px);
+  animation: gc-modal-fade-in 0.15s ease;
+}
+
+.gc-modal {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 28px 28px;
+  border-radius: 24px;
+  background: #141414;
+  border: 1px solid rgba(63, 204, 16, 0.35);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(63, 204, 16, 0.14);
+  text-align: center;
+  animation: gc-modal-scale-in 0.18s ease;
+}
+
+.gc-modal__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: rgba(63, 204, 16, 0.14);
+  border: 1px solid rgba(63, 204, 16, 0.4);
+  color: var(--green-400);
+}
+
+.gc-modal__icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.gc-modal__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--off-white);
+  margin: 0 0 10px;
+}
+
+.gc-modal__message {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.gc-modal__actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+@keyframes gc-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gc-modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }

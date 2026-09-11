@@ -92,3 +92,9 @@ export const TrashIcon = (props) => (
     <path d="M10 11v6M14 11v6" />
   </svg>
 );
+
+export const CheckIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M5 12.5 9.5 17 19 7.5" />
+  </svg>
+);

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import SectionHeader from '../SectionHeader';
 import EmptyState from '../EmptyState';
-import { TargetIcon } from '../icons';
+import { TargetIcon, CheckIcon } from '../icons';
 import { GOLDEN_CIRCLE_DATA } from '../mockData';
 import './GoldenCircle.css';
 
@@ -21,6 +21,7 @@ export default function GoldenCircle() {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(buildDraft);
   const [error, setError] = useState(null);
+  const [confirmingSave, setConfirmingSave] = useState(false);
 
   const hasAllItems = REQUIRED_NUMBERS.every((number) => {
     const item = GOLDEN_CIRCLE_DATA?.find((candidate) => candidate.number === number);
@@ -53,28 +54,33 @@ export default function GoldenCircle() {
     setError(null);
   };
 
-  // FE-E1: rótulo e texto de cada um dos 3 itens são obrigatórios.
-  // Sem endpoint de institucional ainda (ver mockData.js), a "gravação" é
-  // direto no array GOLDEN_CIRCLE_DATA importado - dura enquanto a página não
-  // recarrega.
+  // FE-E1: rótulo e texto de cada um dos 3 itens são obrigatórios. Validar
+  // aqui só decide se abre o pop-up de confirmação - a gravação em si só
+  // acontece se o usuário confirmar (ver confirmSave).
   const saveEditing = () => {
-    const trimmed = draft.map((item) => ({
-      ...item,
-      label: item.label.trim(),
-      text: item.text.trim(),
-    }));
+    const hasBlankField = draft.some((item) => !item.label.trim() || !item.text.trim());
 
-    if (trimmed.some((item) => !item.label || !item.text)) {
+    if (hasBlankField) {
       setError('Esse campo não pode ser vazio.');
       return;
     }
 
-    trimmed.forEach((item) => {
+    setConfirmingSave(true);
+  };
+
+  const cancelConfirmSave = () => setConfirmingSave(false);
+
+  // Sem endpoint de institucional ainda (ver mockData.js), a "gravação" é
+  // direto no array GOLDEN_CIRCLE_DATA importado - dura enquanto a página não
+  // recarrega.
+  const confirmSave = () => {
+    draft.forEach((item) => {
       const original = GOLDEN_CIRCLE_DATA.find((candidate) => candidate.number === item.number);
-      original.label = item.label;
-      original.text = item.text;
+      original.label = item.label.trim();
+      original.text = item.text.trim();
     });
 
+    setConfirmingSave(false);
     cancelEditing();
   };
 
@@ -136,6 +142,37 @@ export default function GoldenCircle() {
               <p className="gc-card__text">{item.text}</p>
             </article>
           ))}
+        </div>
+      )}
+
+      {confirmingSave && (
+        <div className="gc-modal-scrim" onClick={cancelConfirmSave}>
+          <div
+            className="gc-modal"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="gc-confirm-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="gc-modal__icon">
+              <CheckIcon />
+            </span>
+            <h2 id="gc-confirm-modal-title" className="gc-modal__title">
+              Salvar alterações?
+            </h2>
+            <p className="gc-modal__message">
+              Tem certeza que deseja salvar as alterações no Golden Circle? O conteúdo exibido a todos os membros
+              será atualizado.
+            </p>
+            <div className="gc-modal__actions">
+              <button type="button" className="gc-btn gc-btn--ghost" onClick={cancelConfirmSave}>
+                Cancelar
+              </button>
+              <button type="button" className="gc-btn" onClick={confirmSave} autoFocus>
+                Confirmar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </section>

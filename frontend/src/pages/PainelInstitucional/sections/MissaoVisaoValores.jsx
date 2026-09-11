@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import SectionHeader from '../SectionHeader';
 import EmptyState from '../EmptyState';
-import { CloverIcon, SunIcon, ShieldIcon, HeartIcon } from '../icons';
+import { CloverIcon, SunIcon, ShieldIcon, HeartIcon, CheckIcon } from '../icons';
 import { MVV_DATA } from '../mockData';
 import './MissaoVisaoValores.css';
 
@@ -23,6 +23,7 @@ export default function MissaoVisaoValores() {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(buildDraft);
   const [error, setError] = useState(null);
+  const [confirmingSave, setConfirmingSave] = useState(false);
 
   if (
     !MVV_DATA?.quote ||
@@ -66,16 +67,12 @@ export default function MissaoVisaoValores() {
   const removeTag = (index) => setDraft((prev) => ({ ...prev, tags: prev.tags.filter((_, i) => i !== index) }));
 
   // FE-E1: nenhum campo pode ficar vazio, e é preciso ao menos um valor.
-  // Sem endpoint de institucional ainda (ver mockData.js), a "gravação" é
-  // direto no objeto MVV_DATA importado - dura enquanto a página não recarrega.
+  // Validar aqui só decide se abre o pop-up de confirmação - a gravação em si
+  // só acontece se o usuário confirmar (ver confirmSave).
   const saveEditing = () => {
-    const trimmedQuote = draft.quote.trim();
-    const trimmedMissao = draft.missao.trim();
-    const trimmedVisao = draft.visao.trim();
-    const trimmedValoresText = draft.valoresText.trim();
     const trimmedTags = draft.tags.map((tag) => tag.trim());
 
-    if (!trimmedQuote || !trimmedMissao || !trimmedVisao || !trimmedValoresText) {
+    if (!draft.quote.trim() || !draft.missao.trim() || !draft.visao.trim() || !draft.valoresText.trim()) {
       setError('Esse campo não pode ser vazio.');
       return;
     }
@@ -88,12 +85,23 @@ export default function MissaoVisaoValores() {
       return;
     }
 
-    MVV_DATA.quote = trimmedQuote;
-    MVV_DATA.missao = trimmedMissao;
-    MVV_DATA.visao = trimmedVisao;
-    MVV_DATA.valores.text = trimmedValoresText;
+    setConfirmingSave(true);
+  };
+
+  const cancelConfirmSave = () => setConfirmingSave(false);
+
+  // Sem endpoint de institucional ainda (ver mockData.js), a "gravação" é
+  // direto no objeto MVV_DATA importado - dura enquanto a página não recarrega.
+  const confirmSave = () => {
+    const trimmedTags = draft.tags.map((tag) => tag.trim());
+
+    MVV_DATA.quote = draft.quote.trim();
+    MVV_DATA.missao = draft.missao.trim();
+    MVV_DATA.visao = draft.visao.trim();
+    MVV_DATA.valores.text = draft.valoresText.trim();
     MVV_DATA.valores.tags = trimmedTags;
 
+    setConfirmingSave(false);
     cancelEditing();
   };
 
@@ -210,6 +218,37 @@ export default function MissaoVisaoValores() {
             </article>
           </div>
         </>
+      )}
+
+      {confirmingSave && (
+        <div className="mvv-modal-scrim" onClick={cancelConfirmSave}>
+          <div
+            className="mvv-modal"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="mvv-confirm-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="mvv-modal__icon">
+              <CheckIcon />
+            </span>
+            <h2 id="mvv-confirm-modal-title" className="mvv-modal__title">
+              Salvar alterações?
+            </h2>
+            <p className="mvv-modal__message">
+              Tem certeza que deseja salvar as alterações em Missão, Visão e Valores? O conteúdo exibido a todos os
+              membros será atualizado.
+            </p>
+            <div className="mvv-modal__actions">
+              <button type="button" className="mvv-btn mvv-btn--ghost" onClick={cancelConfirmSave}>
+                Cancelar
+              </button>
+              <button type="button" className="mvv-btn" onClick={confirmSave} autoFocus>
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </section>
   );
