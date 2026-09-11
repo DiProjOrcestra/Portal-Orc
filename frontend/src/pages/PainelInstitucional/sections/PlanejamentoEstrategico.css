@@ -234,9 +234,10 @@
 }
 
 .pe-kr-add-btn {
-  align-self: flex-start;
-  padding: 10px 20px;
+  display: block;
+  width: fit-content;
   margin-top: 12px;
+  padding: 10px 20px;
   font-size: 13.5px;
 }
 
@@ -639,5 +640,28 @@
 
   .pe-kr {
     align-items: flex-start;
+  }
+
+  /* Cancelar/Salvar, Cancelar/Adicionar and Cancelar/Excluir don't fit side
+     by side at phone widths (the modal's is the tightest: two full-padding
+     .pe-btn's need ~286px, but its scrim+panel padding alone eats ~104px of
+     even a 320px-wide screen) - stack them instead, action button on top. */
+  .pe-card__edit-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .pe-card__edit-actions,
+  .pe-modal__actions {
+    flex-direction: column-reverse;
+    width: 100%;
+  }
+
+  .pe-card__edit-actions .pe-btn,
+  .pe-modal__actions .pe-btn {
+    width: 100%;
+  }
+
+  .pe-kr-add-btn {
+    width: 100%;
   }
 }
