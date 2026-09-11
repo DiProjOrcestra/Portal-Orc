@@ -35,4 +35,8 @@ public class DirectorateEntity {
     @OneToMany(mappedBy = "directorate", fetch = FetchType.LAZY)
     private Set<UserEntity> users = new HashSet<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "directorate", fetch = FetchType.LAZY)
+    private Set<ActionPlanEntity> actionPlans = new HashSet<>();
+
 }

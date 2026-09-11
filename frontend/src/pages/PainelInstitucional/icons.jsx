@@ -83,3 +83,12 @@ export const ChevronRightIcon = (props) => (
     <path d="M9 5.5 15.5 12 9 18.5" />
   </svg>
 );
+
+export const TrashIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M4.5 7h15" />
+    <path d="M9.5 7V5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v2" />
+    <path d="M6.5 7l1 12.5a1.5 1.5 0 0 0 1.5 1.4h6a1.5 1.5 0 0 0 1.5-1.4L17.5 7" />
+    <path d="M10 11v6M14 11v6" />
+  </svg>
+);

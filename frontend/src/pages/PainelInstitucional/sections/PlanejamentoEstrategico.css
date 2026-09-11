@@ -4,6 +4,44 @@
   gap: 24px;
 }
 
+.pe-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  border-radius: 999px;
+  border: 1.5px solid var(--green-400);
+  background: #141414;
+  color: var(--off-white);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14.5px;
+  white-space: nowrap;
+  box-shadow: 0 0 16px rgba(63, 204, 16, 0.45);
+  transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pe-add-btn svg {
+  width: 18px;
+  height: 18px;
+  color: var(--green-400);
+}
+
+.pe-add-btn:not(:disabled):hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 22px rgba(63, 204, 16, 0.6);
+}
+
+.pe-add-btn:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.pe-add-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+  box-shadow: none;
+}
+
 .pe-card {
   padding: 24px;
   border-radius: 24px;
@@ -106,6 +144,266 @@
   line-height: 1.6;
   color: var(--text);
   margin-bottom: 20px;
+}
+
+.pe-card__edit-form {
+  margin-bottom: 20px;
+}
+
+.pe-card__textarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-strong);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.pe-card__textarea:focus {
+  outline: none;
+  border-color: var(--green-400);
+}
+
+.pe-card__edit-error {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.pe-card__edit-label {
+  margin: 16px 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.pe-card__prazo-field {
+  max-width: 220px;
+  margin-top: 16px;
+}
+
+.pe-kr-form-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pe-kr-form-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.pe-kr-form-row .pe-kr__badge {
+  margin-top: 10px;
+}
+
+.pe-kr-form-textarea {
+  flex: 1;
+  min-height: 56px;
+}
+
+.pe-kr-form-remove {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin-top: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--danger);
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pe-kr-form-remove:not(:disabled):hover {
+  border-color: var(--danger);
+}
+
+.pe-kr-form-remove:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pe-kr-add-btn {
+  display: block;
+  width: fit-content;
+  margin-top: 12px;
+  padding: 10px 20px;
+  font-size: 13.5px;
+}
+
+.pe-card__edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* Wraps the delete icon (left) and .pe-card__edit-actions (right, its own
+   margin-top zeroed below) so both sit on the same row while editing. */
+.pe-card__edit-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.pe-card__edit-toolbar .pe-card__edit-actions {
+  margin-top: 0;
+}
+
+.pe-card__delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid var(--danger);
+  background: rgba(255, 107, 107, 0.12);
+  color: var(--danger);
+}
+
+.pe-card__delete svg {
+  width: 17px;
+  height: 17px;
+}
+
+.pe-card__delete:not(:disabled):hover {
+  background: rgba(255, 107, 107, 0.22);
+}
+
+.pe-card__delete:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.pe-modal-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(3px);
+  animation: pe-modal-fade-in 0.15s ease;
+}
+
+.pe-modal {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 28px 28px;
+  border-radius: 24px;
+  background: #141414;
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(255, 107, 107, 0.12);
+  text-align: center;
+  animation: pe-modal-scale-in 0.18s ease;
+}
+
+.pe-modal__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: rgba(255, 107, 107, 0.14);
+  border: 1px solid rgba(255, 107, 107, 0.4);
+  color: var(--danger);
+}
+
+.pe-modal__icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.pe-modal__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--off-white);
+  margin: 0 0 10px;
+}
+
+.pe-modal__message {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.pe-modal__actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+@keyframes pe-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pe-modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.pe-btn--ghost {
+  background: none;
+  box-shadow: none;
+  border: 1px solid var(--border);
+  color: var(--off-white);
+}
+
+.pe-btn--ghost:hover {
+  filter: none;
+  border-color: var(--green-400);
+}
+
+.pe-btn--danger {
+  background: linear-gradient(135deg, #b3261e, var(--danger));
+  color: var(--off-white);
+  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.35);
+}
+
+.pe-btn--danger:not(:disabled):hover {
+  filter: brightness(1.08);
+}
+
+.pe-btn:disabled,
+.pe-btn--ghost:disabled,
+.pe-btn--danger:disabled {
+  opacity: 0.6;
+  cursor: default;
+  filter: none;
 }
 
 .pe-kr-list {
@@ -342,5 +640,28 @@
 
   .pe-kr {
     align-items: flex-start;
+  }
+
+  /* Cancelar/Salvar, Cancelar/Adicionar and Cancelar/Excluir don't fit side
+     by side at phone widths (the modal's is the tightest: two full-padding
+     .pe-btn's need ~286px, but its scrim+panel padding alone eats ~104px of
+     even a 320px-wide screen) - stack them instead, action button on top. */
+  .pe-card__edit-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .pe-card__edit-actions,
+  .pe-modal__actions {
+    flex-direction: column-reverse;
+    width: 100%;
+  }
+
+  .pe-card__edit-actions .pe-btn,
+  .pe-modal__actions .pe-btn {
+    width: 100%;
+  }
+
+  .pe-kr-add-btn {
+    width: 100%;
   }
 }
