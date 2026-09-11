@@ -23,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
-import com.orcestra.portal_orc.enums.DirectorateEnum;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
@@ -153,7 +152,9 @@ class SenhaTemporariaServiceTest {
         ArgumentCaptor<DirectorateEntity> directorateCaptor =
                 ArgumentCaptor.forClass(DirectorateEntity.class);
         verify(directorateRepository).save(directorateCaptor.capture());
-        assertEquals(DirectorateEnum.DIPROJ, directorateCaptor.getValue().getDirectorateName());
+        
+        // Ajustado de DirectorateEnum.DIPROJ para DirectorateEnum.DIPROJ.name()
+        assertEquals(DirectorateEnum.DIPROJ.name(), directorateCaptor.getValue().getDirectorateName());
 
         verify(userRepository).save(any(UserEntity.class));
         verify(emailSenderService).sendEmail(
