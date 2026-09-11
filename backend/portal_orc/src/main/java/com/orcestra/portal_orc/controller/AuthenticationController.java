@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.orcestra.portal_orc.config.CookieProvider;
 import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
-import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
+import com.orcestra.portal_orc.dto.NewPasswordRequestDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
+import com.orcestra.portal_orc.dto.TokenResponseDto;
 import com.orcestra.portal_orc.dto.ResendCodeRequestDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
@@ -42,7 +44,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public MfaTokenResponseDto login(@Valid @RequestBody LoginRequestDto loginRequestDto) throws Exception{
+    public TokenResponseDto login(@Valid @RequestBody LoginRequestDto loginRequestDto) throws Exception{
         return authenticationService.loginUser(loginRequestDto);
     }
 
@@ -64,5 +66,13 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.OK)
     public void resendCodeMfa(@Valid @RequestBody ResendCodeRequestDto resendCodeRequestDto) throws BadRequestException{
         authenticationService.resendCode(resendCodeRequestDto);
+    }
+
+    @PostMapping ("/new-password")
+    public void newPassword(@Valid @RequestBody NewPasswordRequestDto newPasswordRequestDto, 
+                            HttpServletResponse response) throws Exception{
+        String token = authenticationService.createNewPassword(newPasswordRequestDto);
+        ResponseCookie cookie = cookieProvider.createAccessTokenCookie(token);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }

@@ -12,10 +12,11 @@ import org.springframework.stereotype.Service;
 import com.orcestra.portal_orc.config.TokenProvider;
 import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
-import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
+import com.orcestra.portal_orc.dto.NewPasswordRequestDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.ResendCodeRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
+import com.orcestra.portal_orc.dto.TokenResponseDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
@@ -25,6 +26,7 @@ import com.orcestra.portal_orc.model.UserEntity;
 import com.orcestra.portal_orc.repository.DirectorateRepository;
 import com.orcestra.portal_orc.repository.RoleRepository;
 import com.orcestra.portal_orc.repository.UserRepository;
+import com.orcestra.portal_orc.util.PasswordValidator;
 import com.orcestra.portal_orc.util.RandomPasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
@@ -43,10 +45,13 @@ public class AuthenticationService {
     private final RandomPasswordGenerator randomPasswordGenerator;
     private final EmailSenderService emailSenderService;
     private final RegisterRequestDto registerRequestDto;
+    private final PasswordValidator passwordValidator;
     @Value("${jwt.expiration}")
-    private long expirationTime;
+    private long accessExpirationTime;
     @Value("${jwt.mfa.expiration}")
     private long mfaExpirationTime;
+    @Value("${jwt.password.expiration}")
+    private long passwordExpirationTime;
 
     public void registerUser(RegisterRequestDto userRequestDto) throws BadRequestException{
         UserEntity userEntity = userRepository.findByEmail(userRequestDto.getEmail()).orElse(null);
@@ -79,17 +84,23 @@ public class AuthenticationService {
         userRepository.save(userEntity);
         emailSenderService.sendEmail(resendPasswordDto.getEmail(), "Senha para primeiro cadastro", "Sua senha é " + userPassword);
     }
-    public MfaTokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
+    
+    public TokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
             UserEntity user = userRepository.findByEmail(dto.getEmail())
                         .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));
             
+            if(user.getFirstAccess() == true){
+                String tokenPassword = tokenProvider.gerarTokenPassword(user);
+                return new TokenResponseDto(tokenPassword, "Token temporário para troca de senha obrigatória", passwordExpirationTime);
+            }
+
             mfaService.generateAndSendCode(user);
 
-            String mfaToken = tokenProvider.gerarTokenMfa(authentication);
+            String tokenMfa = tokenProvider.gerarTokenMfa(authentication);
 
-            return new MfaTokenResponseDto(mfaToken, "Código de verificação enviado para o e-mail cadastrado", mfaExpirationTime);
+            return new TokenResponseDto(tokenMfa, "Token temporário para código de mfa", mfaExpirationTime);
         } 
         catch (Exception e){
             throw e;
@@ -117,6 +128,25 @@ public class AuthenticationService {
                 .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));
 
         mfaService.generateAndSendCode(user);
+    }
+
+    public String createNewPassword(NewPasswordRequestDto dto) throws Exception{
+        String email = tokenProvider.validarTokenPassword(dto.getPasswordToken());
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));
+
+        if(!dto.getNewPassword().equals(dto.getConfirmNewPassword())){
+            throw new BadRequestException("As senhas não coincidem.");
+        }
+
+        passwordValidator.validate(dto.getNewPassword());
+        
+        user.setPassword(dto.getNewPassword());
+        user.setFirstAccess(false);
+        userRepository.save(user);
+
+        return tokenProvider.gerarToken(user);
     }
 
 }

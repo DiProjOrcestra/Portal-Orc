@@ -34,6 +34,10 @@ public class TokenProvider {
         return buildToken(username.getUsername());
     }
 
+    public String gerarTokenPassword(UserEntity uusername){
+        return buildTokenPassword(uusername.getUsername());
+    }
+
     public String gerarTokenMfa(Authentication authentication) {
         UserDetails usuario = (UserDetails) authentication.getPrincipal();
         return buildTokenMfa(usuario.getUsername());
@@ -56,6 +60,20 @@ public class TokenProvider {
                 .compact();
     }
 
+    private String buildTokenPassword(String username) {
+        Instant now = Instant.now();
+        Instant expiration = now.plusMillis(expirationTime);
+
+        return Jwts.builder()
+                .subject(username)
+                .claim("scope", "PASSWORD_RESET_REQUIRED")
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiration))
+                .signWith(getSigningKey())
+                .compact();
+    
+    }
+    
     private String buildToken(String username) {
         Instant now = Instant.now();
         Instant expiration = now.plusMillis(expirationTime);
@@ -89,6 +107,23 @@ public class TokenProvider {
             claims = getClaims(token);
         } catch (ExpiredJwtException e) {
             throw new BadRequestException("Sessão de verificação expirada. Faça login novamente.");
+        } catch (Exception e) {
+            throw new BadRequestException("Token inválido");
+        }
+
+        if (!"mfa".equals(claims.get("scope"))) {
+            throw new BadRequestException("Token inválido para esta operação");
+        }
+
+        return claims.getSubject();
+    }
+
+    public String validarTokenPassword(String token) throws BadRequestException {
+        Claims claims;
+        try {
+            claims = getClaims(token);
+        } catch (ExpiredJwtException e) {
+            throw new BadRequestException("Sessão de verificação expirada. Entre em contato com alguém da TOps ou Direx.");
         } catch (Exception e) {
             throw new BadRequestException("Token inválido");
         }

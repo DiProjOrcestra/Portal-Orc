@@ -17,7 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.orcestra.portal_orc.service.CustomOAuth2UserService;
@@ -45,7 +44,7 @@ public class SecurityConfiguration {
                         response.setStatus(HttpStatus.FORBIDDEN.value());
                     }))
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/v1/auth/login", "/v1/auth/login/mfa", "/v1/auth/resend/mfa", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/error").permitAll()
+                    .requestMatchers("/v1/auth/login", "/v1/auth/login/mfa", "/v1/auth/resend/mfa", "/v1/auth/new-password", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/error").permitAll()
                     .requestMatchers("/v1/auth/register").hasAuthority("ADMIN")
                     .anyRequest().authenticated()
                 )
