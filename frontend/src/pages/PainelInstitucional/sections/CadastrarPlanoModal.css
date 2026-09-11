@@ -162,6 +162,12 @@
   cursor: pointer;
 }
 
+.cpm-dropdown option,
+.cpm-objetivo-select option {
+  background-color: #141414;
+  color: var(--off-white);
+}
+
 .cpm-dropdown--status {
   background: rgba(71, 87, 1, 0.16);
   border-color: #ccad10;
