@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import SectionHeader from '../SectionHeader';
 import EmptyState from '../EmptyState';
-import { CloverIcon, SunIcon, ShieldIcon, HeartIcon, CheckIcon } from '../icons';
+import { CloverIcon, SunIcon, ShieldIcon, HeartIcon, CheckIcon, AlertIcon } from '../icons';
 import { MVV_DATA } from '../mockData';
 import './MissaoVisaoValores.css';
 
@@ -24,6 +24,7 @@ export default function MissaoVisaoValores() {
   const [draft, setDraft] = useState(buildDraft);
   const [error, setError] = useState(null);
   const [confirmingSave, setConfirmingSave] = useState(false);
+  const [confirmingCancel, setConfirmingCancel] = useState(false);
 
   if (
     !MVV_DATA?.quote ||
@@ -89,6 +90,13 @@ export default function MissaoVisaoValores() {
   };
 
   const cancelConfirmSave = () => setConfirmingSave(false);
+
+  const startConfirmCancel = () => setConfirmingCancel(true);
+  const closeConfirmCancel = () => setConfirmingCancel(false);
+  const confirmCancel = () => {
+    setConfirmingCancel(false);
+    cancelEditing();
+  };
 
   // Sem endpoint de institucional ainda (ver mockData.js), a "gravação" é
   // direto no objeto MVV_DATA importado - dura enquanto a página não recarrega.
@@ -173,7 +181,7 @@ export default function MissaoVisaoValores() {
           {error && <p className="mvv-edit-error">{error}</p>}
 
           <div className="mvv-edit-actions">
-            <button type="button" className="mvv-btn mvv-btn--ghost" onClick={cancelEditing}>
+            <button type="button" className="mvv-btn mvv-btn--ghost" onClick={startConfirmCancel}>
               Cancelar
             </button>
             <button type="button" className="mvv-btn" onClick={saveEditing}>
@@ -245,6 +253,36 @@ export default function MissaoVisaoValores() {
               </button>
               <button type="button" className="mvv-btn" onClick={confirmSave} autoFocus>
                 Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmingCancel && (
+        <div className="mvv-modal-scrim" onClick={closeConfirmCancel}>
+          <div
+            className="mvv-modal mvv-modal--danger"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="mvv-cancel-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="mvv-modal__icon mvv-modal__icon--danger">
+              <AlertIcon />
+            </span>
+            <h2 id="mvv-cancel-modal-title" className="mvv-modal__title">
+              Cancelar edição?
+            </h2>
+            <p className="mvv-modal__message">
+              As alterações feitas não serão salvas. Tem certeza que deseja sair sem salvar?
+            </p>
+            <div className="mvv-modal__actions">
+              <button type="button" className="mvv-btn mvv-btn--ghost" onClick={closeConfirmCancel}>
+                Continuar editando
+              </button>
+              <button type="button" className="mvv-btn mvv-btn--danger" onClick={confirmCancel} autoFocus>
+                Sim, cancelar
               </button>
             </div>
           </div>

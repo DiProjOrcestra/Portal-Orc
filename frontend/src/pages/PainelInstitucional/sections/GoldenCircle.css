@@ -243,6 +243,16 @@
   border-color: var(--green-400);
 }
 
+.gc-btn--danger {
+  background: linear-gradient(135deg, #b3261e, var(--danger));
+  color: var(--off-white);
+  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.35);
+}
+
+.gc-btn--danger:hover {
+  filter: brightness(1.08);
+}
+
 @media (max-width: 480px) {
   .gc-edit-actions {
     flex-direction: column-reverse;
@@ -280,6 +290,13 @@
   animation: gc-modal-scale-in 0.18s ease;
 }
 
+.gc-modal--danger {
+  border-color: rgba(255, 107, 107, 0.35);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(255, 107, 107, 0.14);
+}
+
 .gc-modal__icon {
   display: inline-flex;
   align-items: center;
@@ -291,6 +308,12 @@
   background: rgba(63, 204, 16, 0.14);
   border: 1px solid rgba(63, 204, 16, 0.4);
   color: var(--green-400);
+}
+
+.gc-modal__icon--danger {
+  background: rgba(255, 107, 107, 0.14);
+  border-color: rgba(255, 107, 107, 0.4);
+  color: var(--danger);
 }
 
 .gc-modal__icon svg {

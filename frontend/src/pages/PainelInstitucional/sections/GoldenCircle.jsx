@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import SectionHeader from '../SectionHeader';
 import EmptyState from '../EmptyState';
-import { TargetIcon, CheckIcon } from '../icons';
+import { TargetIcon, CheckIcon, AlertIcon } from '../icons';
 import { GOLDEN_CIRCLE_DATA } from '../mockData';
 import './GoldenCircle.css';
 
@@ -22,6 +22,7 @@ export default function GoldenCircle() {
   const [draft, setDraft] = useState(buildDraft);
   const [error, setError] = useState(null);
   const [confirmingSave, setConfirmingSave] = useState(false);
+  const [confirmingCancel, setConfirmingCancel] = useState(false);
 
   const hasAllItems = REQUIRED_NUMBERS.every((number) => {
     const item = GOLDEN_CIRCLE_DATA?.find((candidate) => candidate.number === number);
@@ -70,6 +71,13 @@ export default function GoldenCircle() {
 
   const cancelConfirmSave = () => setConfirmingSave(false);
 
+  const startConfirmCancel = () => setConfirmingCancel(true);
+  const closeConfirmCancel = () => setConfirmingCancel(false);
+  const confirmCancel = () => {
+    setConfirmingCancel(false);
+    cancelEditing();
+  };
+
   // Sem endpoint de institucional ainda (ver mockData.js), a "gravação" é
   // direto no array GOLDEN_CIRCLE_DATA importado - dura enquanto a página não
   // recarrega.
@@ -113,7 +121,7 @@ export default function GoldenCircle() {
           {error && <p className="gc-edit-error">{error}</p>}
 
           <div className="gc-edit-actions">
-            <button type="button" className="gc-btn gc-btn--ghost" onClick={cancelEditing}>
+            <button type="button" className="gc-btn gc-btn--ghost" onClick={startConfirmCancel}>
               Cancelar
             </button>
             <button type="button" className="gc-btn" onClick={saveEditing}>
@@ -170,6 +178,36 @@ export default function GoldenCircle() {
               </button>
               <button type="button" className="gc-btn" onClick={confirmSave} autoFocus>
                 Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmingCancel && (
+        <div className="gc-modal-scrim" onClick={closeConfirmCancel}>
+          <div
+            className="gc-modal gc-modal--danger"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="gc-cancel-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="gc-modal__icon gc-modal__icon--danger">
+              <AlertIcon />
+            </span>
+            <h2 id="gc-cancel-modal-title" className="gc-modal__title">
+              Cancelar edição?
+            </h2>
+            <p className="gc-modal__message">
+              As alterações feitas não serão salvas. Tem certeza que deseja sair sem salvar?
+            </p>
+            <div className="gc-modal__actions">
+              <button type="button" className="gc-btn gc-btn--ghost" onClick={closeConfirmCancel}>
+                Continuar editando
+              </button>
+              <button type="button" className="gc-btn gc-btn--danger" onClick={confirmCancel} autoFocus>
+                Sim, cancelar
               </button>
             </div>
           </div>
