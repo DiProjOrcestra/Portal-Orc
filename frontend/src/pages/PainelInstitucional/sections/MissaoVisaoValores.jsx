@@ -1,37 +1,63 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SectionHeader from '../SectionHeader';
 import EmptyState from '../EmptyState';
 import { CloverIcon, SunIcon, ShieldIcon, HeartIcon, CheckIcon, AlertIcon } from '../icons';
 import { MVV_DATA } from '../mockData';
+import { createMvv, getMvv, updateMvv } from '../../../services/institutionalService';
 import './MissaoVisaoValores.css';
 
 // Never leave `draft` null: the React Compiler auto-memoizes the callbacks
 // below by their `draft.*` property reads, and it generates those checks
 // unconditionally on every render (not just while actually editing) - a
 // null draft crashes the whole component on first paint, not just on use.
-function buildDraft() {
+function buildDraft(data) {
   return {
-    quote: MVV_DATA?.quote ?? '',
-    missao: MVV_DATA?.missao ?? '',
-    visao: MVV_DATA?.visao ?? '',
-    valoresText: MVV_DATA?.valores?.text ?? '',
-    tags: MVV_DATA?.valores?.tags ? [...MVV_DATA.valores.tags] : [],
+    quote: data?.quote ?? '',
+    missao: data?.missao ?? '',
+    visao: data?.visao ?? '',
+    valoresText: data?.valores?.text ?? '',
+    tags: data?.valores?.tags ? [...data.valores.tags] : [],
   };
 }
 
 export default function MissaoVisaoValores() {
+  const [mvvData, setMvvData] = useState(MVV_DATA);
+  const [hasRemoteMvv, setHasRemoteMvv] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(buildDraft);
+  const [draft, setDraft] = useState(() => buildDraft(MVV_DATA));
   const [error, setError] = useState(null);
   const [confirmingSave, setConfirmingSave] = useState(false);
   const [confirmingCancel, setConfirmingCancel] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    getMvv()
+      .then((response) => {
+        if (!active || !response) return;
+        const data = {
+          quote: response.quote,
+          missao: response.mission,
+          visao: response.vision,
+          valores: { text: response.valuesText, tags: response.values ?? [] },
+        };
+        setMvvData(data);
+        setHasRemoteMvv(true);
+      })
+      .catch(() => setHasRemoteMvv(false));
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   if (
-    !MVV_DATA?.quote ||
-    !MVV_DATA?.missao ||
-    !MVV_DATA?.visao ||
-    !MVV_DATA?.valores?.text ||
-    !MVV_DATA?.valores?.tags?.length
+    !mvvData?.quote ||
+    !mvvData?.missao ||
+    !mvvData?.visao ||
+    !mvvData?.valores?.text ||
+    !mvvData?.valores?.tags?.length
   ) {
     return (
       <section>
@@ -41,17 +67,17 @@ export default function MissaoVisaoValores() {
     );
   }
 
-  const { quote, missao, visao, valores } = MVV_DATA;
+  const { quote, missao, visao, valores } = mvvData;
 
   const startEditing = () => {
-    setDraft(buildDraft());
+    setDraft(buildDraft(mvvData));
     setError(null);
     setEditing(true);
   };
 
   const cancelEditing = () => {
     setEditing(false);
-    setDraft(buildDraft());
+    setDraft(buildDraft(mvvData));
     setError(null);
   };
 
@@ -98,19 +124,36 @@ export default function MissaoVisaoValores() {
     cancelEditing();
   };
 
-  // Sem endpoint de institucional ainda (ver mockData.js), a "gravação" é
-  // direto no objeto MVV_DATA importado - dura enquanto a página não recarrega.
-  const confirmSave = () => {
+  const confirmSave = async () => {
     const trimmedTags = draft.tags.map((tag) => tag.trim());
+    const payload = {
+      quote: draft.quote.trim(),
+      mission: draft.missao.trim(),
+      vision: draft.visao.trim(),
+      valuesText: draft.valoresText.trim(),
+      values: trimmedTags,
+    };
 
-    MVV_DATA.quote = draft.quote.trim();
-    MVV_DATA.missao = draft.missao.trim();
-    MVV_DATA.visao = draft.visao.trim();
-    MVV_DATA.valores.text = draft.valoresText.trim();
-    MVV_DATA.valores.tags = trimmedTags;
-
-    setConfirmingSave(false);
-    cancelEditing();
+    setSaving(true);
+    try {
+      const response = hasRemoteMvv ? await updateMvv(payload) : await createMvv(payload);
+      const data = response
+        ? {
+            quote: response.quote,
+            missao: response.mission,
+            visao: response.vision,
+            valores: { text: response.valuesText, tags: response.values ?? [] },
+          }
+        : { quote: payload.quote, missao: payload.mission, visao: payload.vision, valores: { text: payload.valuesText, tags: trimmedTags } };
+      setMvvData(data);
+      setHasRemoteMvv(true);
+      setConfirmingSave(false);
+      cancelEditing();
+    } catch (saveError) {
+      setError(saveError.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (

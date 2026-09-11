@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SectionHeader from '../SectionHeader';
 import EmptyState from '../EmptyState';
 import { TargetIcon, CheckIcon, AlertIcon } from '../icons';
 import { GOLDEN_CIRCLE_DATA } from '../mockData';
+import { createGoldenCircle, getGoldenCircle, updateGoldenCircle } from '../../../services/institutionalService';
 import './GoldenCircle.css';
 
 const REQUIRED_NUMBERS = [1, 2, 3];
@@ -13,19 +14,38 @@ const REQUIRED_NUMBERS = [1, 2, 3];
 // actually editing - a null draft would crash the whole component on first
 // paint. Keeping it always a valid array sidesteps that regardless of how
 // saveEditing/updateDraftField end up being written later.
-function buildDraft() {
-  return (GOLDEN_CIRCLE_DATA ?? []).map((item) => ({ ...item }));
+function buildDraft(data) {
+  return (data ?? []).map((item) => ({ ...item }));
 }
 
 export default function GoldenCircle() {
+  const [goldenCircleData, setGoldenCircleData] = useState(GOLDEN_CIRCLE_DATA);
+  const [hasRemoteGoldenCircle, setHasRemoteGoldenCircle] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(buildDraft);
+  const [draft, setDraft] = useState(() => buildDraft(GOLDEN_CIRCLE_DATA));
   const [error, setError] = useState(null);
   const [confirmingSave, setConfirmingSave] = useState(false);
   const [confirmingCancel, setConfirmingCancel] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    getGoldenCircle()
+      .then((response) => {
+        if (!active || !response?.length) return;
+        setGoldenCircleData(response);
+        setHasRemoteGoldenCircle(true);
+      })
+      .catch(() => setHasRemoteGoldenCircle(false));
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const hasAllItems = REQUIRED_NUMBERS.every((number) => {
-    const item = GOLDEN_CIRCLE_DATA?.find((candidate) => candidate.number === number);
+    const item = goldenCircleData?.find((candidate) => candidate.number === number);
     return item?.label && item?.text;
   });
 
@@ -39,14 +59,14 @@ export default function GoldenCircle() {
   }
 
   const startEditing = () => {
-    setDraft(buildDraft());
+    setDraft(buildDraft(goldenCircleData));
     setError(null);
     setEditing(true);
   };
 
   const cancelEditing = () => {
     setEditing(false);
-    setDraft(buildDraft());
+    setDraft(buildDraft(goldenCircleData));
     setError(null);
   };
 
@@ -78,18 +98,27 @@ export default function GoldenCircle() {
     cancelEditing();
   };
 
-  // Sem endpoint de institucional ainda (ver mockData.js), a "gravação" é
-  // direto no array GOLDEN_CIRCLE_DATA importado - dura enquanto a página não
-  // recarrega.
-  const confirmSave = () => {
-    draft.forEach((item) => {
-      const original = GOLDEN_CIRCLE_DATA.find((candidate) => candidate.number === item.number);
-      original.label = item.label.trim();
-      original.text = item.text.trim();
-    });
+  const confirmSave = async () => {
+    setSaving(true);
 
-    setConfirmingSave(false);
-    cancelEditing();
+    try {
+      const requests = draft.map((item) => {
+        const payload = { number: item.number, label: item.label.trim(), text: item.text.trim() };
+        return hasRemoteGoldenCircle ? updateGoldenCircle(item.number, payload) : createGoldenCircle(payload);
+      });
+      const response = await Promise.all(requests);
+      const savedItems = response.some(Boolean)
+        ? response.filter(Boolean)
+        : draft.map((item) => ({ ...item, label: item.label.trim(), text: item.text.trim() }));
+      setGoldenCircleData(savedItems);
+      setHasRemoteGoldenCircle(true);
+      setConfirmingSave(false);
+      cancelEditing();
+    } catch (saveError) {
+      setError(saveError.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -142,7 +171,7 @@ export default function GoldenCircle() {
             </div>
           </div>
 
-          {GOLDEN_CIRCLE_DATA.map((item) => (
+          {goldenCircleData.map((item) => (
             <article key={item.number} className={`gc-card gc-card--${item.number}`}>
               <h2 className="gc-card__title">
                 {item.number}. {item.label}
