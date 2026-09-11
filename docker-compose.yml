@@ -9,17 +9,17 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgrespassword
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
   frontend:
     build:
-      context: .
-      dockerfile: frontend/Dockerfile
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: portal_orc_frontend
     ports:
-      - "3000:80"
+      - "5173:5173"
     depends_on:
       - backend
 
@@ -30,10 +30,14 @@ services:
     container_name: portal_orc_backend
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/portal_orc
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgrespassword
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
     depends_on:
       - postgres
 
