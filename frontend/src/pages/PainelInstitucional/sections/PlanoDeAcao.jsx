@@ -1,17 +1,34 @@
-import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon } from '../icons';
+import { useState } from 'react';
+import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, PlusIcon, WarningIcon } from '../icons';
 import { PLANO_ACAO_DATA } from '../mockData';
+import { STATUS_LABEL } from './planoDeAcaoConstants';
+import CadastrarPlanoModal from './CadastrarPlanoModal';
 import './PlanoDeAcao.css';
 
-// Mesmo mapeamento de status usado no backend (ActionPlanRequestDto.progress
-// é uma String livre, ainda sem enum) - centralizado aqui pra já ficar fácil
-// de trocar por um enum de verdade quando o back definir um.
-const STATUS_LABEL = {
-  concluido: 'Concluído',
-  andamento: 'Em andamento',
-  'nao-concluido': 'Não Concluído',
-};
+let proximoId = 1000; // só pra gerar ids únicos nos planos cadastrados na sessão
 
 export default function PlanoDeAcao() {
+  // UC-18: os planos viram estado local pra dar pra cadastrar de verdade na
+  // tela. Ainda não persiste em backend (o endpoint POST /v1/action-plan já
+  // existe, mas ainda não está conectado aqui) - quando conectar, isso troca
+  // por uma chamada de API de verdade, mas a interação já funciona igual.
+  const [diretorias, setDiretorias] = useState(PLANO_ACAO_DATA);
+  const [cadastrando, setCadastrando] = useState(null); // índice da diretoria, ou null
+
+  const salvarNovasAtividades = (novasAtividades) => {
+    setDiretorias((atual) =>
+      atual.map((diretoria, index) => {
+        if (index !== cadastrando) return diretoria;
+        const novosPlanos = novasAtividades.map((atividade) => {
+          proximoId += 1;
+          return { id: proximoId, ...atividade };
+        });
+        return { ...diretoria, planos: [...diretoria.planos, ...novosPlanos] };
+      })
+    );
+    setCadastrando(null);
+  };
+
   return (
     <section>
       <div className="pa-header">
@@ -35,7 +52,7 @@ export default function PlanoDeAcao() {
       </div>
 
       <div className="pa-diretorias">
-        {PLANO_ACAO_DATA.map((diretoria) => {
+        {diretorias.map((diretoria, directorateIndex) => {
           const header = (
             <div className="pa-card__header">
               <span className="pa-card__badge">
@@ -44,10 +61,22 @@ export default function PlanoDeAcao() {
               </span>
               <div className="pa-card__objetivo-group">
                 <span className="pa-card__objetivo">Objetivo {diretoria.objetivo}</span>
+                {/* UC-18: cadastrar uma nova atividade pra esta diretoria. */}
                 <button
                   type="button"
                   className="pa-card__edit"
-                  aria-label="Editar diretoria"
+                  aria-label="Cadastrar plano de ação"
+                  title="Cadastrar plano de ação"
+                  onClick={() => setCadastrando(directorateIndex)}
+                >
+                  <PlusIcon />
+                </button>
+                {/* Editar um plano já cadastrado fica pra outra branch - o
+                    ícone só existe visualmente aqui, sem função. */}
+                <button
+                  type="button"
+                  className="pa-card__edit"
+                  aria-label="Editar plano de ação"
                   title="Edição disponível em breve"
                   disabled
                 >
@@ -65,15 +94,11 @@ export default function PlanoDeAcao() {
                   style={{ backgroundImage: `url(${diretoria.capa})`, '--pa-capa-ratio': diretoria.capaRatio }}
                   aria-hidden="true"
                 >
-                  {/* Cabeçalho sobreposto no topo da foto, igual ao Figma -
-                      só quando a diretoria tem foto de capa. */}
                   {header}
                 </div>
               )}
 
               <div className="pa-card__inner">
-                {/* Sem foto (Diretoria Executiva) - cabeçalho fica na posição
-                    normal, no topo do card. */}
                 {!diretoria.capa && header}
 
                 <div className="pa-planos">
@@ -81,25 +106,33 @@ export default function PlanoDeAcao() {
                     <div key={plano.id} className="pa-plano">
                       <div className="pa-plano__top">
                         <span className="pa-plano__prazo">Prazo: {plano.prazo}</span>
-                        <span className={`pa-status pa-status--${plano.status}`}>
-                          {STATUS_LABEL[plano.status]}
-                          <span className="pa-status__dot" />
-                        </span>
+                        <div className="pa-plano__top-direita">
+                          {plano.prioridade && (
+                            <span className={`pa-prioridade pa-prioridade--${plano.prioridade}`}>
+                              <WarningIcon />
+                              {plano.prioridade === 'alta' ? 'Alta' : plano.prioridade === 'media' ? 'Média' : 'Baixa'}
+                            </span>
+                          )}
+                          <span className={`pa-status pa-status--${plano.status}`}>
+                            {STATUS_LABEL[plano.status] ?? 'Status não reconhecido'}
+                            <span className="pa-status__dot" />
+                          </span>
+                        </div>
                       </div>
 
-                      {/* Fiel ao Figma: "Atividade" e "Subtarefas:" são dois
-                          rótulos estáticos empilhados, sem nenhum texto de
-                          descrição entre eles - o conteúdo real começa direto
-                          na lista abaixo. */}
+                      {/* Fiel ao Figma original: "Atividade" e "Subtarefas:"
+                          eram só rótulos estáticos sem texto embaixo, porque o
+                          mock nunca teve nome cadastrado. Agora que o
+                          cadastro existe de verdade, mostra o nome quando
+                          tiver um - os planos antigos do mock continuam sem
+                          mostrar nada, exatamente como antes. */}
                       <div className="pa-plano__bloco">
                         <h3 className="pa-plano__atividade">Atividade</h3>
+                        {plano.atividade && <p className="pa-plano__atividade-texto">{plano.atividade}</p>}
                         <h4 className="pa-plano__subtarefas-titulo">Subtarefas:</h4>
                         <ul className="pa-subtarefas">
-                          {plano.subtarefas.map((tarefa) => (
-                            <li key={tarefa}>
-                              {/* Quadrado decorativo, não é um checkbox
-                                  interativo - o design não distingue subtarefa
-                                  concluída de pendente aqui. */}
+                          {plano.subtarefas.map((tarefa, index) => (
+                            <li key={`${tarefa}-${index}`}>
                               <span className="pa-subtarefa__box" aria-hidden="true" />
                               <span>{tarefa}</span>
                             </li>
@@ -107,9 +140,10 @@ export default function PlanoDeAcao() {
                         </ul>
                       </div>
 
-                      {/* O Figma só mostra o rótulo "Responsáveis:", sem nomes
-                          preenchidos - mantido vazio de propósito. */}
-                      <div className="pa-plano__responsaveis">Responsáveis:</div>
+                      <div className="pa-plano__responsaveis">
+                        Responsáveis:
+                        {plano.responsaveis?.length > 0 && ` ${plano.responsaveis.join(', ')}`}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -118,6 +152,14 @@ export default function PlanoDeAcao() {
           );
         })}
       </div>
+
+      {cadastrando !== null && (
+        <CadastrarPlanoModal
+          diretoria={diretorias[cadastrando]}
+          onSave={salvarNovasAtividades}
+          onClose={() => setCadastrando(null)}
+        />
+      )}
     </section>
   );
 }
