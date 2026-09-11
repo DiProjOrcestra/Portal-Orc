@@ -1,33 +1,55 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, PlusIcon, WarningIcon } from '../icons';
-import { PLANO_ACAO_DATA } from '../mockData';
 import { STATUS_LABEL } from './PlanoDeAcaoConstants';
+import { DIRECTORATE_SECTIONS, fetchPlanosDeAcao } from './PlanoDeAcaoApi';
 import CadastrarPlanoModal from './CadastrarPlanoModal';
 import './PlanoDeAcao.css';
 
-let proximoId = 1000; // só pra gerar ids únicos nos planos cadastrados na sessão
+// O backend guarda o rótulo pronto (ex: "Em andamento"/"Alta"), não o slug
+// usado nas classes CSS/textos desta tela - esses mapas fazem essa volta.
+const STATUS_SLUG_BY_LABEL = Object.fromEntries(Object.entries(STATUS_LABEL).map(([slug, label]) => [label, slug]));
+const PRIORIDADE_SLUG_BY_LABEL = { Alta: 'alta', Média: 'media', Baixa: 'baixa' };
+
+// O backend devolve o prazo como "dd-MM-yyyy" - troca só o separador pro
+// "dd/mm/yyyy" já usado nesta tela.
+function formatarPrazo(term) {
+  return term ? term.replaceAll('-', '/') : term;
+}
 
 export default function PlanoDeAcao() {
-  // UC-18: os planos viram estado local pra dar pra cadastrar de verdade na
-  // tela. Ainda não persiste em backend (o endpoint POST /v1/action-plan já
-  // existe, mas ainda não está conectado aqui) - quando conectar, isso troca
-  // por uma chamada de API de verdade, mas a interação já funciona igual.
-  const [diretorias, setDiretorias] = useState(PLANO_ACAO_DATA);
+  // As 5 diretorias são sempre exibidas (com sua foto de capa), mesmo sem
+  // nenhum plano real ainda - só o conteúdo de cada seção vem do backend
+  // agora (GET /v1/action-plan), não é mais dado mockado.
+  const [secoes, setSecoes] = useState(() => DIRECTORATE_SECTIONS.map((secao) => ({ ...secao, planos: [] })));
+  const [erro, setErro] = useState(null);
   const [cadastrando, setCadastrando] = useState(null); // índice da diretoria, ou null
 
-  const salvarNovasAtividades = (novasAtividades) => {
-    setDiretorias((atual) =>
-      atual.map((diretoria, index) => {
-        if (index !== cadastrando) return diretoria;
-        const novosPlanos = novasAtividades.map((atividade) => {
-          proximoId += 1;
-          return { id: proximoId, ...atividade };
-        });
-        return { ...diretoria, planos: [...diretoria.planos, ...novosPlanos] };
+  const buscarPlanos = useCallback(() => {
+    return fetchPlanosDeAcao()
+      .then((planos) => {
+        setSecoes(
+          DIRECTORATE_SECTIONS.map((secao) => ({
+            ...secao,
+            planos: (planos ?? [])
+              .filter((plano) => plano.directorate === secao.code)
+              .map((plano) => ({
+                id: plano.id,
+                prazo: formatarPrazo(plano.term),
+                status: STATUS_SLUG_BY_LABEL[plano.progress] ?? 'desconhecido',
+                prioridade: PRIORIDADE_SLUG_BY_LABEL[plano.priority],
+                atividade: plano.name,
+                subtarefas: plano.subtasks.map((subtarefa) => subtarefa.name),
+              })),
+          }))
+        );
+        setErro(null);
       })
-    );
-    setCadastrando(null);
-  };
+      .catch((err) => setErro(err.message ?? 'Não foi possível carregar os planos de ação.'));
+  }, []);
+
+  useEffect(() => {
+    buscarPlanos();
+  }, [buscarPlanos]);
 
   return (
     <section>
@@ -51,8 +73,10 @@ export default function PlanoDeAcao() {
         </p>
       </div>
 
+      {erro && <p className="pa-erro">{erro}</p>}
+
       <div className="pa-diretorias">
-        {diretorias.map((diretoria, directorateIndex) => {
+        {secoes.map((diretoria, directorateIndex) => {
           const header = (
             <div className="pa-card__header">
               <span className="pa-card__badge">
@@ -87,7 +111,7 @@ export default function PlanoDeAcao() {
           );
 
           return (
-            <article key={diretoria.directorate} className={`pa-card ${diretoria.capa ? 'pa-card--capa' : ''}`}>
+            <article key={diretoria.code} className={`pa-card ${diretoria.capa ? 'pa-card--capa' : ''}`}>
               {diretoria.capa && (
                 <div
                   className="pa-card__capa"
@@ -102,6 +126,9 @@ export default function PlanoDeAcao() {
                 {!diretoria.capa && header}
 
                 <div className="pa-planos">
+                  {diretoria.planos.length === 0 && (
+                    <p className="pa-planos-vazio">Nenhum plano de ação cadastrado ainda.</p>
+                  )}
                   {diretoria.planos.map((plano) => (
                     <div key={plano.id} className="pa-plano">
                       <div className="pa-plano__top">
@@ -120,12 +147,6 @@ export default function PlanoDeAcao() {
                         </div>
                       </div>
 
-                      {/* Fiel ao Figma original: "Atividade" e "Subtarefas:"
-                          eram só rótulos estáticos sem texto embaixo, porque o
-                          mock nunca teve nome cadastrado. Agora que o
-                          cadastro existe de verdade, mostra o nome quando
-                          tiver um - os planos antigos do mock continuam sem
-                          mostrar nada, exatamente como antes. */}
                       <div className="pa-plano__bloco">
                         <h3 className="pa-plano__atividade">Atividade</h3>
                         {plano.atividade && <p className="pa-plano__atividade-texto">{plano.atividade}</p>}
@@ -140,10 +161,7 @@ export default function PlanoDeAcao() {
                         </ul>
                       </div>
 
-                      <div className="pa-plano__responsaveis">
-                        Responsáveis:
-                        {plano.responsaveis?.length > 0 && ` ${plano.responsaveis.join(', ')}`}
-                      </div>
+                      <div className="pa-plano__responsaveis">Responsáveis:</div>
                     </div>
                   ))}
                 </div>
@@ -155,8 +173,11 @@ export default function PlanoDeAcao() {
 
       {cadastrando !== null && (
         <CadastrarPlanoModal
-          diretoria={diretorias[cadastrando]}
-          onSave={salvarNovasAtividades}
+          diretoria={secoes[cadastrando]}
+          onSave={() => {
+            setCadastrando(null);
+            buscarPlanos();
+          }}
           onClose={() => setCadastrando(null)}
         />
       )}
