@@ -108,3 +108,147 @@
     order: initial;
   }
 }
+
+.mvv-edit-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.mvv-edit-label {
+  margin: 16px 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.mvv-edit-label:first-child {
+  margin-top: 0;
+}
+
+.mvv-edit-textarea,
+.mvv-edit-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-strong);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.mvv-edit-textarea {
+  resize: vertical;
+}
+
+.mvv-edit-textarea:focus,
+.mvv-edit-input:focus {
+  outline: none;
+  border-color: var(--green-400);
+}
+
+.mvv-edit-error {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.mvv-tag-form-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.mvv-tag-form-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mvv-tag-form-row .mvv-edit-input {
+  width: auto;
+  min-width: 140px;
+}
+
+.mvv-tag-form-remove {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--danger);
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mvv-tag-form-remove:not(:disabled):hover {
+  border-color: var(--danger);
+}
+
+.mvv-tag-form-remove:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.mvv-tag-add-btn {
+  display: block;
+  width: fit-content;
+  margin-top: 12px;
+  padding: 10px 20px;
+  font-size: 13.5px;
+}
+
+.mvv-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.mvv-btn {
+  padding: 12px 36px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--green-700), var(--green-400));
+  color: var(--off-white);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14.5px;
+  box-shadow: 0 8px 24px rgba(46, 182, 0, 0.35);
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.mvv-btn:hover {
+  filter: brightness(1.08);
+}
+
+.mvv-btn:active {
+  transform: translateY(1px);
+}
+
+.mvv-btn--ghost {
+  background: none;
+  box-shadow: none;
+  border: 1px solid var(--border);
+  color: var(--off-white);
+}
+
+.mvv-btn--ghost:hover {
+  filter: none;
+  border-color: var(--green-400);
+}
+
+@media (max-width: 480px) {
+  .mvv-edit-actions {
+    flex-direction: column-reverse;
+  }
+
+  .mvv-edit-actions .mvv-btn {
+    width: 100%;
+  }
+}
