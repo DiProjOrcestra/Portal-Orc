@@ -92,3 +92,17 @@ export const TrashIcon = (props) => (
     <path d="M10 11v6M14 11v6" />
   </svg>
 );
+
+export const CheckIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M5 12.5 9.5 17 19 7.5" />
+  </svg>
+);
+
+export const AlertIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M12 3.5 21 19.5H3L12 3.5Z" strokeLinejoin="round" />
+    <path d="M12 10v4.2" />
+    <circle cx="12" cy="17" r="0.9" fill="currentColor" stroke="none" />
+  </svg>
+);
