@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { CampaignIcon, ChecklistIcon, CloseIcon, PersonIcon } from '../icons';
-import { STATUS_LABEL } from './planoDeAcaoConstants';
+import { STATUS_LABEL } from './PlanoDeAcaoConstants';
 import './CadastrarPlanoModal.css';
 
 const STATUS_OPTIONS = Object.entries(STATUS_LABEL).map(([value, label]) => ({ value, label }));
@@ -110,7 +111,7 @@ export default function CadastrarPlanoModal({ diretoria, onSave, onClose }) {
     );
   };
 
-  return (
+  return createPortal(
     <div className="cpm-backdrop" role="presentation" onClick={onClose}>
       <div
         className="cpm-modal"
@@ -297,6 +298,7 @@ export default function CadastrarPlanoModal({ diretoria, onSave, onClose }) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

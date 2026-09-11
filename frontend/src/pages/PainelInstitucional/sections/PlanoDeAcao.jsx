@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, PlusIcon, WarningIcon } from '../icons';
 import { PLANO_ACAO_DATA } from '../mockData';
-import { STATUS_LABEL } from './planoDeAcaoConstants';
+import { STATUS_LABEL } from './PlanoDeAcaoConstants';
 import CadastrarPlanoModal from './CadastrarPlanoModal';
 import './PlanoDeAcao.css';
 
