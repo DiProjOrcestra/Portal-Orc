@@ -67,6 +67,23 @@
   gap: 24px;
 }
 
+.pa-erro {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #cc1013;
+  background: rgba(87, 1, 2, 0.15);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--off-white);
+}
+
+.pa-planos-vazio {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
 .pa-card {
   position: relative;
   border-radius: 24px;

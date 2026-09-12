@@ -22,7 +22,7 @@
         document.getElementById("sidebar-container").innerHTML = html;
       });
   </script>
-  <title>Ata Reunião 1 — Portal Orc</title>
+  <title>Ata Reunião 5 — Portal Orc</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="../css/style.css">
 </head>
 
-<body data-page="ata-1">
+<body data-page="ata-5">
   <svg class="watermark" viewBox="0 0 1786 1786" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path
       d="M747.206 1290.27C751.078 1288.57 753.364 1285.07 753.325 1280.82L747.08 1059.87C746.997 1056.54 745.376 1053.5 742.669 1051.63L617.478 964.644C611.112 960.233 607.322 952.989 607.322 945.21V895.638L552.093 802.536L570.449 1123.71C570.575 1126.38 571.696 1128.83 573.569 1130.62L735.968 1288.19C739.049 1291.19 743.251 1291.94 747.206 1290.23" />
@@ -145,50 +145,53 @@
 
           <p class="breadcrumb">
             <a href="../acompanhamento/atas.html">Acompanhamento</a><span class="sep">/</span>
-            <span class="current">Ata Reunião 1</span>
+            <span class="current">Ata Reunião 5</span>
           </p>
 
           <p class="eyebrow">Acompanhamento — Atas de Reunião</p>
-          <h1 class="page-title">Ata Reunião 1 — 03/08/26</h1>
-          <p class="lead">Reunião de apresentação do Pages e alinhamento de expectativas do projeto, realizada em
-            3 de agosto de 2026.</p>
+          <h1 class="page-title">Ata Reunião 5 — 22/08/26</h1>
+          <p class="lead">Reunião de alinhamento semanal, realizada em 22 de agosto de 2026.</p>
 
           <div class="prose">
 
             <h2 id="participantes">Participantes</h2>
             <ul>
-              <li>Yasmim de Souza Santos</li>
-              <li>Natan José França</li>
               <li>Fábio Alessandro</li>
-              <li>João Marcos Tavares de Medeiros</li>
               <li>Thiago Alencar de Oliveira</li>
-              <li>Graziele</li>
               <li>Júlia Amanda Silva Lima</li>
-              <li>Bernardo Campos Caxito Silveira</li>
+              <li>Yasmim de Souza Santos</li>
+              <li>Graziele</li>
             </ul>
 
             <h2 id="resumo">Resumo</h2>
-            <p>Reunião inicial de alinhamento do projeto, com a explicação completa do conteúdo do Pages para todos
-              os integrantes e o levantamento das expectativas individuais em relação ao trabalho. Ficou definido o
-              agendamento da segunda reunião, dedicada à construção da matriz de valor x esforço.</p>
+            <p>Reunião de alinhamento semanal das frentes técnicas e acompanhamento de prazos. O DevOps reportou a correção do Dockerfile e da esteira de CD, o Back-end avançou no Cadastro e no Login, e o Front-end comunicou que o protótipo no Figma está na reta final. A gestão anunciou o acesso à plataforma Udemy para capacitação e reforçou o cronograma: duas semanas de desenvolvimento seguidas de uma semana de vacância para testes e correções.</p>
 
             <h2 id="pauta-e-discussoes">Pauta e Discussões</h2>
 
-            <h3 id="apresentacao-do-pages">Apresentação do Pages</h3>
-            <p>Foi explicado todo o conteúdo do Pages para os integrantes do grupo, contextualizando a
-              documentação do projeto.</p>
+            <h3 id="alinhamento-semanal">Alinhamento Semanal</h3>
+            <p>Apresentação do progresso de cada equipe e planejamento para a semana seguinte.</p>
+            <ul>
+              <li><strong>DevOps:</strong> correção do Dockerfile e dos testes automatizados de CD; aguardo de atualizações do Back-end para retomar a integração.</li>
+              <li><strong>Back-end:</strong> Cadastro implementado; Login em refinamento; reestruturação das pastas no monorepo.</li>
+              <li><strong>Front-end:</strong> protótipo no Figma quase concluído, restando a tela de edição dos planos de ação.</li>
+            </ul>
 
-            <h3 id="expectativas-do-projeto">Expectativas do Projeto</h3>
-            <p>Discutidas as expectativas de todos os integrantes em relação ao projeto.</p>
+            <h3 id="estrutura-de-pastas">Estrutura de Pastas e Branches</h3>
+            <p>Validação da divisão entre Front e Back e reforço da regra de criar branches específicas para cada caso de uso.</p>
 
-            <h3 id="agendamento-da-reuniao-2">Agendamento da Reunião 2</h3>
-            <p>Definida a necessidade de marcar uma nova reunião (Reunião 2) para a construção da matriz de valor x
-              esforço.</p>
+            <h3 id="capacitacao-udemy">Capacitação — Assinatura Udemy</h3>
+            <p>Disponibilização da plataforma Udemy para a equipe, incentivando cursos voltados a Figma e desenvolvimento.</p>
+
+            <h3 id="prazos-e-encerramento">Prazos e Encerramento</h3>
+            <p>Confirmação de duas semanas restantes de desenvolvimento antes da apresentação final, seguidas de uma semana de vacância para feedbacks e ajustes.</p>
 
             <h2 id="decisoes">Decisões</h2>
             <ul>
-              <li><strong>Marcar Reunião 2:</strong> agendar reunião específica para a definição da matriz de valor
-                x esforço.</li>
+              <li><strong>Fluxo de Branches:</strong> cada funcionalidade deve ser desenvolvida na branch do respectivo caso de uso.</li>
+              <li><strong>Back-end:</strong> reorganizar as pastas na estrutura do monorepo antes de novos commits.</li>
+              <li><strong>Figma:</strong> finalizar a tela de edição dos planos de ação para fechar a prototipação.</li>
+              <li><strong>Capacitação:</strong> membros devem utilizar a conta da Orc'estra na Udemy para realizar cursos técnicos.</li>
+              <li><strong>Testes Automatizados:</strong> finalização autorizada durante a semana de vacância.</li>
             </ul>
 
             <h2 id="plano-de-acao">Plano de Ação (Próximas Etapas)</h2>
@@ -202,14 +205,29 @@
                 </thead>
                 <tbody>
                   <tr>
+                    <td>DevOps</td>
+                    <td>Aguardar atualizações do Back-end para retomar integração e pipeline.</td>
+                  </tr>
+                  <tr>
+                    <td>Back-end</td>
+                    <td>Finalizar revisão do Cadastro, refinar Login e reestruturar pastas no repositório.</td>
+                  </tr>
+                  <tr>
+                    <td>Front-end</td>
+                    <td>Concluir tela de edição dos planos de ação no Figma e iniciar desenvolvimento.</td>
+                  </tr>
+                  <tr>
                     <td>Todos</td>
-                    <td><strong>Ler documento de requisitos:</strong> ler o documento de requisitos contendo as
-                      características de produto, requisitos funcionais, requisitos não funcionais e regras de
-                      negócio.</td>
+                    <td>Acessar a Udemy e realizar cursos de capacitação técnica.</td>
                   </tr>
                 </tbody>
               </table>
             </div>
+
+            <h2 id="gravacao">Gravação da Reunião</h2>
+            <iframe src="https://drive.google.com/file/d/1igCWRAqOThwl_U54S5jLJyF-t-p2RkbG/preview"
+              width="100%" height="400" style="border: none; border-radius: 16px" allow="autoplay"
+              allowfullscreen></iframe>
 
           </div>
 

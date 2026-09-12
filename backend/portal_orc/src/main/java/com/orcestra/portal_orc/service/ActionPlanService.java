@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanRequestDto;
+import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanResponseDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.model.ActionPlanEntity;
@@ -54,4 +55,8 @@ public class ActionPlanService {
         subtasks.forEach(subtask -> subtask.setActionPlan(actionPlan));
         actionPlanRepository.save(actionPlan);
     }
-}
+
+    public List<ActionPlanResponseDto> getAllActionPlan() {
+        return actionPlanRepository.findAll().stream().map(ActionPlanResponseDto::new ).toList();        
+    }
+}   
