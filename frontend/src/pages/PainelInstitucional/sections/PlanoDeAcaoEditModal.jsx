@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CampaignIcon } from '../icons';
-import { STATUS_LABEL } from './planoDeAcaoConstants';
+import { STATUS_LABEL } from './PlanoDeAcaoConstants';
 import './PlanoDeAcaoEditModal.css';
 
 const STATUS_OPTIONS = Object.entries(STATUS_LABEL).map(([value, label]) => ({ value, label }));
