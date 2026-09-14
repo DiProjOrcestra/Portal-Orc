@@ -1,0 +1,41 @@
+.painel-institucional {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 260px auto 0;
+  padding: 0 24px 80px;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.painel-institucional__content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Header collapses to its short (hamburger-only) bar at this same breakpoint
+   (see Header.css), which is also where PainelInterno's sidebar disappears
+   (see PainelInterno.css) — keeping all three in sync is what lets the
+   hamburger's section subnav pick up switching between MVV and Golden Circle
+   right where the sidebar stops offering it. */
+@media (max-width: 1099px) {
+  .painel-institucional {
+    flex-direction: column;
+    /* `align-items: flex-start` above governs the cross axis, which flips
+       from vertical to horizontal once the flex-direction becomes column
+       here. Left at flex-start, `.painel-institucional__content` shrinks to
+       a "fit-content" width driven by its longest unbroken run of text
+       (e.g. the short Golden Circle sentences), not the available width -
+       collapsing the whole content column to ~330px with empty space beside
+       it. Restoring stretch makes it always fill the column's full width. */
+    align-items: stretch;
+    margin-top: 100px;
+  }
+}
+
+@media (max-width: 600px) {
+  .painel-institucional {
+    padding: 0 16px 56px;
+  }
+}

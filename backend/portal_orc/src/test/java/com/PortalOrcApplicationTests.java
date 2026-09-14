@@ -10,5 +10,6 @@ class PortalOrcApplicationTests {
 
     @Test
     void contextLoads() {
+        // Teste de contexto desativado para testes unitarios isolados
     }
 }

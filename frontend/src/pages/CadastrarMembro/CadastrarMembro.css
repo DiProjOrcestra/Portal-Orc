@@ -3,6 +3,7 @@
   min-height: 100svh;
   background: #141414;
   overflow-x: hidden;
+  padding-bottom: 180px;
 }
 
 .page__background {

@@ -6,7 +6,7 @@
   border-radius: 40px;
   border: 1px solid var(--border);
   border-top: 4px solid var(--green-400);
-  background: #0b0b0b;
+  background: rgba(14, 14, 14, 0.8);
 }
 
 .register-card__glow-layer {
@@ -139,8 +139,9 @@
   transform: translateY(1px);
 }
 
-@media (max-width: 720px) {
+@media (max-width: 1099px) {
   .register-card {
+    margin-top: 100px;
     border-radius: 28px;
   }
 

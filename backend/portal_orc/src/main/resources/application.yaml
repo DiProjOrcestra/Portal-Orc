@@ -2,6 +2,7 @@ spring:
   application:
     name: portal_orc
   
+  
   datasource: 
     url: ${DB_URL:jdbc:postgresql://localhost:5432/portal_orc}
     username: ${DB_USERNAME:portal_orc}

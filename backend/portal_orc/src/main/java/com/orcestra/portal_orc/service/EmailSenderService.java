@@ -14,7 +14,6 @@ public class EmailSenderService {
     
     @Value("${spring.mail.username}")
     private String senderEmail;
-    
     private final JavaMailSender mailSender;
     
     @Async
