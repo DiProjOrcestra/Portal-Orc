@@ -153,7 +153,9 @@ class SenhaTemporariaServiceTest {
         ArgumentCaptor<DirectorateEntity> directorateCaptor =
                 ArgumentCaptor.forClass(DirectorateEntity.class);
         verify(directorateRepository).save(directorateCaptor.capture());
-        assertEquals(DirectorateEnum.DIPROJ, directorateCaptor.getValue().getDirectorateName());
+        
+        // Ajustado de DirectorateEnum.DIPROJ para DirectorateEnum.DIPROJ.name()
+        assertEquals(DirectorateEnum.DIPROJ.name(), directorateCaptor.getValue().getDirectorateName());
 
         verify(userRepository).save(any(UserEntity.class));
         verify(emailSenderService).sendEmail(

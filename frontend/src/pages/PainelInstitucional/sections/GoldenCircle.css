@@ -6,6 +6,8 @@
 
 .gc-diagram {
   position: relative;
+  container-type: inline-size;
+  width: 100%;
   aspect-ratio: 1;
   border-radius: 28px;
   background: #141414;
@@ -39,35 +41,39 @@
 .gc-diagram__ring--1 {
   width: 92%;
   aspect-ratio: 1;
-  max-width: 380px;
 }
 
 .gc-diagram__ring--2 {
   width: 70%;
   aspect-ratio: 1;
-  max-width: 290px;
 }
 
 .gc-diagram__ring--3 {
   width: 48%;
   aspect-ratio: 1;
-  max-width: 200px;
 }
 
+/* Sized in container query units (cqw), not viewport units - it's the
+   diagram's own rendered width that matters (it can be far narrower than the
+   viewport once it shares a row with the text cards), and cqw is the only
+   unit that tracks that directly. Clamped so text never disappears on a tiny
+   diagram or balloons past the original 15px on a large one. */
 .gc-diagram__labels {
   z-index: 1;
-  font-size: 15px;
+  font-size: clamp(11px, 3.8cqw, 15px);
   color: var(--text);
 }
 
 /* Each label is centered on the true midpoint of its own ring band, using the
-   exact same width/max-width expressions as the rings above (halved, for
-   radii) so the offset always tracks however big the rings actually render -
-   at any screen width, not just the sizes they happen to hit on desktop.
-   `top` (not `transform`) carries the offset because percentages in `top`
-   resolve against the diagram's own size, while percentages in `transform`
-   resolve against the label's own tiny box and can't express "half the
-   diagram" at all. */
+   exact same width expressions as the rings above (halved, for radii) so the
+   offset always tracks however big the rings actually render - at any
+   diagram size, not just the ones it happens to hit on desktop. Pure
+   percentages (matching the rings' own pure-percentage widths) keep this
+   exact at every size instead of drifting once a px cap kicks in on one but
+   not the other. `top` (not `transform`) carries the offset because
+   percentages in `top` resolve against the diagram's own size, while
+   percentages in `transform` resolve against the label's own tiny box and
+   can't express "half the diagram" at all. */
 .gc-diagram__labels span {
   position: absolute;
   left: 50%;
@@ -76,11 +82,11 @@
 }
 
 .gc-diagram__labels-1 {
-  top: calc(50% - (min(46%, 190px) + min(35%, 145px)) / 2);
+  top: calc(50% - (46% + 35%) / 2);
 }
 
 .gc-diagram__labels-2 {
-  top: calc(50% - (min(35%, 145px) + min(24%, 100px)) / 2);
+  top: calc(50% - (35% + 24%) / 2);
 }
 
 .gc-diagram__labels-3 {
@@ -124,9 +130,6 @@
 
   .gc-diagram {
     grid-area: circle;
-    aspect-ratio: unset;
-    height: 440px;
-    min-height: 100%;
   }
 
   .gc-card--1 {
@@ -139,5 +142,222 @@
 
   .gc-card--3 {
     grid-area: card3;
+  }
+}
+
+.gc-edit-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.gc-edit-item {
+  padding: 20px;
+  margin-bottom: 16px;
+  border-radius: 20px;
+  background: #141414;
+  box-shadow:
+    10px 10px 25px rgba(8, 8, 8, 0.9),
+    -10px 10px 20px rgba(8, 8, 8, 0.2),
+    10px -10px 20px rgba(8, 8, 8, 0.2),
+    -10px -10px 20px rgba(20, 20, 20, 0.9),
+    inset 1px 1px 2px rgba(20, 20, 20, 0.3);
+}
+
+.gc-edit-label {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.gc-edit-item .gc-edit-label:not(:first-child) {
+  margin-top: 14px;
+}
+
+.gc-edit-input,
+.gc-edit-textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-strong);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.gc-edit-textarea {
+  resize: vertical;
+}
+
+.gc-edit-input:focus,
+.gc-edit-textarea:focus {
+  outline: none;
+  border-color: var(--green-400);
+}
+
+.gc-edit-error {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.gc-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.gc-btn {
+  padding: 12px 36px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--green-700), var(--green-400));
+  color: var(--off-white);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14.5px;
+  box-shadow: 0 8px 24px rgba(46, 182, 0, 0.35);
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.gc-btn:hover {
+  filter: brightness(1.08);
+}
+
+.gc-btn:active {
+  transform: translateY(1px);
+}
+
+.gc-btn--ghost {
+  background: none;
+  box-shadow: none;
+  border: 1px solid var(--border);
+  color: var(--off-white);
+}
+
+.gc-btn--ghost:hover {
+  filter: none;
+  border-color: var(--green-400);
+}
+
+.gc-btn--danger {
+  background: linear-gradient(135deg, #b3261e, var(--danger));
+  color: var(--off-white);
+  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.35);
+}
+
+.gc-btn--danger:hover {
+  filter: brightness(1.08);
+}
+
+@media (max-width: 480px) {
+  .gc-edit-actions {
+    flex-direction: column-reverse;
+  }
+
+  .gc-edit-actions .gc-btn {
+    width: 100%;
+  }
+}
+
+.gc-modal-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(3px);
+  animation: gc-modal-fade-in 0.15s ease;
+}
+
+.gc-modal {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 28px 28px;
+  border-radius: 24px;
+  background: #141414;
+  border: 1px solid rgba(63, 204, 16, 0.35);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(63, 204, 16, 0.14);
+  text-align: center;
+  animation: gc-modal-scale-in 0.18s ease;
+}
+
+.gc-modal--danger {
+  border-color: rgba(255, 107, 107, 0.35);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(255, 107, 107, 0.14);
+}
+
+.gc-modal__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: rgba(63, 204, 16, 0.14);
+  border: 1px solid rgba(63, 204, 16, 0.4);
+  color: var(--green-400);
+}
+
+.gc-modal__icon--danger {
+  background: rgba(255, 107, 107, 0.14);
+  border-color: rgba(255, 107, 107, 0.4);
+  color: var(--danger);
+}
+
+.gc-modal__icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.gc-modal__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--off-white);
+  margin: 0 0 10px;
+}
+
+.gc-modal__message {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.gc-modal__actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+@keyframes gc-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gc-modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
