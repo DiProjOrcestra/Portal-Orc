@@ -3,7 +3,6 @@ package com.orcestra.portal_orc.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.annotation.Generated;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
