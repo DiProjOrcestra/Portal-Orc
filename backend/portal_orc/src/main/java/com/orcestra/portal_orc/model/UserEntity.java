@@ -76,7 +76,6 @@ public class UserEntity implements UserDetails {
         this.phone = userRequestDto.getPhone();
         this.entryDay = userRequestDto.getEntryDay();
         this.position = userRequestDto.getPosition();
-        this.directorate = userRequestDto.getDirectorate();
     }
 
     @Override
