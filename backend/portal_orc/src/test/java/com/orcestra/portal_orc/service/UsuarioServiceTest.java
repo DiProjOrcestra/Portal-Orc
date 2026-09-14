@@ -19,8 +19,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.orcestra.portal_orc.config.TokenProvider;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.enums.DirectorateEnum;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
@@ -46,6 +49,12 @@ class UsuarioServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
+    private AuthenticationManager authenticationManager;
+
+    @Mock
+    private TokenProvider tokenProvider;
+
+    @Mock
     private DirectorateRepository directorateRepository;
 
     @Mock
@@ -67,7 +76,9 @@ class UsuarioServiceTest {
                 passwordEncoder,
                 directorateRepository,
                 randomPasswordGenerator,
-                emailSenderService
+                emailSenderService,
+                authenticationManager,
+                tokenProvider
         );
 
         request = RegisterRequestDto.builder()

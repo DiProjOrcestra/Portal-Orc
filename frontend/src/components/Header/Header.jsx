@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo-orcestra.png';
 import './Header.css';
 
@@ -70,6 +71,7 @@ export default function Header({
   activeSection,
   onSelectSection,
 }) {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [painelExpanded, setPainelExpanded] = useState(false);
 
@@ -79,7 +81,11 @@ export default function Header({
   };
 
   const goTo = (key) => {
-    onNavigate?.(key);
+    if (onNavigate) {
+      onNavigate(key);
+    } else {
+      navigate(key === 'painel' ? '/painel' : '/cadastrar-membro');
+    }
     closeMenu();
   };
 

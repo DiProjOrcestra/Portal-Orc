@@ -2,11 +2,19 @@ package com.orcestra.portal_orc.service;
 
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.orcestra.portal_orc.config.TokenProvider;
+import com.orcestra.portal_orc.dto.LoginRequestDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
+import com.orcestra.portal_orc.dto.TokenResponseDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
@@ -30,6 +38,10 @@ public class AuthenticationService {
     private final DirectorateRepository directorateRepository;
     private final RandomPasswordGenerator randomPasswordGenerator;
     private final EmailSenderService emailSenderService;
+    private final AuthenticationManager authenticationManager;
+    private final TokenProvider tokenProvider;
+    @Value("${jwt.expiration}")
+    private long expirationTime;
 
     public void registerUser(RegisterRequestDto registerRequestDto) throws BadRequestException{
         UserEntity userEntity = userRepository.findByEmail(registerRequestDto.getEmail()).orElse(null);
@@ -66,4 +78,21 @@ public class AuthenticationService {
         userRepository.save(userEntity);
         emailSenderService.sendEmail(resendPasswordDto.getEmail(), "Senha para primeiro cadastro", "Sua senha é " + userPassword);
     }
+
+    public TokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
+            String token = tokenProvider.gerarToken(authentication);
+
+            return new TokenResponseDto(token, expirationTime);
+
+        } 
+        catch (BadCredentialsException e){
+            throw new BadRequestException("Credenciais inválidas");
+        }
+        catch (Exception e){
+            throw e;
+        }
+    }
+
 }
