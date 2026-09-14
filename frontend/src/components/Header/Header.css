@@ -9,9 +9,13 @@
   margin: 0;
   padding: 10px;
   border-radius: 36px;
-  filter: drop-shadow(10px 10px 25px rgba(8, 8, 8, 0.9)) drop-shadow(-10px 10px 20px rgba(8, 8, 8, 0.2)) drop-shadow(10px -10px 20px rgba(8, 8, 8, 0.2)) drop-shadow(-10px -10px 20px rgba(20, 20, 20, 0.9));
-  box-shadow: inset 1px 1px 2px rgba(20, 20, 20, 0.3),
-              inset -1px -1px 2px rgba(8, 8, 8, 0.5);
+  box-shadow:
+    10px 10px 25px rgba(8, 8, 8, 0.9),
+    -10px 10px 20px rgba(8, 8, 8, 0.2),
+    10px -10px 20px rgba(8, 8, 8, 0.2),
+    -10px -10px 20px rgba(20, 20, 20, 0.9),
+    inset 1px 1px 2px rgba(20, 20, 20, 0.3),
+    inset -1px -1px 2px rgba(8, 8, 8, 0.5);
   overflow: hidden;
 }
 
@@ -158,16 +162,23 @@
 
 .header__tab--active {
   background: #141414;
-  filter: drop-shadow(3px 3px 8px rgba(8, 8, 8, 0.9)) drop-shadow(-3px 3px 6px rgba(8, 8, 8, 0.2)) drop-shadow(3px -3px 6px rgba(8, 8, 8, 0.2)) drop-shadow(-3px -3px 6px rgba(20, 20, 20, 0.9));
-  box-shadow: inset 1px 1px 2px rgba(1b, 1b, 1b, 0.3),
-              inset -1px -1px 2px rgba(7, 7, 7, 0.5);
+  box-shadow:
+    3px 3px 8px rgba(8, 8, 8, 0.9),
+    -3px 3px 6px rgba(8, 8, 8, 0.2),
+    3px -3px 6px rgba(8, 8, 8, 0.2),
+    -3px -3px 6px rgba(20, 20, 20, 0.9),
+    inset -1px -1px 2px rgba(7, 7, 7, 0.5);
 }
 
-.header__mobile-menu {
+.header__mobile-overlay {
   display: none;
 }
 
-@media (max-width: 860px) {
+.header__top-fade {
+  display: none;
+}
+
+@media (max-width: 1099px) {
   .header {
     padding: 20px 20px 0;
     background: transparent;
@@ -197,36 +208,218 @@
     display: flex;
   }
 
-  .header__mobile-menu {
+  /* Fills the transparent gap around the burger button with a fade of the
+     page background, so scrolled-up content dims out behind it instead of
+     the button sitting directly on top of whatever scrolls underneath. */
+  .header__top-fade {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 130px;
+    z-index: 19;
+    pointer-events: none;
+    background: linear-gradient(to bottom, var(--bg) 0%, var(--bg) 35%, transparent 100%);
+  }
+
+  .header__burger svg {
+    width: 22px;
+    height: 22px;
+    color: var(--green-400);
+  }
+
+  /* Dimmed backdrop behind the drawer; click it to close. */
+  .header__mobile-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 29;
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  /* A left-edge drawer, not a full-width takeover - breaks out of the
+     header's own fixed positioning/width so it's sized against the true
+     viewport instead of the (transformed) header bar. Width is tablet-sized
+     here and narrowed for phones below. */
+  .header__mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 30;
+    width: 400px;
+    max-width: 88vw;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin-top: 16px;
-    padding: 16px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
+    background: var(--bg);
+    padding: 24px;
+    overflow-y: auto;
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.5);
   }
 
-  .header__mobile-menu .header__nav {
+  .header__mobile-close {
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--off-white);
+  }
+
+  .header__mobile-close svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .header__mobile-logo {
+    height: 46px;
+    width: auto;
+    margin: 4px auto 0;
+  }
+
+  .header__mobile-nav {
+    margin-top: 120px;
+    display: flex;
     flex-direction: column;
-    align-items: stretch;
+    gap: 4px;
   }
 
-  .header__mobile-menu .header__tab {
+  .header__mobile-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    padding: 16px 4px;
+    border: none;
+    background: none;
+    color: var(--off-white);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 17px;
     text-align: left;
+  }
+
+  .header__mobile-item-icon {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    color: var(--off-white);
+  }
+
+  .header__mobile-item-chevron {
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+  }
+
+  .header__mobile-item-chevron--open {
+    transform: rotate(180deg);
+  }
+
+  .header__mobile-subnav {
+    list-style: none;
+    margin: 0 0 4px;
+    padding: 0 0 0 42px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .header__mobile-subitem {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    border-radius: 10px;
+    padding: 10px 8px;
+    color: var(--off-white);
+    opacity: 0.8;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 14.5px;
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+  }
+
+  .header__mobile-subitem:not(:disabled):hover {
+    background: rgba(255, 251, 220, 0.08);
+    opacity: 1;
+  }
+
+  .header__mobile-subitem--active {
+    color: var(--green-400);
+    opacity: 1;
+    font-weight: 600;
+  }
+
+  .header__mobile-subitem:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .header__mobile-footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 4px 8px;
+    border-top: 1px solid rgba(255, 251, 220, 0.15);
   }
 
   .header__mobile-profile {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(63, 204, 16, 0.25);
+    gap: 14px;
   }
 
-  .header__mobile-profile .header__profile-text,
-  .header__mobile-profile .header__profile-name,
-  .header__mobile-profile .header__profile-role {
-    text-align: left;
+  .header__mobile-profile p {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--off-white);
+  }
+
+  .header__avatar--mobile {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+  }
+
+  .header__avatar--mobile svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .header__mobile-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--danger);
+  }
+
+  .header__mobile-logout svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Phones get a narrower drawer than tablets. */
+@media (max-width: 600px) {
+  .header__mobile-overlay {
+    width: 280px;
   }
 }
