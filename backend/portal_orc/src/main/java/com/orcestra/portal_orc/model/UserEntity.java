@@ -36,6 +36,7 @@ import lombok.Setter;
 public class UserEntity implements UserDetails {
 
     @Id
+    @Column(length = 11, nullable = false)
     private String cpf;
 
     @Column(nullable = false, unique = true)
@@ -47,7 +48,7 @@ public class UserEntity implements UserDetails {
     @Column(nullable = false, name = "nome")
     private String name;
 
-    @Column(name = "telefone")
+    @Column(name = "telefone", unique = true, nullable = false)
     private Long phone;
 
     @Column(name = "dia_de_entrada")
@@ -56,7 +57,7 @@ public class UserEntity implements UserDetails {
     @Column(name = "funcao_na_empresa")
     private String position;
 
-    @Column(nullable = false, name = "senha")
+    @Column(name = "senha")
     private String password;
 
     @ManyToOne
@@ -68,14 +69,14 @@ public class UserEntity implements UserDetails {
     @JoinTable(name = "cargo_usuario", joinColumns = @JoinColumn(name = "usuario_cpf"), inverseJoinColumns = @JoinColumn(name = "cargo_id"))
     private Set<RoleEntity> roles = new HashSet<>(); //roles de autenticação
 
-    public UserEntity(RegisterRequestDto userRequestDto){
-        this.cpf = userRequestDto.getCpf();
-        this.email = userRequestDto.getEmail();
-        this.birthDate = userRequestDto.getBirthDate();
-        this.name = userRequestDto.getName();
-        this.phone = userRequestDto.getPhone();
-        this.entryDay = userRequestDto.getEntryDay();
-        this.position = userRequestDto.getPosition();
+    public UserEntity(RegisterRequestDto registerRequestDto){
+        this.cpf = registerRequestDto.getCpf().replaceAll("\\D", "");
+        this.email = registerRequestDto.getEmail();
+        this.birthDate = registerRequestDto.getBirthDate();
+        this.name = registerRequestDto.getName();
+        this.phone = registerRequestDto.getPhone();
+        this.entryDay = registerRequestDto.getEntryDay();
+        this.position = registerRequestDto.getPosition();
     }
 
     @Override

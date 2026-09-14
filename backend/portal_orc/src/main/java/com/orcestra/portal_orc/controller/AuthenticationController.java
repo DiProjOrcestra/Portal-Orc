@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.orcestra.portal_orc.dto.RegisterRequestDto;
+import com.orcestra.portal_orc.dto.ResendPasswordDto;
 import com.orcestra.portal_orc.config.CookieProvider;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
-import com.orcestra.portal_orc.dto.RegisterRequestDto;
 
 import com.orcestra.portal_orc.exception.BadRequestException;
+import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.service.AuthenticationService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,8 +34,14 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void register(@Valid @RequestBody RegisterRequestDto userRequestDto) throws BadRequestException{
-        authenticationService.registerUser(userRequestDto);
+    public void register(@Valid @RequestBody RegisterRequestDto registerRequestDto) throws BadRequestException{
+        authenticationService.registerUser(registerRequestDto);
+    }
+
+    @PostMapping("/resend/password")
+    @ResponseStatus(HttpStatus.OK)
+    public void resendRandomPassword(@Valid @RequestBody ResendPasswordDto resendPasswordDto) throws NotFoundException {
+        authenticationService.resendRandomPassword(resendPasswordDto);
     }
 
     @PostMapping("/login")

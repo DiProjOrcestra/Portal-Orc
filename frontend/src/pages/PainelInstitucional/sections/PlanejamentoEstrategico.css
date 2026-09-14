@@ -1,0 +1,346 @@
+.pe-objetivos {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pe-card {
+  padding: 24px;
+  border-radius: 24px;
+  background: #141414;
+  box-shadow:
+    10px 10px 25px rgba(8, 8, 8, 0.9),
+    -10px 10px 20px rgba(8, 8, 8, 0.2),
+    10px -10px 20px rgba(8, 8, 8, 0.2),
+    -10px -10px 20px rgba(20, 20, 20, 0.9),
+    inset 1px 1px 2px rgba(20, 20, 20, 0.3);
+}
+
+.pe-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.pe-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: rgba(0, 84, 1, 0.3);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.pe-card__badge svg {
+  width: 17px;
+  height: 17px;
+  color: var(--green-400);
+}
+
+.pe-card__edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--off-white);
+}
+
+.pe-card__edit svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pe-card__edit:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* Only the track contributes to this box's height (the label is pulled out
+   via absolute positioning below), so `.pe-card__header`'s align-items:
+   center lines the bar itself up with the badge's vertical center - not the
+   center of the track+label block, which would sit the bar above-center. */
+.pe-progress {
+  position: relative;
+  flex: 1;
+}
+
+.pe-progress__track {
+  width: 100%;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--off-white);
+  overflow: hidden;
+}
+
+.pe-progress__fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--green-700), var(--green-400));
+}
+
+.pe-progress__label {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.pe-card__text {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+.pe-kr-list {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pe-kr {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border-strong);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.pe-kr__badge {
+  flex: none;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: rgba(0, 0, 0, 0.35);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.pe-kr__text {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.pe-card__actions {
+  display: flex;
+  justify-content: center;
+}
+
+.pe-btn {
+  padding: 12px 36px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--green-700), var(--green-400));
+  color: var(--off-white);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14.5px;
+  box-shadow: 0 8px 24px rgba(46, 182, 0, 0.35);
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.pe-btn:hover {
+  filter: brightness(1.08);
+}
+
+.pe-btn:active {
+  transform: translateY(1px);
+}
+
+.pe-ciclo__title {
+  margin: 40px 0 20px;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--off-white);
+}
+
+.pe-ciclo__accent {
+  color: var(--green-400);
+}
+
+.pe-calendario {
+  position: relative;
+  border-radius: 32px;
+  background: rgba(20, 20, 20, 0.9);
+  border: 1px solid var(--border);
+  /* No overflow:hidden here - the glow layer below clips its own blur to
+     these rounded corners already, and keeping this open lets a deadline
+     tooltip on a day in the top row escape upward instead of being cut off. */
+}
+
+.pe-calendario__glow-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pe-calendario__glow {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  bottom: -220px;
+  right: -180px;
+  border-radius: 50%;
+  filter: blur(70px);
+  background: radial-gradient(circle, rgba(63, 204, 16, 0.65), transparent 70%);
+  pointer-events: none;
+}
+
+.pe-calendario__content {
+  position: relative;
+  z-index: 1;
+  padding: 28px 20px 32px;
+}
+
+.pe-calendario__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.pe-calendario__nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--off-white);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.pe-calendario__nav-btn:hover {
+  border-color: var(--green-400);
+  background: rgba(63, 204, 16, 0.12);
+}
+
+.pe-calendario__nav-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pe-calendario__mes {
+  min-width: 160px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.pe-calendario__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  row-gap: 14px;
+  column-gap: 4px;
+}
+
+.pe-calendario__weekday {
+  text-align: center;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--off-white);
+}
+
+.pe-calendario__day {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.pe-calendario__day--highlight {
+  background: rgba(0, 0, 0, 0.4);
+  font-weight: 600;
+  cursor: default;
+}
+
+.pe-calendario__tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translate(-50%, 4px);
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: #141414;
+  color: var(--off-white);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12.5px;
+  white-space: nowrap;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 5;
+}
+
+.pe-calendario__tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--border-strong);
+}
+
+.pe-calendario__day--highlight:hover .pe-calendario__tooltip,
+.pe-calendario__day--highlight:focus-visible .pe-calendario__tooltip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (min-width: 700px) {
+  .pe-card__header {
+    flex-wrap: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .pe-card__header {
+    flex-wrap: wrap;
+  }
+
+  .pe-kr {
+    align-items: flex-start;
+  }
+}
