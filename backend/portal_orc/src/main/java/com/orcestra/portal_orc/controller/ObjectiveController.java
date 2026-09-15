@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanRequestDto;
 import com.orcestra.portal_orc.dto.ObjectiveRequestDto;
 import com.orcestra.portal_orc.dto.ObjectiveResponseDto;
+import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
+import com.orcestra.portal_orc.service.ActionPlanService;
 import com.orcestra.portal_orc.service.ObjectiveService;
 
 import jakarta.validation.Valid;
@@ -29,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class ObjectiveController {
     
     private final ObjectiveService objectiveService;
+    private final ActionPlanService actionPlanService;
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
@@ -52,5 +56,11 @@ public class ObjectiveController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteObjective(@PathVariable Integer id) throws NotFoundException {
         objectiveService.deleteObjective(id);
+    }
+
+    @PostMapping("/{objectiveId}/action-plan")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createActionPlan(@PathVariable() Integer objectiveId, @Valid @RequestBody ActionPlanRequestDto actionPlanRequestDto) throws BadRequestException, NotFoundException {
+        actionPlanService.createActionPlan(objectiveId, actionPlanRequestDto);
     }
 }
