@@ -46,9 +46,9 @@ public class AdminBootstrap implements CommandLineRunner {
         RoleEntity role = roleRepository.findByName(RoleTypeEnum.ADMIN.name())
                                     .orElseGet(() -> roleRepository.save(RoleEntity.builder()
                                         .name(RoleTypeEnum.ADMIN.name()).build()));
-        DirectorateEntity directorate = directorateRepository.findByDirectorateName(DirectorateEnum.DIREX.name())
+        DirectorateEntity directorate = directorateRepository.findByNome(DirectorateEnum.DIREX.name())
                                             .orElseGet(() -> directorateRepository.save(DirectorateEntity.builder()
-                                                .directorateName(DirectorateEnum.DIREX.name()).build()));
+                                                .nome(DirectorateEnum.DIREX.name()).build()));
         userRepository.save(UserEntity.builder()
                                         .name("Admin")
                                         .cpf(adminCpf)

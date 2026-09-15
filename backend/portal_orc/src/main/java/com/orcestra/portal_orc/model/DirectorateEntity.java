@@ -29,7 +29,7 @@ public class DirectorateEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String directorateName;
+    private String nome;
 
     @Builder.Default
     @OneToMany(mappedBy = "directorate", fetch = FetchType.LAZY)

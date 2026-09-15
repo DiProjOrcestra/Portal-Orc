@@ -8,6 +8,7 @@ import com.orcestra.portal_orc.model.DirectorateEntity;
 
 
 public interface DirectorateRepository extends JpaRepository <DirectorateEntity, Integer>{
+
+    Optional<DirectorateEntity> findByNome(String nome);
     
-    Optional <DirectorateEntity> findByDirectorateName(String nome);
 }
