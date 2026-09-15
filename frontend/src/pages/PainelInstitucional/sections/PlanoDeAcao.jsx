@@ -1,24 +1,55 @@
-import { useState } from 'react';
-import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, PlusIcon, WarningIcon } from '../icons';
-import { PLANO_ACAO_DATA } from '../mockData';
+import { useCallback, useEffect, useState } from 'react';
+import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, WarningIcon } from '../icons';
 import { STATUS_LABEL } from './PlanoDeAcaoConstants';
+import { DIRECTORATE_SECTIONS, fetchPlanosDeAcao } from './PlanoDeAcaoApi';
 import PlanoDeAcaoEditModal from './PlanoDeAcaoEditModal';
 import './PlanoDeAcao.css';
 
-export default function PlanoDeAcao() {
-  // UC-20: os planos viram estado local pra dar pra editar de verdade na
-  // tela. Ainda não persiste em backend (não existe endpoint de GET nem de
-  // PUT pra plano de ação ainda) - quando existir, isso troca por
-  // fetch/PUT de verdade, mas a interação já funciona igual.
-  const [diretorias, setDiretorias] = useState(PLANO_ACAO_DATA);
-  const [editando, setEditando] = useState(null); // índice da diretoria sendo editada, ou null
+const STATUS_SLUG_BY_LABEL = Object.fromEntries(Object.entries(STATUS_LABEL).map(([slug, label]) => [label, slug]));
+const PRIORIDADE_SLUG_BY_LABEL = { Alta: 'alta', Média: 'media', Baixa: 'baixa' };
 
-  const salvarEdicao = (planosAtualizados) => {
-    setDiretorias((atual) =>
-      atual.map((diretoria, index) => (index === editando ? { ...diretoria, planos: planosAtualizados } : diretoria))
-    );
-    setEditando(null);
-  };
+// O backend devolve o prazo como "dd-MM-yyyy" - troca só o separador pro
+// "dd/mm/yyyy" já usado nesta tela.
+function formatarPrazo(term) {
+  return term ? term.replaceAll('-', '/') : term;
+}
+
+// UC-20: Editar status do objetivo/plano de ação. Busca os planos reais do
+// backend (GET /v1/action-plan), igual à UC-21/UC-18 - as 5 diretorias
+// sempre aparecem (com sua foto de capa), mesmo sem nenhum plano cadastrado.
+export default function PlanoDeAcao() {
+  const [secoes, setSecoes] = useState(() => DIRECTORATE_SECTIONS.map((secao) => ({ ...secao, planos: [] })));
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(null);
+  const [editando, setEditando] = useState(null); // diretoria sendo editada, ou null
+
+  const buscarPlanos = useCallback(() => {
+    return fetchPlanosDeAcao()
+      .then((planos) => {
+        setSecoes(
+          DIRECTORATE_SECTIONS.map((secao) => ({
+            ...secao,
+            planos: (planos ?? [])
+              .filter((plano) => plano.directorate === secao.code)
+              .map((plano) => ({
+                id: plano.id,
+                prazo: formatarPrazo(plano.term),
+                status: STATUS_SLUG_BY_LABEL[plano.progress] ?? 'desconhecido',
+                prioridade: PRIORIDADE_SLUG_BY_LABEL[plano.priority],
+                atividade: plano.name,
+                subtarefas: plano.subtasks.map((subtarefa) => subtarefa.name),
+              })),
+          }))
+        );
+        setErro(null);
+      })
+      .catch((err) => setErro(err.message ?? 'Não foi possível carregar os planos de ação.'))
+      .finally(() => setCarregando(false));
+  }, []);
+
+  useEffect(() => {
+    buscarPlanos();
+  }, [buscarPlanos]);
 
   return (
     <section>
@@ -42,8 +73,11 @@ export default function PlanoDeAcao() {
         </p>
       </div>
 
+      {carregando && <p className="pa-estado">Carregando planos de ação...</p>}
+      {erro && <p className="pa-estado pa-estado--erro">{erro}</p>}
+
       <div className="pa-diretorias">
-        {diretorias.map((diretoria, directorateIndex) => {
+        {secoes.map((diretoria) => {
           const header = (
             <div className="pa-card__header">
               <span className="pa-card__badge">
@@ -52,24 +86,14 @@ export default function PlanoDeAcao() {
               </span>
               <div className="pa-card__objetivo-group">
                 <span className="pa-card__objetivo">Objetivo {diretoria.objetivo}</span>
-                {/* UC-18 (cadastrar novo plano) fica pra outra branch - aqui
-                    o botão só existe visualmente, sem função. */}
-                <button
-                  type="button"
-                  className="pa-card__edit"
-                  aria-label="Novo plano de ação"
-                  title="Cadastro disponível em breve"
-                  disabled
-                >
-                  <PlusIcon />
-                </button>
-                {/* UC-20: editar o(s) plano(s) de ação desta diretoria. */}
+                {/* UC-20: editar o status do(s) plano(s) desta diretoria. */}
                 <button
                   type="button"
                   className="pa-card__edit"
                   aria-label="Editar plano de ação"
                   title="Editar plano de ação"
-                  onClick={() => setEditando(directorateIndex)}
+                  disabled={diretoria.planos.length === 0}
+                  onClick={() => setEditando(diretoria)}
                 >
                   <EditIcon />
                 </button>
@@ -78,7 +102,7 @@ export default function PlanoDeAcao() {
           );
 
           return (
-            <article key={diretoria.directorate} className={`pa-card ${diretoria.capa ? 'pa-card--capa' : ''}`}>
+            <article key={diretoria.code} className={`pa-card ${diretoria.capa ? 'pa-card--capa' : ''}`}>
               {diretoria.capa && (
                 <div
                   className="pa-card__capa"
@@ -93,6 +117,9 @@ export default function PlanoDeAcao() {
                 {!diretoria.capa && header}
 
                 <div className="pa-planos">
+                  {!carregando && diretoria.planos.length === 0 && (
+                    <p className="pa-planos-vazio">Nenhum plano de ação cadastrado ainda.</p>
+                  )}
                   {diretoria.planos.map((plano) => (
                     <div key={plano.id} className="pa-plano">
                       <div className="pa-plano__top">
@@ -105,7 +132,7 @@ export default function PlanoDeAcao() {
                             </span>
                           )}
                           <span className={`pa-status pa-status--${plano.status}`}>
-                            {STATUS_LABEL[plano.status]}
+                            {STATUS_LABEL[plano.status] ?? 'Status não reconhecido'}
                             <span className="pa-status__dot" />
                           </span>
                         </div>
@@ -125,10 +152,7 @@ export default function PlanoDeAcao() {
                         </ul>
                       </div>
 
-                      <div className="pa-plano__responsaveis">
-                        Responsáveis:
-                        {plano.responsaveis?.length > 0 && ` ${plano.responsaveis.join(', ')}`}
-                      </div>
+                      <div className="pa-plano__responsaveis">Responsáveis:</div>
                     </div>
                   ))}
                 </div>
@@ -138,10 +162,13 @@ export default function PlanoDeAcao() {
         })}
       </div>
 
-      {editando !== null && (
+      {editando && (
         <PlanoDeAcaoEditModal
-          diretoria={diretorias[editando]}
-          onSave={salvarEdicao}
+          diretoria={editando}
+          onSaved={() => {
+            setEditando(null);
+            buscarPlanos();
+          }}
           onClose={() => setEditando(null)}
         />
       )}

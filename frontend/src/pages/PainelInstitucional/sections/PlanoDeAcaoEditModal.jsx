@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CampaignIcon } from '../icons';
 import { STATUS_LABEL } from './PlanoDeAcaoConstants';
+import { updateActionPlanStatus } from './PlanoDeAcaoApi';
 import './PlanoDeAcaoEditModal.css';
 
 const STATUS_OPTIONS = Object.entries(STATUS_LABEL).map(([value, label]) => ({ value, label }));
@@ -19,22 +20,25 @@ function toBrDate(prazoInput) {
   return `${dia}/${mes}/${ano}`;
 }
 
-// UC-20: Editar status do objetivo/plano de ação. A especificação escrita
-// fala só em trocar o status, mas as 5 telas "página de editar" do Figma
-// (uma por diretoria) mostram um formulário completo - nome da atividade,
-// prazo, subtarefas e responsáveis também editáveis, não só o status. Segui
-// o que está no design, já que foi o que a Orc'estra pediu explicitamente.
+// UC-20: Editar status do objetivo/plano de ação.
 //
-// FE-E2 da UC-20 (usuário não autorizado) não está implementado aqui: não
-// existe, ainda, um contexto de usuário/perfil logado disponível no
-// frontend pra checar se quem está editando é TOPS/Direx ou um membro
-// vinculado ao plano. Por enquanto, qualquer um que acesse a página consegue
-// abrir e salvar a edição.
-export default function PlanoDeAcaoEditModal({ diretoria, onSave, onClose }) {
+// Só o STATUS é salvo de verdade no backend (PATCH /{id}/status) - bate com
+// o nome oficial da UC-20. Os outros campos (nome, prazo, subtarefas,
+// responsáveis) continuam editáveis na tela, mas não persistem: o único
+// outro endpoint de edição completa (PUT /{id}) exige "usersId" e SUBSTITUI
+// por completo os membros vinculados pela UC-19 - como o GET de planos de
+// ação não devolve quem já está vinculado, não tem como preencher esse
+// campo corretamente aqui, e usá-lo apagaria vínculos feitos por outra tela
+// sem avisar ninguém. Ligar isso depende de uma mudança no backend (o time
+// já foi avisado - ver mensagem sobre a rota PUT /{id} conflitando entre
+// UC-19 e UC-20).
+export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
   const [planos, setPlanos] = useState(() => diretoria.planos.map((plano) => ({ ...plano })));
   const [erros, setErros] = useState({});
   const [novaSubtarefa, setNovaSubtarefa] = useState({});
   const [novoResponsavel, setNovoResponsavel] = useState({});
+  const [enviando, setEnviando] = useState(false);
+  const [erroEnvio, setErroEnvio] = useState(null);
 
   const atualizarPlano = (index, campo, valor) => {
     setPlanos((atual) => atual.map((plano, i) => (i === index ? { ...plano, [campo]: valor } : plano)));
@@ -76,7 +80,7 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSave, onClose }) {
     );
   };
 
-  const handleSalvar = () => {
+  const handleSalvar = async () => {
     // FE-E1 da UC-20: status inválido - como o campo é um <select> com só as
     // opções válidas, na prática não dá pra chegar aqui com um valor fora
     // da lista, mas a checagem fica registrada pra deixar o fluxo explícito.
@@ -92,7 +96,17 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSave, onClose }) {
       return;
     }
 
-    onSave(planos);
+    setErroEnvio(null);
+    setEnviando(true);
+    try {
+      // Só o status é enviado ao backend - ver explicação no topo do arquivo.
+      await Promise.all(planos.map((plano) => updateActionPlanStatus(plano.id, STATUS_LABEL[plano.status])));
+      onSaved();
+    } catch (err) {
+      setErroEnvio(err.message ?? 'Não foi possível salvar o status.');
+    } finally {
+      setEnviando(false);
+    }
   };
 
   return (
@@ -111,6 +125,11 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSave, onClose }) {
             {diretoria.directorate} · Objetivo {diretoria.objetivo}
           </span>
         </div>
+
+        <p className="pem-aviso">
+          Só o <strong>status</strong> é salvo de verdade por enquanto. Os outros campos ainda não persistem -
+          detalhes no código.
+        </p>
 
         <div className="pem-planos">
           {planos.map((plano, index) => (
@@ -216,12 +235,14 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSave, onClose }) {
           ))}
         </div>
 
+        {erroEnvio && <p className="pem-erro pem-erro--bloco">{erroEnvio}</p>}
+
         <div className="pem-acoes">
-          <button type="button" className="pem-cancelar" onClick={onClose}>
+          <button type="button" className="pem-cancelar" onClick={onClose} disabled={enviando}>
             Cancelar alterações
           </button>
-          <button type="button" className="pem-salvar" onClick={handleSalvar}>
-            Salvar e sair
+          <button type="button" className="pem-salvar" onClick={handleSalvar} disabled={enviando}>
+            {enviando ? 'Salvando...' : 'Salvar e sair'}
           </button>
         </div>
       </div>

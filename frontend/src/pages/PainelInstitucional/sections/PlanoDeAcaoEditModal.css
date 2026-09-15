@@ -116,6 +116,26 @@
   color: #ff6b6b;
 }
 
+.pem-erro--bloco {
+  display: block;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.4);
+}
+
+.pem-aviso {
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background: rgba(204, 173, 16, 0.12);
+  border: 1px solid rgba(204, 173, 16, 0.4);
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  color: var(--off-white);
+}
+
 .pem-lista {
   list-style: none;
   margin: 0 0 10px;
