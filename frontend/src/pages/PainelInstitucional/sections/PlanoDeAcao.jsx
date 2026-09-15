@@ -1,5 +1,7 @@
-import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon } from '../icons';
-import { PLANO_ACAO_DATA } from '../mockData';
+import { useCallback, useEffect, useState } from 'react';
+import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, PersonIcon, WarningIcon } from '../icons';
+import { DIRECTORATE_SECTIONS, fetchPlanosDeAcao } from './PlanoDeAcaoApi';
+import VincularMembrosModal from './VincularMembrosModal';
 import './PlanoDeAcao.css';
 
 // Mesmo mapeamento de status usado no backend (ActionPlanRequestDto.progress
@@ -10,8 +12,54 @@ const STATUS_LABEL = {
   andamento: 'Em andamento',
   'nao-concluido': 'Não Concluído',
 };
+const STATUS_SLUG_BY_LABEL = Object.fromEntries(Object.entries(STATUS_LABEL).map(([slug, label]) => [label, slug]));
+const PRIORIDADE_SLUG_BY_LABEL = { Alta: 'alta', Média: 'media', Baixa: 'baixa' };
 
+// O backend devolve o prazo como "dd-MM-yyyy" - troca só o separador pro
+// "dd/mm/yyyy" já usado nesta tela.
+function formatarPrazo(term) {
+  return term ? term.replaceAll('-', '/') : term;
+}
+
+// UC-21: Consultar plano de ação. Busca os planos reais do backend
+// (GET /v1/action-plan) e agrupa por diretoria - as 5 diretorias sempre
+// aparecem (com sua foto de capa), mesmo sem nenhum plano cadastrado ainda.
 export default function PlanoDeAcao() {
+  const [secoes, setSecoes] = useState(() => DIRECTORATE_SECTIONS.map((secao) => ({ ...secao, planos: [] })));
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(null);
+  // UC-19: qual plano está com o modal de vincular membros aberto agora,
+  // junto da diretoria dele (pro contexto exibido no modal).
+  const [vinculando, setVinculando] = useState(null); // { plano, diretoria } | null
+
+  const buscarPlanos = useCallback(() => {
+    return fetchPlanosDeAcao()
+      .then((planos) => {
+        setSecoes(
+          DIRECTORATE_SECTIONS.map((secao) => ({
+            ...secao,
+            planos: (planos ?? [])
+              .filter((plano) => plano.directorate === secao.code)
+              .map((plano) => ({
+                id: plano.id,
+                prazo: formatarPrazo(plano.term),
+                status: STATUS_SLUG_BY_LABEL[plano.progress] ?? 'desconhecido',
+                prioridade: PRIORIDADE_SLUG_BY_LABEL[plano.priority],
+                atividade: plano.name,
+                subtarefas: plano.subtasks.map((subtarefa) => subtarefa.name),
+              })),
+          }))
+        );
+        setErro(null);
+      })
+      .catch((err) => setErro(err.message ?? 'Não foi possível carregar os planos de ação.'))
+      .finally(() => setCarregando(false));
+  }, []);
+
+  useEffect(() => {
+    buscarPlanos();
+  }, [buscarPlanos]);
+
   return (
     <section>
       <div className="pa-header">
@@ -34,8 +82,11 @@ export default function PlanoDeAcao() {
         </p>
       </div>
 
+      {carregando && <p className="pa-estado">Carregando planos de ação...</p>}
+      {erro && <p className="pa-estado pa-estado--erro">{erro}</p>}
+
       <div className="pa-diretorias">
-        {PLANO_ACAO_DATA.map((diretoria) => {
+        {secoes.map((diretoria) => {
           const header = (
             <div className="pa-card__header">
               <span className="pa-card__badge">
@@ -44,6 +95,9 @@ export default function PlanoDeAcao() {
               </span>
               <div className="pa-card__objetivo-group">
                 <span className="pa-card__objetivo">Objetivo {diretoria.objetivo}</span>
+                {/* Cadastrar (UC-18) e editar (UC-20) ficam em outras branches
+                    - aqui é só consulta, o ícone existe visualmente mas não
+                    faz nada. */}
                 <button
                   type="button"
                   className="pa-card__edit"
@@ -58,48 +112,49 @@ export default function PlanoDeAcao() {
           );
 
           return (
-            <article key={diretoria.directorate} className={`pa-card ${diretoria.capa ? 'pa-card--capa' : ''}`}>
+            <article key={diretoria.code} className={`pa-card ${diretoria.capa ? 'pa-card--capa' : ''}`}>
               {diretoria.capa && (
                 <div
                   className="pa-card__capa"
                   style={{ backgroundImage: `url(${diretoria.capa})`, '--pa-capa-ratio': diretoria.capaRatio }}
                   aria-hidden="true"
                 >
-                  {/* Cabeçalho sobreposto no topo da foto, igual ao Figma -
-                      só quando a diretoria tem foto de capa. */}
                   {header}
                 </div>
               )}
 
               <div className="pa-card__inner">
-                {/* Sem foto (Diretoria Executiva) - cabeçalho fica na posição
-                    normal, no topo do card. */}
                 {!diretoria.capa && header}
 
                 <div className="pa-planos">
+                  {!carregando && diretoria.planos.length === 0 && (
+                    <p className="pa-planos-vazio">Nenhum plano de ação cadastrado ainda.</p>
+                  )}
                   {diretoria.planos.map((plano) => (
                     <div key={plano.id} className="pa-plano">
                       <div className="pa-plano__top">
                         <span className="pa-plano__prazo">Prazo: {plano.prazo}</span>
-                        <span className={`pa-status pa-status--${plano.status}`}>
-                          {STATUS_LABEL[plano.status]}
-                          <span className="pa-status__dot" />
-                        </span>
+                        <div className="pa-plano__top-direita">
+                          {plano.prioridade && (
+                            <span className={`pa-prioridade pa-prioridade--${plano.prioridade}`}>
+                              <WarningIcon />
+                              {plano.prioridade === 'alta' ? 'Alta' : plano.prioridade === 'media' ? 'Média' : 'Baixa'}
+                            </span>
+                          )}
+                          <span className={`pa-status pa-status--${plano.status}`}>
+                            {STATUS_LABEL[plano.status] ?? 'Status não reconhecido'}
+                            <span className="pa-status__dot" />
+                          </span>
+                        </div>
                       </div>
 
-                      {/* Fiel ao Figma: "Atividade" e "Subtarefas:" são dois
-                          rótulos estáticos empilhados, sem nenhum texto de
-                          descrição entre eles - o conteúdo real começa direto
-                          na lista abaixo. */}
                       <div className="pa-plano__bloco">
                         <h3 className="pa-plano__atividade">Atividade</h3>
+                        {plano.atividade && <p className="pa-plano__atividade-texto">{plano.atividade}</p>}
                         <h4 className="pa-plano__subtarefas-titulo">Subtarefas:</h4>
                         <ul className="pa-subtarefas">
-                          {plano.subtarefas.map((tarefa) => (
-                            <li key={tarefa}>
-                              {/* Quadrado decorativo, não é um checkbox
-                                  interativo - o design não distingue subtarefa
-                                  concluída de pendente aqui. */}
+                          {plano.subtarefas.map((tarefa, index) => (
+                            <li key={`${tarefa}-${index}`}>
                               <span className="pa-subtarefa__box" aria-hidden="true" />
                               <span>{tarefa}</span>
                             </li>
@@ -107,9 +162,17 @@ export default function PlanoDeAcao() {
                         </ul>
                       </div>
 
-                      {/* O Figma só mostra o rótulo "Responsáveis:", sem nomes
-                          preenchidos - mantido vazio de propósito. */}
-                      <div className="pa-plano__responsaveis">Responsáveis:</div>
+                      <div className="pa-plano__responsaveis">
+                        Responsáveis:
+                        <button
+                          type="button"
+                          className="pa-plano__vincular"
+                          onClick={() => setVinculando({ plano, diretoria })}
+                        >
+                          <PersonIcon />
+                          Vincular membros
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -118,6 +181,23 @@ export default function PlanoDeAcao() {
           );
         })}
       </div>
+
+      {vinculando && (
+        <VincularMembrosModal
+          plano={vinculando.plano}
+          diretoria={vinculando.diretoria}
+          onSaved={() => {
+            setVinculando(null);
+            // O GET /v1/action-plan não devolve quem está vinculado a cada
+            // plano (limitação atual do backend), então recarregar aqui não
+            // muda o que aparece na tela - serve só pra manter o resto dos
+            // dados atualizado. A confirmação de sucesso do vínculo em si
+            // acontece só pelo modal fechar sem erro.
+            buscarPlanos();
+          }}
+          onClose={() => setVinculando(null)}
+        />
+      )}
     </section>
   );
 }
