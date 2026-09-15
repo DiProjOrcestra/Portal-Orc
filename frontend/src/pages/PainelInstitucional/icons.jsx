@@ -144,3 +144,26 @@ export const ChevronDownIcon = (props) => (
     <path d="M5.5 8.5 12 15l6.5-6.5" />
   </svg>
 );
+export const ClipboardIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M7.5 4.5h9a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1V5.5a1 1 0 0 1 1-1Z" />
+    <path d="M9.5 3.5h5a1 1 0 0 1 1 1V6h-7V4.5a1 1 0 0 1 1-1Z" />
+    <path d="M8.8 10.5h6.4M8.8 13.8h6.4M8.8 17h4" />
+  </svg>
+);
+
+export const FilterIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M4 6.5h16M4 12h16M4 17.5h16" />
+    <circle cx="9" cy="6.5" r="1.6" fill="currentColor" stroke="none" />
+    <circle cx="16" cy="12" r="1.6" fill="currentColor" stroke="none" />
+    <circle cx="10.5" cy="17.5" r="1.6" fill="currentColor" stroke="none" />
+  </svg>
+);
+
+export const CampaignIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M3.5 10.2v3.6l3 .6v4.6a1.3 1.3 0 0 0 2.5 0v-4.1l7.5 1.5V8.2Z" />
+    <path d="M16.5 9v6.4a3 3 0 0 0 0-6.4Z" />
+  </svg>
+);
