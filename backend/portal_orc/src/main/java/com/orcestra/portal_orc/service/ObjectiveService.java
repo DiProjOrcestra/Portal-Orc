@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.orcestra.portal_orc.dto.ObjectiveDto.ObjectiveRequestDto;
-import com.orcestra.portal_orc.dto.ObjectiveDto.ObjectiveResponseDto;
+import com.orcestra.portal_orc.dto.ObjectiveRequestDto;
+import com.orcestra.portal_orc.dto.ObjectiveResponseDto;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.model.ObjectiveEntity;
 import com.orcestra.portal_orc.repository.ObjectiveRepository;
@@ -36,5 +36,10 @@ public class ObjectiveService {
         objectiveRepository.save(objective);
 
         return new ObjectiveResponseDto(objective);
+    }
+
+    public void deleteObjective(Integer id) throws NotFoundException {
+        objectiveRepository.delete(objectiveRepository.findById(id).orElseThrow(() -> new 
+        NotFoundException(String.format("Objetivo com id %d não encontrado", id))));
     }
 }
