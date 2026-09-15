@@ -1,9 +1,7 @@
 package com.orcestra.portal_orc.controller;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseCookie;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,18 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.orcestra.portal_orc.config.CookieProvider;
 import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
-import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.ResendCodeRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
-import com.orcestra.portal_orc.config.CookieProvider;
-import com.orcestra.portal_orc.dto.LoginRequestDto;
 
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.service.AuthenticationService;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +54,7 @@ public class AuthenticationController {
         authenticationService.resendRandomPassword(resendPasswordDto);
     }
 
-    @PostMapping("/login/mfa")
+    @PostMapping("/mfa/validate")
     @ResponseStatus(HttpStatus.OK)
     public void mfa(@Valid @RequestBody CodeRequestDto codeRequestDto, HttpServletResponse response) throws Exception{
         String token = authenticationService.validatingCode(codeRequestDto);
@@ -68,7 +62,7 @@ public class AuthenticationController {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
-    @PostMapping("/resend/mfa")
+    @PostMapping("/mfa/resend")
     @ResponseStatus(HttpStatus.OK)
     public void resendCodeMfa(@Valid @RequestBody ResendCodeRequestDto resendCodeRequestDto) throws BadRequestException{
         authenticationService.resendCode(resendCodeRequestDto);
