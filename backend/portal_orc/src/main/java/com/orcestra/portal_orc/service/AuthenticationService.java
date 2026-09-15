@@ -37,16 +37,16 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DirectorateRepository directorateRepository;
+    private final RandomPasswordGenerator randomPasswordGenerator;
+    private final EmailSenderService emailSenderService;
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
     private final MfaService mfaService;
-    private final DirectorateRepository directorateRepository;
     @Value("${jwt.expiration}")
     private long expirationTime;
     @Value("${jwt.mfa.expiration}")
     private long mfaExpirationTime;
-    private final RandomPasswordGenerator randomPasswordGenerator;
-    private final EmailSenderService emailSenderService;
 
     public void registerUser(RegisterRequestDto registerRequestDto) throws BadRequestException{
         UserEntity userEntity = userRepository.findByEmail(registerRequestDto.getEmail()).orElse(null);
@@ -54,11 +54,15 @@ public class AuthenticationService {
             throw new BadRequestException("Email já cadastrado");
         }
 
+        if (userRepository.existsByCpf(registerRequestDto.getCpf().replaceAll("\\D", ""))) {
+            throw new BadRequestException("Esse CPF já foi cadastrado");
+        }
+
         RoleEntity role = roleRepository.findByName(RoleTypeEnum.USER.name())
                             .orElseGet(() -> roleRepository.save(RoleEntity.builder()
                                 .name(RoleTypeEnum.USER.name()).build()));
 
-        DirectorateEntity direcotrate = directorateRepository.findByDirectorateName(registerRequestDto.getDirectorate().getNome())
+        DirectorateEntity direcotrate = directorateRepository.findByDirectorateName(registerRequestDto.getDirectorate().name())
                                         .orElseGet(() -> directorateRepository.save(DirectorateEntity.builder()
                                             .nome(registerRequestDto.getDirectorate().getNome()).build()));
                                 

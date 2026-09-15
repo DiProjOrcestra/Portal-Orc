@@ -22,7 +22,7 @@
         document.getElementById("sidebar-container").innerHTML = html;
       });
   </script>
-  <title>Ata Reunião 1 — Portal Orc</title>
+  <title>Ata Reunião 4 — Portal Orc</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="../css/style.css">
 </head>
 
-<body data-page="ata-1">
+<body data-page="ata-4">
   <svg class="watermark" viewBox="0 0 1786 1786" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path
       d="M747.206 1290.27C751.078 1288.57 753.364 1285.07 753.325 1280.82L747.08 1059.87C746.997 1056.54 745.376 1053.5 742.669 1051.63L617.478 964.644C611.112 960.233 607.322 952.989 607.322 945.21V895.638L552.093 802.536L570.449 1123.71C570.575 1126.38 571.696 1128.83 573.569 1130.62L735.968 1288.19C739.049 1291.19 743.251 1291.94 747.206 1290.23" />
@@ -145,13 +145,12 @@
 
           <p class="breadcrumb">
             <a href="../acompanhamento/atas.html">Acompanhamento</a><span class="sep">/</span>
-            <span class="current">Ata Reunião 1</span>
+            <span class="current">Ata Reunião 4</span>
           </p>
 
           <p class="eyebrow">Acompanhamento — Atas de Reunião</p>
-          <h1 class="page-title">Ata Reunião 1 — 03/08/26</h1>
-          <p class="lead">Reunião de apresentação do Pages e alinhamento de expectativas do projeto, realizada em
-            3 de agosto de 2026.</p>
+          <h1 class="page-title">Ata Reunião 4 — 15/08/26</h1>
+          <p class="lead">Reunião de alinhamento semanal, realizada em 15 de agosto de 2026.</p>
 
           <div class="prose">
 
@@ -162,33 +161,50 @@
               <li>Fábio Alessandro</li>
               <li>João Marcos Tavares de Medeiros</li>
               <li>Thiago Alencar de Oliveira</li>
+              <li>Bernardo Campos Caxito Silveira</li>
               <li>Graziele</li>
               <li>Júlia Amanda Silva Lima</li>
-              <li>Bernardo Campos Caxito Silveira</li>
             </ul>
 
             <h2 id="resumo">Resumo</h2>
-            <p>Reunião inicial de alinhamento do projeto, com a explicação completa do conteúdo do Pages para todos
-              os integrantes e o levantamento das expectativas individuais em relação ao trabalho. Ficou definido o
-              agendamento da segunda reunião, dedicada à construção da matriz de valor x esforço.</p>
+            <p>A equipe realizou o alinhamento semanal, apresentando o que foi feito na semana e o planejamento para
+              a próxima. Foi comunicado que os casos de uso foram refinados e repartidos, sem alteração de escopo.
+              O prazo final do projeto foi atualizado para 10 de setembro em função do ENEJ, com remanejamento da
+              reunião de validação e do período de cutover. Também foram definidas as datas de início do
+              desenvolvimento do Front-end e de encerramento da prototipação.</p>
 
             <h2 id="pauta-e-discussoes">Pauta e Discussões</h2>
 
-            <h3 id="apresentacao-do-pages">Apresentação do Pages</h3>
-            <p>Foi explicado todo o conteúdo do Pages para os integrantes do grupo, contextualizando a
-              documentação do projeto.</p>
+            <h3 id="alinhamento-semanal">Alinhamento Semanal</h3>
+            <p>Apresentação do que foi feito por cada equipe ao longo da semana e do que está planejado para a
+              semana seguinte, mantendo o time atualizado sobre o andamento do projeto.</p>
+            <ul>
+              <li><strong>DevOps:</strong> adição do .dockerignore, build inicial do Dockerfile para Frontend e
+                Backend, docker-compose e pipeline inicial de CI/CD.</li>
+              <li><strong>Back:</strong> desenvolvimento da funcionalidade de Cadastro.</li>
+              <li><strong>Front:</strong> capacitação em React.</li>
+            </ul>
 
-            <h3 id="expectativas-do-projeto">Expectativas do Projeto</h3>
-            <p>Discutidas as expectativas de todos os integrantes em relação ao projeto.</p>
+            <h3 id="atualizacao-dos-casos-de-uso">Atualização dos Casos de Uso</h3>
+            <p>Comunicado que não houve mudança de escopo. Os casos de uso foram apenas refinados, sendo repartidos
+              em itens menores por estarem muito extensos.</p>
 
-            <h3 id="agendamento-da-reuniao-2">Agendamento da Reunião 2</h3>
-            <p>Definida a necessidade de marcar uma nova reunião (Reunião 2) para a construção da matriz de valor x
-              esforço.</p>
+            <h3 id="atualizacao-do-prazo-do-projeto">Atualização do Prazo do Projeto</h3>
+            <p>Definido o novo prazo final do projeto para o dia 10 de setembro, em decorrência do ENEJ (Encontro
+              Nacional de Empresas Juniores). A reunião de validação, antes marcada para o dia 28, foi adiada para
+              o dia 4 de setembro. O cutover, antes previsto de 28/08 a 03/09, passou a ocorrer de 04/09 a 10/09.</p>
+
+            <h3 id="front-end-e-prototipacao">Front-end e Prototipação</h3>
+            <p>Definido que a prototipação deve ser finalizada até o dia 17 de agosto e que o desenvolvimento do
+              Front-end tem início na segunda-feira, dia 17 de agosto.</p>
 
             <h2 id="decisoes">Decisões</h2>
             <ul>
-              <li><strong>Marcar Reunião 2:</strong> agendar reunião específica para a definição da matriz de valor
-                x esforço.</li>
+              <li><strong>Novo prazo final do projeto:</strong> 10 de setembro, devido ao ENEJ.</li>
+              <li><strong>Reunião de validação:</strong> adiada do dia 28/08 para o dia 04/09.</li>
+              <li><strong>Cutover:</strong> reagendado de 28/08–03/09 para 04/09–10/09.</li>
+              <li><strong>Fim da prototipação:</strong> até o dia 17/08.</li>
+              <li><strong>Início do Front-end:</strong> segunda-feira, dia 17/08.</li>
             </ul>
 
             <h2 id="plano-de-acao">Plano de Ação (Próximas Etapas)</h2>
@@ -202,10 +218,18 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Todos</td>
-                    <td><strong>Ler documento de requisitos:</strong> ler o documento de requisitos contendo as
-                      características de produto, requisitos funcionais, requisitos não funcionais e regras de
-                      negócio.</td>
+                    <td>DevOps</td>
+                    <td>Reunião com o Back para configurar o Docker; capacitação em CD e em testes automatizados e
+                      unitários.</td>
+                  </tr>
+                  <tr>
+                    <td>Back</td>
+                    <td>Reunião com o DevOps para configurar o Docker; implementar o Login; refinar o Cadastro.</td>
+                  </tr>
+                  <tr>
+                    <td>Front</td>
+                    <td>Início do desenvolvimento do Front-end (17/08), concluindo a prototipação até essa mesma
+                      data.</td>
                   </tr>
                 </tbody>
               </table>

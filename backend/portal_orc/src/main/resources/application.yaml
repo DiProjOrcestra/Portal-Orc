@@ -1,8 +1,7 @@
 spring:
   application:
     name: portal_orc
-  
-  
+  #remover todos os valores padroes antes de enviar para a produçao
   datasource: 
     url: ${DB_URL:jdbc:postgresql://localhost:5432/portal_orc}
     username: ${DB_USERNAME:portal_orc}
@@ -26,7 +25,7 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: openid, profile, email
-
+  
   mail:
     host: smtp.gmail.com
     port: 587
@@ -40,6 +39,7 @@ spring:
             enable: true
           localhost: localhost
 
+  
 jwt:
   expiration: ${JWT_EXPIRATION:900000}
   mfa:

@@ -24,6 +24,15 @@ export function registerMember(form) {
   return apiRequest('/v1/auth/register', { method: 'POST', body: payload });
 }
 
+export function login(form) {
+  const payload = {
+    email: form.email.trim(),
+    password: form.password,
+  };
+
+  return apiRequest('/v1/auth/login', { method: 'POST', body: payload });
+}
+
 /**
  * Validates the 4-digit MFA code sent by email against
  * com.orcestra.portal_orc.controller.AuthenticationController#validateMfaCode

@@ -1,7 +1,9 @@
 package com.orcestra.portal_orc.controller;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseCookie;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,10 +19,14 @@ import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.ResendCodeRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
+import com.orcestra.portal_orc.config.CookieProvider;
+import com.orcestra.portal_orc.dto.LoginRequestDto;
+
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.service.AuthenticationService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +48,10 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public MfaTokenResponseDto login(@Valid @RequestBody LoginRequestDto loginRequestDto) throws Exception{
-        return authenticationService.loginUser(loginRequestDto);
+    public void login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) throws Exception{
+        String token = authenticationService.loginUser(loginRequestDto).getToken();
+        ResponseCookie cookie = cookieProvider.createAccessTokenCookie(token);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     @PostMapping("/resend/password")
