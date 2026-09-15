@@ -7,5 +7,5 @@ export const PAINEL_INTERNO_ITEMS = [
   { key: 'mvv', label: 'Missão, Visão e Valores', enabled: true },
   { key: 'golden-circle', label: 'Golden Circle', enabled: true },
   { key: 'planejamento', label: 'Planejamento estratégico', enabled: true },
-  { key: 'planos-acao', label: 'Planos de ação', enabled: false },
+  { key: 'planos-acao', label: 'Planos de ação', enabled: true },
 ];
