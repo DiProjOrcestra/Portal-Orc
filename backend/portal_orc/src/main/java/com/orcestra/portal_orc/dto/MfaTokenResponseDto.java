@@ -14,7 +14,5 @@ import lombok.Setter;
 public class MfaTokenResponseDto {
     private String mfaToken;
 
-    private String message;
-
     private long mfaExpirationTime;
 }

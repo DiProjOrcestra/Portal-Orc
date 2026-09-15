@@ -1,6 +1,5 @@
 package com.orcestra.portal_orc;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class PortalOrcApplicationTests {

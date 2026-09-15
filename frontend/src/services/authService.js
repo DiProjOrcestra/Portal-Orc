@@ -38,8 +38,8 @@ export function login(form) {
  * com.orcestra.portal_orc.controller.AuthenticationController#validateMfaCode
  * (POST /v1/auth/mfa/validate). Maps to com.orcestra.portal_orc.dto.CodeRequestDto.
  */
-export function validateMfaCode(email, code) {
-  return apiRequest('/v1/auth/mfa/validate', { method: 'POST', body: { email, code } });
+export function validateMfaCode(code) {
+  return apiRequest('/v1/auth/mfa/validate', { method: 'POST', body: { code } });
 }
 
 /**
@@ -48,5 +48,5 @@ export function validateMfaCode(email, code) {
  * (POST /v1/auth/mfa/resend) and com.orcestra.portal_orc.dto.ResendCodeRequestDto.
  */
 export function resendMfaCode(email) {
-  return apiRequest('/v1/auth/mfa/resend', { method: 'POST', body: { email } });
+  return apiRequest('/v1/auth/mfa/resend', { method: 'POST' });
 }

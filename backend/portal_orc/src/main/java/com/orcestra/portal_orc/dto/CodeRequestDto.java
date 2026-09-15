@@ -14,9 +14,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CodeRequestDto {
-    @NotBlank(message="Token de verificação obrigatório")
-    private String mfaToken;
-
     @Schema(description = "Informe o código de 4 dígitos recebido no email cadastrado")
     @NotBlank(message = "Informe o código recebido no email")
     private String code;

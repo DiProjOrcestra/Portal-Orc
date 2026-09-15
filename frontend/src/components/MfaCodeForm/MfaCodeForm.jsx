@@ -7,10 +7,7 @@ import './MfaCodeForm.css';
 const RESEND_COOLDOWN_SECONDS = 30;
 const GENERIC_ERROR = 'Ocorreu um erro inesperado. Tente novamente.';
 
-export default function MfaCodeForm({ email: emailProp, onVerified }) {
-  const email =
-    emailProp || (typeof window !== 'undefined' ? sessionStorage.getItem('mfaEmail') : '') || '';
-
+export default function MfaCodeForm({ onVerified }) {
   const [code, setCode] = useState('');
   const [resetKey, setResetKey] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -40,7 +37,7 @@ export default function MfaCodeForm({ email: emailProp, onVerified }) {
     setSubmitting(true);
     setErrorMessage('');
     try {
-      await validateMfaCode(email, fullCode);
+      await validateMfaCode(fullCode); // sem email
       setVerified(true);
       onVerified?.();
     } catch (err) {
@@ -57,7 +54,7 @@ export default function MfaCodeForm({ email: emailProp, onVerified }) {
     setResending(true);
     setErrorMessage('');
     try {
-      await resendMfaCode(email);
+      await resendMfaCode(); // sem email
       setCode('');
       setResetKey((k) => k + 1);
       startCooldown();

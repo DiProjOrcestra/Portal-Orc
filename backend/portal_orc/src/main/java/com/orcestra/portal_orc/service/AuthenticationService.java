@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import com.orcestra.portal_orc.config.TokenProvider;
 import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
+import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
-import com.orcestra.portal_orc.dto.ResendCodeRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
@@ -81,7 +81,7 @@ public class AuthenticationService {
         userRepository.save(userEntity);
         emailSenderService.sendEmail(resendPasswordDto.getEmail(), "Senha para primeiro cadastro", "Sua senha é " + userPassword);
     }
-    public String loginUser(LoginRequestDto dto) throws Exception {
+    public MfaTokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
             UserEntity user = userRepository.findByEmail(dto.getEmail())
@@ -89,15 +89,17 @@ public class AuthenticationService {
             
             mfaService.generateAndSendCode(user);
 
-            return tokenProvider.gerarTokenMfa(authentication);
+            String mfaToken = tokenProvider.gerarTokenMfa(authentication);
+
+            return new MfaTokenResponseDto(mfaToken, mfaExpirationTime);
         } 
         catch (Exception e){
             throw e;
         }
     }
 
-    public String validatingCode(CodeRequestDto codeRequestDto) throws Exception{
-        String email = tokenProvider.validarTokenMfa(codeRequestDto.getMfaToken());
+    public String validatingCode(String mfaToken, CodeRequestDto codeRequestDto) throws Exception{
+        String email = tokenProvider.validarTokenMfa(mfaToken);
 
         Boolean isValid = mfaService.validateCode(email, codeRequestDto.getCode());
         if(!isValid){
@@ -110,8 +112,8 @@ public class AuthenticationService {
         return tokenProvider.gerarToken(user);
     }
 
-    public void resendCode(ResendCodeRequestDto resendCodeRequestDto) throws BadRequestException{
-        String email = tokenProvider.validarTokenMfa(resendCodeRequestDto.getMfaToken());
+    public void resendCode(String mfaToken) throws BadRequestException{
+        String email = tokenProvider.validarTokenMfa(mfaToken);
 
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));

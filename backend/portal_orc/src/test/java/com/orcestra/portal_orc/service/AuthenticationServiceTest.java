@@ -26,8 +26,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.orcestra.portal_orc.config.TokenProvider;
 import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
+import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
-import com.orcestra.portal_orc.dto.ResendCodeRequestDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.model.RoleEntity;
@@ -119,11 +119,11 @@ class AuthenticationServiceTest {
         doNothing().when(mfaService).generateAndSendCode(user);
         when(tokenProvider.gerarTokenMfa(authentication)).thenReturn(MFA_TOKEN);
 
-        String response = authenticationService.loginUser(dto);
+        MfaTokenResponseDto response = authenticationService.loginUser(dto);
 
         assertNotNull(response);
-        assertEquals(MFA_TOKEN, response);
-        assertEquals(300000L, response);
+        assertEquals(MFA_TOKEN, response.getMfaToken());
+        assertEquals(300000L, response.getMfaExpirationTime());
         verify(mfaService).generateAndSendCode(user);
     }
 
@@ -131,14 +131,13 @@ class AuthenticationServiceTest {
     @DisplayName("Deve validar o código MFA com sucesso")
     void deveValidarCodigoMfaComSucesso() throws Exception {
         CodeRequestDto dto = new CodeRequestDto();
-        dto.setMfaToken(MFA_TOKEN);
         dto.setCode("0123");
 
         when(tokenProvider.validarTokenMfa(MFA_TOKEN)).thenReturn(EMAIL);
         when(mfaService.validateCode(EMAIL, "0123")).thenReturn(true);
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
 
-        authenticationService.validatingCode(dto);
+        authenticationService.validatingCode(MFA_TOKEN, dto);
 
         verify(mfaService).validateCode(EMAIL, "0123");
         verify(userRepository).findByEmail(EMAIL);
@@ -148,26 +147,22 @@ class AuthenticationServiceTest {
     @DisplayName("Deve lançar exceção quando o código MFA for inválido")
     void deveLancarExcecaoQuandoCodigoInvalido() throws Exception {
         CodeRequestDto dto = new CodeRequestDto();
-        dto.setMfaToken(MFA_TOKEN);
         dto.setCode("9999");
 
         when(tokenProvider.validarTokenMfa(MFA_TOKEN)).thenReturn(EMAIL);
         when(mfaService.validateCode(EMAIL, "9999")).thenReturn(false);
 
-        assertThrows(BadRequestException.class, () -> authenticationService.validatingCode(dto));
+        assertThrows(BadRequestException.class, () -> authenticationService.validatingCode(MFA_TOKEN, dto));
     }
 
     @Test
     @DisplayName("Deve reenviar o código MFA com sucesso")
     void deveReenviarCodigoMfa() throws Exception {
-        ResendCodeRequestDto dto = new ResendCodeRequestDto();
-        dto.setMfaToken(MFA_TOKEN);
-
         when(tokenProvider.validarTokenMfa(MFA_TOKEN)).thenReturn(EMAIL);
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
         doNothing().when(mfaService).generateAndSendCode(user);
 
-        authenticationService.resendCode(dto);
+        authenticationService.resendCode(MFA_TOKEN);
 
         verify(mfaService).generateAndSendCode(user);
     }
