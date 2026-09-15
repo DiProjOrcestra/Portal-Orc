@@ -26,7 +26,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.orcestra.portal_orc.config.TokenProvider;
 import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
-import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.ResendCodeRequestDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
@@ -120,11 +119,11 @@ class AuthenticationServiceTest {
         doNothing().when(mfaService).generateAndSendCode(user);
         when(tokenProvider.gerarTokenMfa(authentication)).thenReturn(MFA_TOKEN);
 
-        MfaTokenResponseDto response = authenticationService.loginUser(dto);
+        String response = authenticationService.loginUser(dto);
 
         assertNotNull(response);
-        assertEquals(MFA_TOKEN, response.getMfaToken());
-        assertEquals(300000L, response.getMfaExpirationTime());
+        assertEquals(MFA_TOKEN, response);
+        assertEquals(300000L, response);
         verify(mfaService).generateAndSendCode(user);
     }
 

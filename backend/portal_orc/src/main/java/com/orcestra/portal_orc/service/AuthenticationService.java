@@ -12,11 +12,9 @@ import org.springframework.stereotype.Service;
 import com.orcestra.portal_orc.config.TokenProvider;
 import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
-import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.ResendCodeRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
-import com.orcestra.portal_orc.dto.TokenResponseDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
@@ -62,9 +60,9 @@ public class AuthenticationService {
                             .orElseGet(() -> roleRepository.save(RoleEntity.builder()
                                 .name(RoleTypeEnum.USER.name()).build()));
 
-        DirectorateEntity direcotrate = directorateRepository.findByDirectorateName(registerRequestDto.getDirectorate().name())
+        DirectorateEntity direcotrate = directorateRepository.findByNome(registerRequestDto.getDirectorate().name())
                                         .orElseGet(() -> directorateRepository.save(DirectorateEntity.builder()
-                                            .nome(registerRequestDto.getDirectorate().getNome()).build()));
+                                            .nome(registerRequestDto.getDirectorate().name()).build()));
                                 
         String userPassword = randomPasswordGenerator.generateRandomPassword(15);
         UserEntity userRegister = new UserEntity(registerRequestDto);
@@ -83,7 +81,7 @@ public class AuthenticationService {
         userRepository.save(userEntity);
         emailSenderService.sendEmail(resendPasswordDto.getEmail(), "Senha para primeiro cadastro", "Sua senha é " + userPassword);
     }
-    public MfaTokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
+    public String loginUser(LoginRequestDto dto) throws Exception {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
             UserEntity user = userRepository.findByEmail(dto.getEmail())
@@ -91,9 +89,7 @@ public class AuthenticationService {
             
             mfaService.generateAndSendCode(user);
 
-            String mfaToken = tokenProvider.gerarTokenMfa(authentication);
-
-            return new MfaTokenResponseDto(mfaToken, "Código de verificação enviado para o e-mail cadastrado", mfaExpirationTime);
+            return tokenProvider.gerarTokenMfa(authentication);
         } 
         catch (Exception e){
             throw e;

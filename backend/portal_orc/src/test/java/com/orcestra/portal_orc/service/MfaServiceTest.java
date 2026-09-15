@@ -198,10 +198,10 @@ class MfaServiceTest {
         when(tokenProvider.gerarTokenMfa(authentication)).thenReturn("mfa-token-de-teste");
         doNothing().when(mfaService).generateAndSendCode(user);
 
-        MfaTokenResponseDto response = authenticationService.loginUser(loginRequest);
+        String response = authenticationService.loginUser(loginRequest);
 
-        assertEquals("mfa-token-de-teste", response.getMfaToken());
-        assertEquals(300000L, response.getMfaExpirationTime());
+        assertEquals("mfa-token-de-teste", response);
+        assertEquals(300000L, response);
         verify(mfaService).generateAndSendCode(user);
     }
 }

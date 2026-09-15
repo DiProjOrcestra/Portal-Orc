@@ -67,7 +67,7 @@ class ActionPlanServiceTest {
         when(actionPlanRequestDto.getDirectorate()).thenReturn(DirectorateEnum.values()[0]);
         when(actionPlanRequestDto.getSubtasks()).thenReturn(List.of());
         when(objectiveRepository.findById(1)).thenReturn(Optional.of(objectiveEntity));
-        when(directorateRepository.findByDirectorateName(anyString())).thenReturn(Optional.of(directorateEntity));
+        when(directorateRepository.findByNome(anyString())).thenReturn(Optional.of(directorateEntity));
 
         actionPlanService.createActionPlan(1, actionPlanRequestDto);
 
@@ -86,7 +86,7 @@ class ActionPlanServiceTest {
 
         assertEquals("Objetivo com id 99 não existe", exception.getMessage());
         verify(objectiveRepository).findById(99);
-        verify(directorateRepository, never()).findByDirectorateName(any());
+        verify(directorateRepository, never()).findByNome(any());
         verify(actionPlanRepository, never()).save(any());
     }
 
@@ -95,7 +95,7 @@ class ActionPlanServiceTest {
     void createActionPlan_DirectorateNotFound() {
         when(actionPlanRequestDto.getDirectorate()).thenReturn(DirectorateEnum.values()[0]);
         when(objectiveRepository.findById(1)).thenReturn(Optional.of(objectiveEntity));
-        when(directorateRepository.findByDirectorateName(anyString())).thenReturn(Optional.empty());
+        when(directorateRepository.findByNome(anyString())).thenReturn(Optional.empty());
 
         assertThrows(BadRequestException.class, () -> {
             actionPlanService.createActionPlan(1, actionPlanRequestDto);

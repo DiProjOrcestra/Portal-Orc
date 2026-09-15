@@ -22,7 +22,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     private final TokenProvider tokenProvider;
     private final UserDetailsService userDetailsService;
     private final CookieProvider cookieProvider;
-    private final CookieProvider cookieProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, 

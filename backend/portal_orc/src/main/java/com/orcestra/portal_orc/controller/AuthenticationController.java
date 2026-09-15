@@ -49,7 +49,7 @@ public class AuthenticationController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) throws Exception{
-        String token = authenticationService.loginUser(loginRequestDto).getToken();
+        String token = authenticationService.loginUser(loginRequestDto);
         ResponseCookie cookie = cookieProvider.createAccessTokenCookie(token);
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
