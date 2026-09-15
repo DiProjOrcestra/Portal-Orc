@@ -38,7 +38,13 @@ public class AdminBootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.findByEmail(adminEmail).isPresent() || 
+        for (DirectorateEnum directorateEnum : DirectorateEnum.values()) {
+            directorateRepository.findByDirectorateName(directorateEnum.name())
+                    .orElseGet(() -> directorateRepository.save(DirectorateEntity.builder()
+                            .directorateName(directorateEnum.name()).build()));
+        }
+
+        if (userRepository.findByEmail(adminEmail).isPresent() ||
                 userRepository.existsByCpf(adminCpf)) {
             return;
         }
@@ -47,8 +53,7 @@ public class AdminBootstrap implements CommandLineRunner {
                                     .orElseGet(() -> roleRepository.save(RoleEntity.builder()
                                         .name(RoleTypeEnum.ADMIN.name()).build()));
         DirectorateEntity directorate = directorateRepository.findByDirectorateName(DirectorateEnum.DIREX.name())
-                                            .orElseGet(() -> directorateRepository.save(DirectorateEntity.builder()
-                                                .directorateName(DirectorateEnum.DIREX.name()).build()));
+                                            .orElseThrow(() -> new IllegalStateException("Diretoria DIREX não encontrada após a inicialização"));
         userRepository.save(UserEntity.builder()
                                         .name("Admin")
                                         .cpf(adminCpf)
