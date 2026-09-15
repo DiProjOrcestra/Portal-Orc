@@ -1,7 +1,3 @@
-// Small line-style icons used across the Painel Institucional page (MVV,
-// Golden Circle and Planejamento Estratégico).
-// Kept local to this page since they are not reused elsewhere yet.
-
 const base = {
   fill: 'none',
   stroke: 'currentColor',
@@ -113,6 +109,12 @@ export const CampaignIcon = (props) => (
   </svg>
 );
 
+export const PlusIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+
 export const WarningIcon = (props) => (
   <svg viewBox="0 0 24 24" {...base} {...props}>
     <path d="M12 4.5 21 19.5H3Z" />
@@ -127,8 +129,23 @@ export const PersonIcon = (props) => (
   </svg>
 );
 
+export const ChecklistIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M6 4.5h12a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5.5a1 1 0 0 1 1-1Z" />
+    <path d="m8.3 9 1.4 1.4L12.3 8" />
+    <path d="M14 9h4M8.3 15l1.4 1.4L12.3 14" />
+    <path d="M14 15h4" />
+  </svg>
+);
+
 export const CloseIcon = (props) => (
   <svg viewBox="0 0 24 24" {...base} {...props}>
     <path d="M6 6l12 12M18 6 6 18" />
+  </svg>
+);
+
+export const ChevronDownIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M5.5 8.5 12 15l6.5-6.5" />
   </svg>
 );
