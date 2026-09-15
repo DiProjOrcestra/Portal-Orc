@@ -3,7 +3,6 @@ package com.orcestra.portal_orc.service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.apache.coyote.BadRequestException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -28,10 +27,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.orcestra.portal_orc.config.TokenProvider;
-import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
 import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
-import com.orcestra.portal_orc.dto.TokenResponseDto;
+import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.model.UserEntity;
 import com.orcestra.portal_orc.repository.RoleRepository;
 import com.orcestra.portal_orc.repository.UserRepository;
@@ -98,7 +96,6 @@ class MfaServiceTest {
     void deveGerarSalvarEEnviarCodigoMfa() throws Exception {
         when(randomCodeGenerator.generateRandomCode(4)).thenReturn("0123");
         when(passwordEncoder.encode("0123")).thenReturn("codigo-hash");
-        when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
         doNothing().when(mailSender).sendEmail(any(), any(), any());
 
         mfaServiceUnderTest.generateAndSendCode(user);
@@ -114,15 +111,11 @@ class MfaServiceTest {
     }
 
     @Test
-    @DisplayName("Deve rejeitar a geração do código quando o usuário não existe")
+    @DisplayName("Deve rejeitar a geração do código quando o objeto usuário for nulo")
     void deveRejeitarCodigoParaUsuarioInexistente() {
-        when(randomCodeGenerator.generateRandomCode(4)).thenReturn("0123");
-        when(passwordEncoder.encode("0123")).thenReturn("codigo-hash");
-        when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.empty());
-
         assertThrows(
-                BadRequestException.class,
-                () -> mfaServiceUnderTest.generateAndSendCode(user));
+                NullPointerException.class,
+                () -> mfaServiceUnderTest.generateAndSendCode(null));
 
         verify(userRepository, never()).save(any(UserEntity.class));
         verify(mailSender, never()).sendEmail(any(), any(), any());
@@ -137,7 +130,7 @@ class MfaServiceTest {
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("0123", "codigo-hash")).thenReturn(true);
 
-        boolean result = mfaServiceUnderTest.validateCode(EMAIL,"0123");
+        boolean result = mfaServiceUnderTest.validateCode(EMAIL, "0123");
 
         assertTrue(result);
         assertNull(user.getMfaCode());
@@ -165,15 +158,16 @@ class MfaServiceTest {
 
     @Test
     @DisplayName("Deve impedir a validação quando o código estiver expirado")
-    void deveImpedirValidacaoDeCodigoExpirado() throws Exception {
+    void deveImpedirValidacaoDeCodigoExpirado() {
         user.setMfaCode("codigo-hash");
         user.setMfaCodeExpiresAt(LocalDateTime.now().minusSeconds(1));
         user.setMfaAttempts(0);
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
 
-        boolean result = mfaServiceUnderTest.validateCode(EMAIL, "0123");
+        assertThrows(BadRequestException.class, () -> {
+            mfaServiceUnderTest.validateCode(EMAIL, "0123");
+        });
 
-        assertFalse(result);
         assertEquals(0, user.getMfaAttempts());
         verify(passwordEncoder, never()).matches(any(), any());
         verify(userRepository, never()).save(any(UserEntity.class));
@@ -181,15 +175,16 @@ class MfaServiceTest {
 
     @Test
     @DisplayName("Deve impedir a validação após três tentativas")
-    void deveImpedirValidacaoAposTresTentativas() throws Exception {
+    void deveImpedirValidacaoAposTresTentativas() {
         user.setMfaCode("codigo-hash");
         user.setMfaCodeExpiresAt(LocalDateTime.now().plusMinutes(5));
         user.setMfaAttempts(3);
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
 
-        boolean result = mfaServiceUnderTest.validateCode(EMAIL, "0123");
+        assertThrows(BadRequestException.class, () -> {
+            mfaServiceUnderTest.validateCode(EMAIL, "0123");
+        });
 
-        assertFalse(result);
         verify(passwordEncoder, never()).matches(any(), any());
         verify(userRepository, never()).save(any(UserEntity.class));
     }
@@ -197,16 +192,16 @@ class MfaServiceTest {
     @Test
     @DisplayName("Deve gerar e enviar o MFA depois de autenticar a senha")
     void deveDispararMfaDepoisDoLogin() throws Exception {
-        ReflectionTestUtils.setField(authenticationService, "expirationTime", 900000L);
+        ReflectionTestUtils.setField(authenticationService, "mfaExpirationTime", 300000L);
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
-        when(tokenProvider.gerarToken(user)).thenReturn("jwt-de-teste");
+        when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
+        when(tokenProvider.gerarTokenMfa(authentication)).thenReturn("mfa-token-de-teste");
         doNothing().when(mfaService).generateAndSendCode(user);
 
         MfaTokenResponseDto response = authenticationService.loginUser(loginRequest);
 
-        assertEquals("jwt-de-teste", response.getMfaToken());
-        assertEquals(900000L, response.getMfaExpirationTime());
+        assertEquals("mfa-token-de-teste", response.getMfaToken());
+        assertEquals(300000L, response.getMfaExpirationTime());
         verify(mfaService).generateAndSendCode(user);
-        verify(tokenProvider).gerarToken(user);
     }
 }

@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "usuario")
 @AllArgsConstructor
 @Getter
 @Setter
@@ -83,7 +83,7 @@ public class UserEntity implements UserDetails {
     private Integer mfaAttempts;
 
     public UserEntity(RegisterRequestDto registerRequestDto){
-        this.cpf = registerRequestDto.getCpf().replaceAll("\\D", "");
+        this.cpf = registerRequestDto.getCpf();
         this.email = registerRequestDto.getEmail();
         this.birthDate = registerRequestDto.getBirthDate();
         this.name = registerRequestDto.getName();

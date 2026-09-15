@@ -14,15 +14,14 @@ import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
 import com.orcestra.portal_orc.dto.NewPasswordRequestDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
-import com.orcestra.portal_orc.dto.ResendCodeRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
-import com.orcestra.portal_orc.dto.TokenResponseDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.model.DirectorateEntity;
 import com.orcestra.portal_orc.model.RoleEntity;
 import com.orcestra.portal_orc.model.UserEntity;
+import com.orcestra.portal_orc.repository.DirectorateRepository;
 import com.orcestra.portal_orc.repository.DirectorateRepository;
 import com.orcestra.portal_orc.repository.RoleRepository;
 import com.orcestra.portal_orc.repository.UserRepository;
@@ -38,34 +37,34 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
-    private final TokenProvider tokenProvider;
-    private final MfaService mfaService;
     private final DirectorateRepository directorateRepository;
     private final RandomPasswordGenerator randomPasswordGenerator;
     private final EmailSenderService emailSenderService;
-    private final RegisterRequestDto registerRequestDto;
-    private final PasswordValidator passwordValidator;
+    private final AuthenticationManager authenticationManager;
+    private final TokenProvider tokenProvider;
+    private final MfaService mfaService;
     @Value("${jwt.expiration}")
-    private long accessExpirationTime;
+    private long expirationTime;
     @Value("${jwt.mfa.expiration}")
     private long mfaExpirationTime;
-    @Value("${jwt.password.expiration}")
-    private long passwordExpirationTime;
 
-    public void registerUser(RegisterRequestDto userRequestDto) throws BadRequestException{
-        UserEntity userEntity = userRepository.findByEmail(userRequestDto.getEmail()).orElse(null);
+    public void registerUser(RegisterRequestDto registerRequestDto) throws BadRequestException{
+        UserEntity userEntity = userRepository.findByEmail(registerRequestDto.getEmail()).orElse(null);
         if (userEntity != null){
             throw new BadRequestException("Email já cadastrado");
+        }
+
+        if (userRepository.existsByCpf(registerRequestDto.getCpf().replaceAll("\\D", ""))) {
+            throw new BadRequestException("Esse CPF já foi cadastrado");
         }
 
         RoleEntity role = roleRepository.findByName(RoleTypeEnum.USER.name())
                             .orElseGet(() -> roleRepository.save(RoleEntity.builder()
                                 .name(RoleTypeEnum.USER.name()).build()));
 
-        DirectorateEntity direcotrate = directorateRepository.findByDirectorateName(registerRequestDto.getDirectorate().getName())
+        DirectorateEntity direcotrate = directorateRepository.findByNome(registerRequestDto.getDirectorate().name())
                                         .orElseGet(() -> directorateRepository.save(DirectorateEntity.builder()
-                                            .name(registerRequestDto.getDirectorate().getName()).build()));
+                                            .nome(registerRequestDto.getDirectorate().name()).build()));
                                 
         String userPassword = randomPasswordGenerator.generateRandomPassword(15);
         UserEntity userRegister = new UserEntity(registerRequestDto);
@@ -84,8 +83,7 @@ public class AuthenticationService {
         userRepository.save(userEntity);
         emailSenderService.sendEmail(resendPasswordDto.getEmail(), "Senha para primeiro cadastro", "Sua senha é " + userPassword);
     }
-    
-    public TokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
+    public MfaTokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
             UserEntity user = userRepository.findByEmail(dto.getEmail())
@@ -100,15 +98,15 @@ public class AuthenticationService {
 
             String tokenMfa = tokenProvider.gerarTokenMfa(authentication);
 
-            return new TokenResponseDto(tokenMfa, "Token temporário para código de mfa", mfaExpirationTime);
+            return new MfaTokenResponseDto(mfaToken, mfaExpirationTime);
         } 
         catch (Exception e){
             throw e;
         }
     }
 
-    public String validatingCode(CodeRequestDto codeRequestDto) throws Exception{
-        String email = tokenProvider.validarTokenMfa(codeRequestDto.getMfaToken());
+    public String validatingCode(String mfaToken, CodeRequestDto codeRequestDto) throws Exception{
+        String email = tokenProvider.validarTokenMfa(mfaToken);
 
         Boolean isValid = mfaService.validateCode(email, codeRequestDto.getCode());
         if(!isValid){
@@ -121,8 +119,8 @@ public class AuthenticationService {
         return tokenProvider.gerarToken(user);
     }
 
-    public void resendCode(ResendCodeRequestDto resendCodeRequestDto) throws BadRequestException{
-        String email = tokenProvider.validarTokenMfa(resendCodeRequestDto.getMfaToken());
+    public void resendCode(String mfaToken) throws BadRequestException{
+        String email = tokenProvider.validarTokenMfa(mfaToken);
 
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));

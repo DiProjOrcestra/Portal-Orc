@@ -24,13 +24,22 @@ export function registerMember(form) {
   return apiRequest('/v1/auth/register', { method: 'POST', body: payload });
 }
 
+export function login(form) {
+  const payload = {
+    email: form.email.trim(),
+    password: form.password,
+  };
+
+  return apiRequest('/v1/auth/login', { method: 'POST', body: payload });
+}
+
 /**
  * Validates the 4-digit MFA code sent by email against
  * com.orcestra.portal_orc.controller.AuthenticationController#validateMfaCode
  * (POST /v1/auth/mfa/validate). Maps to com.orcestra.portal_orc.dto.CodeRequestDto.
  */
-export function validateMfaCode(email, code) {
-  return apiRequest('/v1/auth/mfa/validate', { method: 'POST', body: { email, code } });
+export function validateMfaCode(code) {
+  return apiRequest('/v1/auth/mfa/validate', { method: 'POST', body: { code } });
 }
 
 /**
@@ -39,5 +48,5 @@ export function validateMfaCode(email, code) {
  * (POST /v1/auth/mfa/resend) and com.orcestra.portal_orc.dto.ResendCodeRequestDto.
  */
 export function resendMfaCode(email) {
-  return apiRequest('/v1/auth/mfa/resend', { method: 'POST', body: { email } });
+  return apiRequest('/v1/auth/mfa/resend', { method: 'POST' });
 }

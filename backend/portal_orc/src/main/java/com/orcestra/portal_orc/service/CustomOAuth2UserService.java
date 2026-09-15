@@ -6,7 +6,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import com.orcestra.portal_orc.model.UserEntity;
 import com.orcestra.portal_orc.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,8 +20,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         String emailGoogle = oAuth2User.getAttribute("email");
 
-        UserEntity usuario = userRepository.findByEmail(emailGoogle)
-            .orElseThrow(() -> new OAuth2AuthenticationException("Usuário não cadastrado"));
+        userRepository.findByEmail(emailGoogle).orElseThrow(() -> new OAuth2AuthenticationException("Usuário não cadastrado"));
         
         return oAuth2User;
     }

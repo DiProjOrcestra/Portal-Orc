@@ -17,8 +17,7 @@ import com.orcestra.portal_orc.dto.LoginRequestDto;
 import com.orcestra.portal_orc.dto.NewPasswordRequestDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
-import com.orcestra.portal_orc.dto.TokenResponseDto;
-import com.orcestra.portal_orc.dto.ResendCodeRequestDto;
+
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.service.AuthenticationService;
@@ -44,8 +43,11 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public TokenResponseDto login(@Valid @RequestBody LoginRequestDto loginRequestDto) throws Exception{
-        return authenticationService.loginUser(loginRequestDto);
+    public void login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) throws Exception{
+        MfaTokenResponseDto result = authenticationService.loginUser(loginRequestDto);
+        
+        ResponseCookie cookie = cookieProvider.createMfaTokenCookie(result.getMfaToken(), result.getMfaExpirationTime());
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     @PostMapping("/resend/password")
@@ -54,18 +56,20 @@ public class AuthenticationController {
         authenticationService.resendRandomPassword(resendPasswordDto);
     }
 
-    @PostMapping("/login/mfa")
+    @PostMapping("/mfa/validate")
     @ResponseStatus(HttpStatus.OK)
-    public void mfa(@Valid @RequestBody CodeRequestDto codeRequestDto, HttpServletResponse response) throws Exception{
-        String token = authenticationService.validatingCode(codeRequestDto);
+    public void mfa(@Valid @RequestBody CodeRequestDto codeRequestDto, 
+                    @CookieValue("temporary_token") String mfaToken, 
+                    HttpServletResponse response) throws Exception{
+        String token = authenticationService.validatingCode(mfaToken, codeRequestDto);
         ResponseCookie cookie = cookieProvider.createAccessTokenCookie(token);
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
-    @PostMapping("/resend/mfa")
+    @PostMapping("/mfa/resend")
     @ResponseStatus(HttpStatus.OK)
-    public void resendCodeMfa(@Valid @RequestBody ResendCodeRequestDto resendCodeRequestDto) throws BadRequestException{
-        authenticationService.resendCode(resendCodeRequestDto);
+    public void resendCodeMfa(@CookieValue("temporary_token") String mfaToken) throws BadRequestException{
+        authenticationService.resendCode(mfaToken);
     }
 
     @PostMapping ("/new-password")
