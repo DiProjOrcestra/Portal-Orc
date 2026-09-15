@@ -108,3 +108,265 @@
     order: initial;
   }
 }
+
+.mvv-edit-form {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border-radius: 24px;
+  background: #141414;
+  box-shadow:
+    10px 10px 25px rgba(8, 8, 8, 0.9),
+    -10px 10px 20px rgba(8, 8, 8, 0.2),
+    10px -10px 20px rgba(8, 8, 8, 0.2),
+    -10px -10px 20px rgba(20, 20, 20, 0.9),
+    inset 1px 1px 2px rgba(20, 20, 20, 0.3);
+}
+
+.mvv-edit-label {
+  margin: 16px 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.mvv-edit-label:first-child {
+  margin-top: 0;
+}
+
+.mvv-edit-textarea,
+.mvv-edit-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-strong);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.mvv-edit-textarea {
+  resize: vertical;
+}
+
+.mvv-edit-textarea:focus,
+.mvv-edit-input:focus {
+  outline: none;
+  border-color: var(--green-400);
+}
+
+.mvv-edit-error {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.mvv-tag-form-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.mvv-tag-form-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mvv-tag-form-row .mvv-edit-input {
+  width: auto;
+  min-width: 140px;
+}
+
+.mvv-tag-form-remove {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--danger);
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mvv-tag-form-remove:not(:disabled):hover {
+  border-color: var(--danger);
+}
+
+.mvv-tag-form-remove:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.mvv-tag-add-btn {
+  display: block;
+  width: fit-content;
+  margin-top: 12px;
+  padding: 10px 20px;
+  font-size: 13.5px;
+}
+
+.mvv-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.mvv-btn {
+  padding: 12px 36px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--green-700), var(--green-400));
+  color: var(--off-white);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14.5px;
+  box-shadow: 0 8px 24px rgba(46, 182, 0, 0.35);
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.mvv-btn:hover {
+  filter: brightness(1.08);
+}
+
+.mvv-btn:active {
+  transform: translateY(1px);
+}
+
+.mvv-btn--ghost {
+  background: none;
+  box-shadow: none;
+  border: 1px solid var(--border);
+  color: var(--off-white);
+}
+
+.mvv-btn--ghost:hover {
+  filter: none;
+  border-color: var(--green-400);
+}
+
+.mvv-btn--danger {
+  background: linear-gradient(135deg, #b3261e, var(--danger));
+  color: var(--off-white);
+  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.35);
+}
+
+.mvv-btn--danger:hover {
+  filter: brightness(1.08);
+}
+
+@media (max-width: 480px) {
+  .mvv-edit-actions {
+    flex-direction: column-reverse;
+  }
+
+  .mvv-edit-actions .mvv-btn {
+    width: 100%;
+  }
+}
+
+.mvv-modal-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(3px);
+  animation: mvv-modal-fade-in 0.15s ease;
+}
+
+.mvv-modal {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 28px 28px;
+  border-radius: 24px;
+  background: #141414;
+  border: 1px solid rgba(63, 204, 16, 0.35);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(63, 204, 16, 0.14);
+  text-align: center;
+  animation: mvv-modal-scale-in 0.18s ease;
+}
+
+.mvv-modal--danger {
+  border-color: rgba(255, 107, 107, 0.35);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(255, 107, 107, 0.14);
+}
+
+.mvv-modal__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: rgba(63, 204, 16, 0.14);
+  border: 1px solid rgba(63, 204, 16, 0.4);
+  color: var(--green-400);
+}
+
+.mvv-modal__icon--danger {
+  background: rgba(255, 107, 107, 0.14);
+  border-color: rgba(255, 107, 107, 0.4);
+  color: var(--danger);
+}
+
+.mvv-modal__icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.mvv-modal__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--off-white);
+  margin: 0 0 10px;
+}
+
+.mvv-modal__message {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.mvv-modal__actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+@keyframes mvv-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mvv-modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

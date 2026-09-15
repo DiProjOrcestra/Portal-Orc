@@ -1,26 +1,29 @@
 package com.orcestra.portal_orc.service;
 
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+
+import java.time.LocalDate;
+import java.util.Optional;
+import java.util.Set;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.orcestra.portal_orc.config.TokenProvider;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.enums.DirectorateEnum;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
@@ -46,6 +49,12 @@ class UsuarioServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
+    private AuthenticationManager authenticationManager;
+
+    @Mock
+    private TokenProvider tokenProvider;
+
+    @Mock
     private DirectorateRepository directorateRepository;
 
     @Mock
@@ -54,13 +63,24 @@ class UsuarioServiceTest {
     @Mock
     private EmailSenderService emailSenderService;
 
-    @InjectMocks
     private AuthenticationService authenticationService;
 
     private RegisterRequestDto request;
 
     @BeforeEach
     void setUp() {
+        // Ordem dos parâmetros ajustada para casar com o construtor do AuthenticationService
+        authenticationService = new AuthenticationService(
+                userRepository,
+                roleRepository,
+                passwordEncoder,
+                directorateRepository,
+                randomPasswordGenerator,
+                emailSenderService,
+                authenticationManager,
+                tokenProvider
+        );
+
         request = RegisterRequestDto.builder()
                 .cpf("529.982.247-25")
                 .email("membro@orcestra.com")
