@@ -60,7 +60,7 @@ public class ActionPlanController {
     public void deleteActionPlan(@PathVariable Integer id) throws NotFoundException {
         actionPlanService.deleteActionPlan(id);
     }
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/users")
     public void linkUserToActionPlan(@PathVariable Integer id, @RequestBody LinkUsersToActionPlanRequestDto requestDto) throws NotFoundException {
         actionPlanService.linkUserToActionPlan(id, requestDto);
     }
