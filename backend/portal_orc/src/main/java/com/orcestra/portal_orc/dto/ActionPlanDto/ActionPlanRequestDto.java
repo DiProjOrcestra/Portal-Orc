@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.orcestra.portal_orc.dto.SubtaskDto.SubtaskRequestDto;
-import com.orcestra.portal_orc.model.DirectorateEntity;
+import com.orcestra.portal_orc.enums.DirectorateEnum;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -37,7 +37,7 @@ public class ActionPlanRequestDto {
     
     @Schema(example = "DIPROJ")
     @NotNull(message = "O campo diretoria não pode ser vazio")
-    private DirectorateEntity directorate;
+    private DirectorateEnum directorate;
 
     @Schema(example = "Urgente")
     @NotBlank(message = "O campo prioridade não pode ser vazio")
