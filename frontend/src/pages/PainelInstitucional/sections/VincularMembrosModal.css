@@ -80,6 +80,14 @@
   color: #ff6b6b;
 }
 
+.vmm-secao-titulo {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 0 0 8px;
+}
+
 .vmm-lista {
   list-style: none;
   margin: 0 0 16px;
@@ -89,6 +97,10 @@
   gap: 6px;
   max-height: 300px;
   overflow-y: auto;
+}
+
+.vmm-lista + .vmm-secao-titulo {
+  margin-top: 20px;
 }
 
 .vmm-item {
@@ -111,6 +123,11 @@
   accent-color: var(--green-400);
   width: 16px;
   height: 16px;
+}
+
+.vmm-item--vinculado {
+  cursor: default;
+  opacity: 0.78;
 }
 
 .vmm-item svg {

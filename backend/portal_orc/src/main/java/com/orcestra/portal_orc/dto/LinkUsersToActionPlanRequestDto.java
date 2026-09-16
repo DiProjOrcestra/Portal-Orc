@@ -16,6 +16,5 @@ import lombok.Setter;
 @Builder 
 public class LinkUsersToActionPlanRequestDto {
 
-    @NotEmpty(message = "A lista de usuários não pode ser vazia")
     private List<String> usersId;
 }

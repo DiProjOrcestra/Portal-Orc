@@ -47,8 +47,7 @@ export default function PlanoDeAcao() {
                 prioridade: PRIORIDADE_SLUG_BY_LABEL[plano.priority],
                 atividade: plano.name,
                 subtarefas: plano.subtasks.map((subtarefa) => subtarefa.name),
-                // Novo: o GET /v1/action-plan agora devolve quem está
-                // vinculado a cada plano (antes não devolvia nada aqui).
+                membrosVinculados: plano.users ?? [],
                 responsaveis: (plano.users ?? []).map((usuario) => usuario.name),
               })),
           }))

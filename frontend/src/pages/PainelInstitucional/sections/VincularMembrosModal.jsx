@@ -19,7 +19,9 @@ import './VincularMembrosModal.css';
 // aqui como limitação conhecida, não como bug desta tela.
 export default function VincularMembrosModal({ plano, diretoria, onSaved, onClose }) {
   const [membros, setMembros] = useState([]);
-  const [selecionados, setSelecionados] = useState([]);
+  const [selecionados, setSelecionados] = useState(() =>
+    (plano.membrosVinculados ?? []).map((membro) => membro.cpf)
+  );
   const [carregando, setCarregando] = useState(true);
   const [erroCarregar, setErroCarregar] = useState(null);
   const [enviando, setEnviando] = useState(false);
@@ -36,11 +38,11 @@ export default function VincularMembrosModal({ plano, diretoria, onSaved, onClos
     setSelecionados((atual) => (atual.includes(cpf) ? atual.filter((c) => c !== cpf) : [...atual, cpf]));
   };
 
+  const membrosVinculados = plano.membrosVinculados ?? [];
+  const cpfsVinculados = new Set(membrosVinculados.map((membro) => membro.cpf));
+  const membrosDisponiveis = membros.filter((membro) => !cpfsVinculados.has(membro.cpf));
+
   const handleVincular = async () => {
-    if (selecionados.length === 0) {
-      setErroEnviar('Selecione ao menos um membro.');
-      return;
-    }
     setErroEnviar(null);
     setEnviando(true);
     try {
@@ -77,27 +79,54 @@ export default function VincularMembrosModal({ plano, diretoria, onSaved, onClos
         {carregando && <p className="vmm-estado">Carregando membros...</p>}
         {erroCarregar && <p className="vmm-estado vmm-estado--erro">{erroCarregar}</p>}
 
-        {/* FE-E2: nenhum membro cadastrado disponível. */}
-        {!carregando && !erroCarregar && membros.length === 0 && (
-          <p className="vmm-estado vmm-estado--erro">Não existe nenhum membro cadastrado no momento.</p>
-        )}
+        {!carregando && !erroCarregar && (
+          <>
+            <h3 className="vmm-secao-titulo">Membros vinculados</h3>
+            {membrosVinculados.length === 0 ? (
+              <p className="vmm-estado">Nenhum membro vinculado.</p>
+            ) : (
+              <ul className="vmm-lista">
+                {membrosVinculados.map((membro) => (
+                  <li key={membro.cpf}>
+                    <label className="vmm-item vmm-item--vinculado">
+                      <input
+                        type="checkbox"
+                        checked={selecionados.includes(membro.cpf)}
+                        onChange={() => alternarSelecao(membro.cpf)}
+                      />
+                      <PersonIcon />
+                      <span>{membro.name}</span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            )}
 
-        {!carregando && membros.length > 0 && (
-          <ul className="vmm-lista">
-            {membros.map((membro) => (
-              <li key={membro.cpf}>
-                <label className="vmm-item">
-                  <input
-                    type="checkbox"
-                    checked={selecionados.includes(membro.cpf)}
-                    onChange={() => alternarSelecao(membro.cpf)}
-                  />
-                  <PersonIcon />
-                  <span>{membro.name}</span>
-                </label>
-              </li>
-            ))}
-          </ul>
+            <h3 className="vmm-secao-titulo">Membros disponíveis</h3>
+            {membrosDisponiveis.length === 0 ? (
+              <p className="vmm-estado vmm-estado--erro">
+                {membros.length === 0
+                  ? 'Não existe nenhum membro cadastrado no momento.'
+                  : 'Todos os membros já estão vinculados.'}
+              </p>
+            ) : (
+              <ul className="vmm-lista">
+                {membrosDisponiveis.map((membro) => (
+                  <li key={membro.cpf}>
+                    <label className="vmm-item">
+                      <input
+                        type="checkbox"
+                        checked={selecionados.includes(membro.cpf)}
+                        onChange={() => alternarSelecao(membro.cpf)}
+                      />
+                      <PersonIcon />
+                      <span>{membro.name}</span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
         )}
 
         {erroEnviar && <p className="vmm-estado vmm-estado--erro">{erroEnviar}</p>}
@@ -110,7 +139,7 @@ export default function VincularMembrosModal({ plano, diretoria, onSaved, onClos
             type="button"
             className="vmm-salvar"
             onClick={handleVincular}
-            disabled={enviando || carregando || membros.length === 0}
+            disabled={enviando || carregando || (membros.length === 0 && membrosVinculados.length === 0)}
           >
             {enviando ? 'Vinculando...' : 'Vincular selecionados'}
           </button>
