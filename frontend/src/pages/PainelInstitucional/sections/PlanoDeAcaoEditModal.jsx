@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { CampaignIcon, PersonIcon } from '../icons';
 import { STATUS_LABEL } from './PlanoDeAcaoConstants';
 import { fetchMembros, updateActionPlanFull } from './PlanoDeAcaoApi';
@@ -128,7 +129,7 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
     }
   };
 
-  return (
+  return createPortal(
     <div className="pem-backdrop" role="presentation" onClick={onClose}>
       <div
         className="pem-modal"
@@ -282,6 +283,7 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
