@@ -110,6 +110,11 @@
   border-color: var(--green-400);
 }
 
+.pem-campo select option {
+  background-color: #141414;
+  color: var(--off-white);
+}
+
 .pem-erro {
   font-family: var(--font-body);
   font-size: 12px;
