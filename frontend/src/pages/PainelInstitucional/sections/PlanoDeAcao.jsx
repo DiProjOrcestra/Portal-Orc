@@ -16,10 +16,13 @@ function formatarPrazo(term) {
   return term ? term.replaceAll('-', '/') : term;
 }
 
+// UC-18: cadastrar uma nova atividade pra uma diretoria (botão "+" e modal
+// abaixo). As 5 diretorias são sempre exibidas (com sua foto de capa),
+// mesmo sem nenhum plano real ainda - o conteúdo de cada seção vem do
+// backend (GET /v1/action-plan), não é mais dado mockado.
 export default function PlanoDeAcao() {
-
-  const [carregando, setCarregando] = useState(true);
   const [secoes, setSecoes] = useState(() => DIRECTORATE_SECTIONS.map((secao) => ({ ...secao, planos: [] })));
+  const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
   const [cadastrando, setCadastrando] = useState(null); // índice da diretoria, ou null
 
@@ -38,6 +41,9 @@ export default function PlanoDeAcao() {
                 prioridade: PRIORIDADE_SLUG_BY_LABEL[plano.priority],
                 atividade: plano.name,
                 subtarefas: plano.subtasks.map((subtarefa) => subtarefa.name),
+                // O GET /v1/action-plan agora devolve quem está vinculado a
+                // cada plano (campo novo, adicionado pela uc-21).
+                responsaveis: (plano.users ?? []).map((usuario) => usuario.name),
               })),
           }))
         );
@@ -77,7 +83,7 @@ export default function PlanoDeAcao() {
       {erro && <p className="pa-estado pa-estado--erro">{erro}</p>}
 
       <div className="pa-diretorias">
-        {secoes.map((diretoria) => {
+        {secoes.map((diretoria, directorateIndex) => {
           const header = (
             <div className="pa-card__header">
               <span className="pa-card__badge">
@@ -162,7 +168,9 @@ export default function PlanoDeAcao() {
                         </ul>
                       </div>
 
-                      <div className="pa-plano__responsaveis">Responsáveis:</div>
+                      <div className="pa-plano__responsaveis">
+                        Responsáveis:{plano.responsaveis.length > 0 && ` ${plano.responsaveis.join(', ')}`}
+                      </div>
                     </div>
                   ))}
                 </div>

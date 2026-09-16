@@ -81,6 +81,7 @@ export function criarPlanoDeAcao(objectiveId, directorateLabel, atividade) {
       directorate: DIRECTORATE_CODES[directorateLabel],
       priority: atividade.prioridadeLabel,
       subtasks: atividade.subtarefas.map((nome) => ({ name: nome, done: false })),
+      usersId: [],
     },
   });
 }
