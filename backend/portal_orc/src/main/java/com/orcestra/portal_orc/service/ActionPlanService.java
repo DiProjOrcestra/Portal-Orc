@@ -36,12 +36,12 @@ public class ActionPlanService {
                                         .findByNome(
                                                 actionPlanRequestDto
                                                 .getDirectorate()
-                                                .getName())
+                                                .name())
                                                 .orElseThrow(() -> new BadRequestException(
                                                     String.format(
                                                         "A diretoria %s não existe",
                                                         actionPlanRequestDto.getDirectorate()
-                                                                                        .getName())));
+                                                                                        .name())));
         List<SubtaskEntity> subtasks = actionPlanRequestDto.getSubtasks()
                                                                 .stream()
                                                                 .map(SubtaskEntity::new)

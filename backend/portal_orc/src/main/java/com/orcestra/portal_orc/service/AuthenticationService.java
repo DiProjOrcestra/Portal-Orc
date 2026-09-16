@@ -15,13 +15,13 @@ import com.orcestra.portal_orc.dto.LoginRequestDto;
 import com.orcestra.portal_orc.dto.NewPasswordRequestDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
+import com.orcestra.portal_orc.dto.TempTokenResponseDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.model.DirectorateEntity;
 import com.orcestra.portal_orc.model.RoleEntity;
 import com.orcestra.portal_orc.model.UserEntity;
-import com.orcestra.portal_orc.repository.DirectorateRepository;
 import com.orcestra.portal_orc.repository.DirectorateRepository;
 import com.orcestra.portal_orc.repository.RoleRepository;
 import com.orcestra.portal_orc.repository.UserRepository;
@@ -43,10 +43,11 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
     private final MfaService mfaService;
+    private final PasswordValidator passwordValidator;
     @Value("${jwt.expiration}")
     private long expirationTime;
     @Value("${jwt.mfa.expiration}")
-    private long mfaExpirationTime;
+    private long tempExpirationTime;
 
     public void registerUser(RegisterRequestDto registerRequestDto) throws BadRequestException{
         UserEntity userEntity = userRepository.findByEmail(registerRequestDto.getEmail()).orElse(null);
@@ -83,7 +84,7 @@ public class AuthenticationService {
         userRepository.save(userEntity);
         emailSenderService.sendEmail(resendPasswordDto.getEmail(), "Senha para primeiro cadastro", "Sua senha é " + userPassword);
     }
-    public MfaTokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
+    public TempTokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
             UserEntity user = userRepository.findByEmail(dto.getEmail())
@@ -91,14 +92,14 @@ public class AuthenticationService {
             
             if(user.getFirstAccess() == true){
                 String tokenPassword = tokenProvider.gerarTokenPassword(user);
-                return new TokenResponseDto(tokenPassword, "Token temporário para troca de senha obrigatória", passwordExpirationTime);
+                return new TempTokenResponseDto(tokenPassword, tempExpirationTime);
             }
 
             mfaService.generateAndSendCode(user);
 
             String tokenMfa = tokenProvider.gerarTokenMfa(authentication);
 
-            return new MfaTokenResponseDto(mfaToken, mfaExpirationTime);
+            return new TempTokenResponseDto(tokenMfa, tempExpirationTime);
         } 
         catch (Exception e){
             throw e;
@@ -128,8 +129,8 @@ public class AuthenticationService {
         mfaService.generateAndSendCode(user);
     }
 
-    public String createNewPassword(NewPasswordRequestDto dto) throws Exception{
-        String email = tokenProvider.validarTokenPassword(dto.getPasswordToken());
+    public String createNewPassword(String passwordToken, NewPasswordRequestDto dto) throws Exception{
+        String email = tokenProvider.validarTokenPassword(passwordToken);
 
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));

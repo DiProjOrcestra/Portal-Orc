@@ -55,6 +55,7 @@ public class AdminBootstrap implements CommandLineRunner {
                                         .email(adminEmail)
                                         .phone(61987654321L)
                                         .password(passwordEncoder.encode(adminPassword))
+                                        .firstAccess(true)
                                         .roles(Set.of(role))
                                         .directorate(directorate)
                                         .build());

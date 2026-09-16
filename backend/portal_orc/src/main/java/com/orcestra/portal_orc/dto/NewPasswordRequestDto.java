@@ -14,9 +14,6 @@ import lombok.Setter;
 @NoArgsConstructor 
 @AllArgsConstructor 
 public class NewPasswordRequestDto {
-    @Schema(example = "Token de verificação de nova senha")
-    private String passwordToken;
-
     @Schema(example = "Orc*1234")
     @NotBlank 
     private String newPassword;
