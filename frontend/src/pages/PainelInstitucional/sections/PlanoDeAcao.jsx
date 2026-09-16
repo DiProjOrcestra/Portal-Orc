@@ -1,16 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, WarningIcon } from '../icons';
+import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, PlusIcon, WarningIcon } from '../icons';
+import { STATUS_LABEL } from './PlanoDeAcaoConstants';
 import { DIRECTORATE_SECTIONS, fetchPlanosDeAcao } from './PlanoDeAcaoApi';
+import CadastrarPlanoModal from './CadastrarPlanoModal';
 import './PlanoDeAcao.css';
 
-// Mesmo mapeamento de status usado no backend (ActionPlanRequestDto.progress
-// é uma String livre, ainda sem enum) - centralizado aqui pra já ficar fácil
-// de trocar por um enum de verdade quando o back definir um.
-const STATUS_LABEL = {
-  concluido: 'Concluído',
-  andamento: 'Em andamento',
-  'nao-concluido': 'Não Concluído',
-};
+// O backend guarda o rótulo pronto (ex: "Em andamento"/"Alta"), não o slug
+// usado nas classes CSS/textos desta tela - esses mapas fazem essa volta.
 const STATUS_SLUG_BY_LABEL = Object.fromEntries(Object.entries(STATUS_LABEL).map(([slug, label]) => [label, slug]));
 const PRIORIDADE_SLUG_BY_LABEL = { Alta: 'alta', Média: 'media', Baixa: 'baixa' };
 
@@ -20,13 +16,15 @@ function formatarPrazo(term) {
   return term ? term.replaceAll('-', '/') : term;
 }
 
-// UC-21: Consultar plano de ação. Busca os planos reais do backend
-// (GET /v1/action-plan) e agrupa por diretoria - as 5 diretorias sempre
-// aparecem (com sua foto de capa), mesmo sem nenhum plano cadastrado ainda.
+// UC-18: cadastrar uma nova atividade pra uma diretoria (botão "+" e modal
+// abaixo). As 5 diretorias são sempre exibidas (com sua foto de capa),
+// mesmo sem nenhum plano real ainda - o conteúdo de cada seção vem do
+// backend (GET /v1/action-plan), não é mais dado mockado.
 export default function PlanoDeAcao() {
   const [secoes, setSecoes] = useState(() => DIRECTORATE_SECTIONS.map((secao) => ({ ...secao, planos: [] })));
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
+  const [cadastrando, setCadastrando] = useState(null); // índice da diretoria, ou null
 
   const buscarPlanos = useCallback(() => {
     return fetchPlanosDeAcao()
@@ -43,6 +41,9 @@ export default function PlanoDeAcao() {
                 prioridade: PRIORIDADE_SLUG_BY_LABEL[plano.priority],
                 atividade: plano.name,
                 subtarefas: plano.subtasks.map((subtarefa) => subtarefa.name),
+                // O GET /v1/action-plan agora devolve quem está vinculado a
+                // cada plano (campo novo, adicionado pela uc-21).
+                responsaveis: (plano.users ?? []).map((usuario) => usuario.name),
               })),
           }))
         );
@@ -82,7 +83,7 @@ export default function PlanoDeAcao() {
       {erro && <p className="pa-estado pa-estado--erro">{erro}</p>}
 
       <div className="pa-diretorias">
-        {secoes.map((diretoria) => {
+        {secoes.map((diretoria, directorateIndex) => {
           const header = (
             <div className="pa-card__header">
               <span className="pa-card__badge">
@@ -91,13 +92,22 @@ export default function PlanoDeAcao() {
               </span>
               <div className="pa-card__objetivo-group">
                 <span className="pa-card__objetivo">Objetivo {diretoria.objetivo}</span>
-                {/* Cadastrar (UC-18) e editar (UC-20) ficam em outras branches
-                    - aqui é só consulta, o ícone existe visualmente mas não
-                    faz nada. */}
+                {/* UC-18: cadastrar uma nova atividade pra esta diretoria. */}
                 <button
                   type="button"
                   className="pa-card__edit"
-                  aria-label="Editar diretoria"
+                  aria-label="Cadastrar plano de ação"
+                  title="Cadastrar plano de ação"
+                  onClick={() => setCadastrando(directorateIndex)}
+                >
+                  <PlusIcon />
+                </button>
+                {/* Editar um plano já cadastrado fica pra outra branch - o
+                    ícone só existe visualmente aqui, sem função. */}
+                <button
+                  type="button"
+                  className="pa-card__edit"
+                  aria-label="Editar plano de ação"
                   title="Edição disponível em breve"
                   disabled
                 >
@@ -158,7 +168,9 @@ export default function PlanoDeAcao() {
                         </ul>
                       </div>
 
-                      <div className="pa-plano__responsaveis">Responsáveis:</div>
+                      <div className="pa-plano__responsaveis">
+                        Responsáveis:{plano.responsaveis.length > 0 && ` ${plano.responsaveis.join(', ')}`}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -167,6 +179,17 @@ export default function PlanoDeAcao() {
           );
         })}
       </div>
+
+      {cadastrando !== null && (
+        <CadastrarPlanoModal
+          diretoria={secoes[cadastrando]}
+          onSave={() => {
+            setCadastrando(null);
+            buscarPlanos();
+          }}
+          onClose={() => setCadastrando(null)}
+        />
+      )}
     </section>
   );
 }

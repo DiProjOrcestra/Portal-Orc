@@ -40,7 +40,7 @@ public class ActionPlanService {
 
         ActionPlanEntity actionPlan = new ActionPlanEntity(actionPlanRequestDto);
         DirectorateEntity directorate = directorateRepository
-                                        .findByNome(
+                                        .findByDirectorateName(
                                                 actionPlanRequestDto
                                                 .getDirectorate()
                                                 .name())

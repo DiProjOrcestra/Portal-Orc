@@ -168,6 +168,7 @@
   border: none;
   background: transparent;
   color: var(--off-white);
+  cursor: pointer;
 }
 
 .pa-card__edit svg {
@@ -175,8 +176,12 @@
   height: 20px;
 }
 
+.pa-card__edit:not(:disabled):hover {
+  color: var(--green-400);
+}
+
 .pa-card__edit:disabled {
-  opacity: 0.55;
+  opacity: 0.4;
   cursor: default;
 }
 
