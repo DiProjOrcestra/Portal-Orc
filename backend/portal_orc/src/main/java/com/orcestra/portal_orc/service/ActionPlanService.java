@@ -1,8 +1,10 @@
 package com.orcestra.portal_orc.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -120,7 +122,7 @@ public class ActionPlanService {
         List<SubtaskEntity> subtasks = actionPlanRequestDto.getSubtasks()
                                                             .stream()
                                                             .map(SubtaskEntity::new)
-                                                            .toList();
+                                                            .collect(Collectors.toCollection(ArrayList::new));
 
         subtasks.forEach(subtask -> subtask.setActionPlan(actionPlan));
         actionPlan.setSubtasks(subtasks);
