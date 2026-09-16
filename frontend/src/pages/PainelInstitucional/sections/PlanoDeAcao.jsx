@@ -8,11 +8,7 @@ import './PlanoDeAcao.css';
 // Mesmo mapeamento de status usado no backend (ActionPlanRequestDto.progress
 // é uma String livre, ainda sem enum) - centralizado aqui pra já ficar fácil
 // de trocar por um enum de verdade quando o back definir um.
-const STATUS_LABEL = {
-  concluido: 'Concluído',
-  andamento: 'Em andamento',
-  'nao-concluido': 'Não Concluído',
-};
+
 const STATUS_SLUG_BY_LABEL = Object.fromEntries(Object.entries(STATUS_LABEL).map(([slug, label]) => [label, slug]));
 const PRIORIDADE_SLUG_BY_LABEL = { Alta: 'alta', Média: 'media', Baixa: 'baixa' };
 
@@ -106,7 +102,6 @@ export default function PlanoDeAcao() {
                   disabled={diretoria.planos.length === 0}
                   onClick={() => setEditando(diretoria)}
                   >
-                 <EditIcon />
                 </button>
                 {/* Cadastrar (UC-18) e editar (UC-20) ficam em outras branches
                     - aqui é só consulta, o ícone existe visualmente mas não
