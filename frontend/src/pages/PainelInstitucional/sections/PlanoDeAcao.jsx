@@ -47,6 +47,9 @@ export default function PlanoDeAcao() {
                 prioridade: PRIORIDADE_SLUG_BY_LABEL[plano.priority],
                 atividade: plano.name,
                 subtarefas: plano.subtasks.map((subtarefa) => subtarefa.name),
+                // Novo: o GET /v1/action-plan agora devolve quem está
+                // vinculado a cada plano (antes não devolvia nada aqui).
+                responsaveis: (plano.users ?? []).map((usuario) => usuario.name),
               })),
           }))
         );
@@ -163,7 +166,10 @@ export default function PlanoDeAcao() {
                       </div>
 
                       <div className="pa-plano__responsaveis">
-                        Responsáveis:
+                        <span>
+                          Responsáveis:
+                          {plano.responsaveis.length > 0 && ` ${plano.responsaveis.join(', ')}`}
+                        </span>
                         <button
                           type="button"
                           className="pa-plano__vincular"
@@ -188,11 +194,6 @@ export default function PlanoDeAcao() {
           diretoria={vinculando.diretoria}
           onSaved={() => {
             setVinculando(null);
-            // O GET /v1/action-plan não devolve quem está vinculado a cada
-            // plano (limitação atual do backend), então recarregar aqui não
-            // muda o que aparece na tela - serve só pra manter o resto dos
-            // dados atualizado. A confirmação de sucesso do vínculo em si
-            // acontece só pelo modal fechar sem erro.
             buscarPlanos();
           }}
           onClose={() => setVinculando(null)}
