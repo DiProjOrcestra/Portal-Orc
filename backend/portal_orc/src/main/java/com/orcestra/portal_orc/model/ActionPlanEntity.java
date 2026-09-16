@@ -53,7 +53,7 @@ public class ActionPlanEntity {
     private String progress;
     
     @Builder.Default
-    @OneToMany(mappedBy = "actionPlan", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "actionPlan", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SubtaskEntity> subtasks = new ArrayList<>();
     
     @ManyToOne

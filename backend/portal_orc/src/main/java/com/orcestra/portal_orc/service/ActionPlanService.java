@@ -1,10 +1,8 @@
 package com.orcestra.portal_orc.service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -12,6 +10,7 @@ import com.orcestra.portal_orc.dto.LinkUsersToActionPlanRequestDto;
 import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanRequestDto;
 import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanResponseDto;
 import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanStatusRequestDto;
+import com.orcestra.portal_orc.dto.SubtaskDto.SubtaskRequestDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.model.ActionPlanEntity;
@@ -119,12 +118,36 @@ public class ActionPlanService {
                                                                                                             actionPlanRequestDto.getDirectorate()
                                                                                                                                 .name()))));
         actionPlan.setPriority(actionPlanRequestDto.getPriority());
-        List<SubtaskEntity> subtasks = actionPlanRequestDto.getSubtasks()
-                                                            .stream()
-                                                            .map(SubtaskEntity::new)
-                                                            .collect(Collectors.toCollection(ArrayList::new));
+        List<SubtaskEntity> subtasks = actionPlan.getSubtasks();
 
-        subtasks.forEach(subtask -> subtask.setActionPlan(actionPlan));
+        subtasks.clear();
+
+        for (SubtaskRequestDto dto : actionPlanRequestDto.getSubtasks()) {
+            SubtaskEntity subtask;
+
+            if (dto.getId() == null) {
+                subtask = new SubtaskEntity(dto);
+            } 
+            else {
+                subtask = subtaskRepository.findById(dto.getId())
+                        .orElseThrow(() -> new NotFoundException(
+                                String.format(
+                                        "Tarefa com id %d não existe",
+                                        dto.getId())));
+
+                if (!subtask.getActionPlan().getId().equals(actionPlanId)) {
+                    throw new BadRequestException(
+                            "A tarefa não pertence a este plano de ação");
+                }
+
+                subtask.setTaskName(dto.getName());
+                subtask.setDone(dto.getDone());
+            }
+
+            subtask.setActionPlan(actionPlan);
+            subtasks.add(subtask);
+        
+        }
         actionPlan.setSubtasks(subtasks);
         Set<UserEntity> users = new HashSet<>();
 
