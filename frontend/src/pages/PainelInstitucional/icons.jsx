@@ -1,7 +1,3 @@
-// Small line-style icons used across the Painel Institucional page (MVV,
-// Golden Circle and Planejamento Estratégico).
-// Kept local to this page since they are not reused elsewhere yet.
-
 const base = {
   fill: 'none',
   stroke: 'currentColor',
@@ -83,6 +79,29 @@ export const ChevronRightIcon = (props) => (
     <path d="M9 5.5 15.5 12 9 18.5" />
   </svg>
 );
+export const ClipboardIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M7.5 4.5h9a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1V5.5a1 1 0 0 1 1-1Z" />
+    <path d="M9.5 3.5h5a1 1 0 0 1 1 1V6h-7V4.5a1 1 0 0 1 1-1Z" />
+    <path d="M8.8 10.5h6.4M8.8 13.8h6.4M8.8 17h4" />
+  </svg>
+);
+
+export const FilterIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M4 6.5h16M4 12h16M4 17.5h16" />
+    <circle cx="9" cy="6.5" r="1.6" fill="currentColor" stroke="none" />
+    <circle cx="16" cy="12" r="1.6" fill="currentColor" stroke="none" />
+    <circle cx="10.5" cy="17.5" r="1.6" fill="currentColor" stroke="none" />
+  </svg>
+);
+
+export const CampaignIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M3.5 10.2v3.6l3 .6v4.6a1.3 1.3 0 0 0 2.5 0v-4.1l7.5 1.5V8.2Z" />
+    <path d="M16.5 9v6.4a3 3 0 0 0 0-6.4Z" />
+  </svg>
+);
 
 export const TrashIcon = (props) => (
   <svg viewBox="0 0 24 24" {...base} {...props}>
@@ -104,5 +123,46 @@ export const AlertIcon = (props) => (
     <path d="M12 3.5 21 19.5H3L12 3.5Z" strokeLinejoin="round" />
     <path d="M12 10v4.2" />
     <circle cx="12" cy="17" r="0.9" fill="currentColor" stroke="none" />
+  </svg>
+);
+
+export const PlusIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+
+export const WarningIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M12 4.5 21 19.5H3Z" />
+    <path d="M12 10v4M12 16.5h.01" />
+  </svg>
+);
+
+export const PersonIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <circle cx="12" cy="8" r="3.2" />
+    <path d="M5.5 19.5c0-3.3 2.9-6 6.5-6s6.5 2.7 6.5 6" />
+  </svg>
+);
+
+export const ChecklistIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M6 4.5h12a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5.5a1 1 0 0 1 1-1Z" />
+    <path d="m8.3 9 1.4 1.4L12.3 8" />
+    <path d="M14 9h4M8.3 15l1.4 1.4L12.3 14" />
+    <path d="M14 15h4" />
+  </svg>
+);
+
+export const CloseIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M6 6l12 12M18 6 6 18" />
+  </svg>
+);
+
+export const ChevronDownIcon = (props) => (
+  <svg viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M5.5 8.5 12 15l6.5-6.5" />
   </svg>
 );

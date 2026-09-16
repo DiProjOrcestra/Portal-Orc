@@ -1,7 +1,6 @@
 package com.orcestra.portal_orc.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -11,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-// IMPORTS CORRIGIDOS
 import com.orcestra.portal_orc.dto.ObjectiveRequestDto;
 import com.orcestra.portal_orc.dto.ObjectiveResponseDto;
 import com.orcestra.portal_orc.exception.NotFoundException;
@@ -35,64 +32,91 @@ class ObjectiveServiceTest {
     @InjectMocks
     private ObjectiveService objectiveService;
 
-    private ObjectiveEntity objectiveEntity;
-    private ObjectiveRequestDto objectiveRequestDto;
-
-    @BeforeEach
-    void setUp() {
-        objectiveEntity = ObjectiveEntity.builder()
-                .id(1)
-                .description("Objetivo Teste")
+    @Test
+    @DisplayName("Deve criar e salvar um objetivo com a descrição informada")
+    void deveCriarObjetivo() {
+        ObjectiveRequestDto request = ObjectiveRequestDto.builder()
+                .description("Atingir CSAT acima de 4.5")
                 .build();
 
-        objectiveRequestDto = new ObjectiveRequestDto();
-        objectiveRequestDto.setDescription("Novo Objetivo");
-    }
-
-    @Test
-    @DisplayName("Deve criar um objetivo com sucesso")
-    void createObjective_Success() {
-        objectiveService.createObjective(objectiveRequestDto);
+        objectiveService.createObjective(request);
 
         verify(objectiveRepository).save(any(ObjectiveEntity.class));
     }
 
     @Test
-    @DisplayName("Deve listar todos os objetivos com sucesso")
-    void getAllObjective_Success() {
-        when(objectiveRepository.findAll()).thenReturn(List.of(objectiveEntity));
+    @DisplayName("Deve consultar todos os objetivos e convertê-los para DTO de resposta")
+    void deveConsultarTodosOsObjetivos() {
+        ObjectiveEntity first = ObjectiveEntity.builder()
+                .id(1)
+                .description("Atingir CSAT acima de 4.5")
+                .build();
+        ObjectiveEntity second = ObjectiveEntity.builder()
+                .id(2)
+                .description("Reduzir o tempo médio de atendimento")
+                .build();
+        when(objectiveRepository.findAll()).thenReturn(List.of(first, second));
 
-        List<ObjectiveResponseDto> result = objectiveService.getAllObjective();
+        List<ObjectiveResponseDto> response = objectiveService.getAllObjective();
 
-        assertNotNull(result);
-        assertEquals(1, result.size());
+        assertEquals(2, response.size());
+        assertEquals(1, response.get(0).getId());
+        assertEquals("Atingir CSAT acima de 4.5", response.get(0).getDescription());
+        assertEquals(2, response.get(1).getId());
+        assertEquals("Reduzir o tempo médio de atendimento", response.get(1).getDescription());
         verify(objectiveRepository).findAll();
     }
 
     @Test
-    @DisplayName("Deve atualizar um objetivo com sucesso quando o ID existe")
-    void updateObjective_Success() throws NotFoundException {
-        when(objectiveRepository.findById(1)).thenReturn(Optional.of(objectiveEntity));
+    @DisplayName("Deve atualizar a descrição de um objetivo existente")
+    void deveAtualizarObjetivoExistente() throws NotFoundException {
+        ObjectiveEntity objective = ObjectiveEntity.builder()
+                .id(1)
+                .description("Descrição antiga")
+                .build();
+        ObjectiveRequestDto request = ObjectiveRequestDto.builder()
+                .description("Descrição atualizada")
+                .build();
+        when(objectiveRepository.findById(1)).thenReturn(Optional.of(objective));
 
-        ObjectiveResponseDto response = objectiveService.updateObjective(1, objectiveRequestDto);
+        ObjectiveResponseDto response = objectiveService.updateObjective(1, request);
 
-        assertNotNull(response);
-        assertEquals("Novo Objetivo", objectiveEntity.getDescription());
-        verify(objectiveRepository).findById(1);
-        verify(objectiveRepository).save(objectiveEntity);
+        assertEquals(1, response.getId());
+        assertEquals("Descrição atualizada", response.getDescription());
+        assertEquals("Descrição atualizada", objective.getDescription());
+        verify(objectiveRepository).save(objective);
     }
 
     @Test
-    @DisplayName("Deve lançar NotFoundException ao tentar atualizar um objetivo inexistente")
-    void updateObjective_NotFoundException() {
+    @DisplayName("Deve manter a descrição quando a atualização recebe descrição nula")
+    void deveManterDescricaoQuandoAtualizacaoForNula() throws NotFoundException {
+        ObjectiveEntity objective = ObjectiveEntity.builder()
+                .id(1)
+                .description("Descrição original")
+                .build();
+        ObjectiveRequestDto request = ObjectiveRequestDto.builder()
+                .description(null)
+                .build();
+        when(objectiveRepository.findById(1)).thenReturn(Optional.of(objective));
+
+        ObjectiveResponseDto response = objectiveService.updateObjective(1, request);
+
+        assertEquals("Descrição original", response.getDescription());
+        verify(objectiveRepository).save(objective);
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção quando o objetivo não existe")
+    void deveRejeitarAtualizacaoDeObjetivoInexistente() {
+        ObjectiveRequestDto request = ObjectiveRequestDto.builder()
+                .description("Nova descrição")
+                .build();
         when(objectiveRepository.findById(99)).thenReturn(Optional.empty());
 
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
-            objectiveService.updateObjective(99, objectiveRequestDto);
-        });
+        assertThrows(
+                NotFoundException.class,
+                () -> objectiveService.updateObjective(99, request));
 
-        assertEquals("Objetivo com id 99 não existe", exception.getMessage());
-        verify(objectiveRepository).findById(99);
-        verify(objectiveRepository, never()).save(any());
+        verify(objectiveRepository, never()).save(any(ObjectiveEntity.class));
     }
 }

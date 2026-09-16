@@ -1,6 +1,3 @@
-// UC-14/UC-16 have no backend endpoint yet (confirmed with the team) — this page renders
-// static placeholder content standing in for the "conteúdo vigente" each use case
-// describes, until a real institutional-content API exists.
 
 export const MVV_DATA = {
   quote: '"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."',
