@@ -93,7 +93,7 @@ public class ActionPlanService {
             }
             users.add(user);
         }
-        actionPlan.getUsers().addAll(users);
+        actionPlan.setUsers(users);;
         actionPlanRepository.save(actionPlan);                                                                
     }
 }
