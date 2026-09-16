@@ -28,11 +28,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.orcestra.portal_orc.config.TokenProvider;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
-import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
+import com.orcestra.portal_orc.dto.TempTokenResponseDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.model.UserEntity;
 import com.orcestra.portal_orc.repository.RoleRepository;
 import com.orcestra.portal_orc.repository.UserRepository;
+import com.orcestra.portal_orc.util.PasswordValidator;
 import com.orcestra.portal_orc.util.RandomCodeGenerator;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,6 +67,9 @@ class MfaServiceTest {
     private MfaService mfaService;
 
     @Mock
+    private PasswordValidator passwordValidator;
+
+    @Mock
     private Authentication authentication;
 
     @InjectMocks
@@ -88,6 +92,7 @@ class MfaServiceTest {
                 .email(EMAIL)
                 .password("senha-hash")
                 .mfaAttempts(0)
+                .firstAccess(false)
                 .build();
     }
 
@@ -192,16 +197,16 @@ class MfaServiceTest {
     @Test
     @DisplayName("Deve gerar e enviar o MFA depois de autenticar a senha")
     void deveDispararMfaDepoisDoLogin() throws Exception {
-        ReflectionTestUtils.setField(authenticationService, "mfaExpirationTime", 300000L);
+        ReflectionTestUtils.setField(authenticationService, "tempExpirationTime", 300000L);
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
         when(tokenProvider.gerarTokenMfa(authentication)).thenReturn("mfa-token-de-teste");
         doNothing().when(mfaService).generateAndSendCode(user);
 
-        MfaTokenResponseDto response = authenticationService.loginUser(loginRequest);
+        TempTokenResponseDto response = authenticationService.loginUser(loginRequest);
 
-        assertEquals("mfa-token-de-teste", response.getMfaToken());
-        assertEquals(300000L, response.getMfaExpirationTime());
+        assertEquals("mfa-token-de-teste", response.getToken());
+        assertEquals(300000L, response.getTempExpirationTime());
         verify(mfaService).generateAndSendCode(user);
     }
 }
