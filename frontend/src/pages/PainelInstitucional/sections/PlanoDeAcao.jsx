@@ -17,9 +17,8 @@ function formatarPrazo(term) {
 }
 
 export default function PlanoDeAcao() {
-  // As 5 diretorias são sempre exibidas (com sua foto de capa), mesmo sem
-  // nenhum plano real ainda - só o conteúdo de cada seção vem do backend
-  // agora (GET /v1/action-plan), não é mais dado mockado.
+
+  const [carregando, setCarregando] = useState(true);
   const [secoes, setSecoes] = useState(() => DIRECTORATE_SECTIONS.map((secao) => ({ ...secao, planos: [] })));
   const [erro, setErro] = useState(null);
   const [cadastrando, setCadastrando] = useState(null); // índice da diretoria, ou null
@@ -44,7 +43,8 @@ export default function PlanoDeAcao() {
         );
         setErro(null);
       })
-      .catch((err) => setErro(err.message ?? 'Não foi possível carregar os planos de ação.'));
+      .catch((err) => setErro(err.message ?? 'Não foi possível carregar os planos de ação.'))
+      .finally(() => setCarregando(false));
   }, []);
 
   useEffect(() => {
@@ -73,10 +73,11 @@ export default function PlanoDeAcao() {
         </p>
       </div>
 
-      {erro && <p className="pa-erro">{erro}</p>}
+      {carregando && <p className="pa-estado">Carregando planos de ação...</p>}
+      {erro && <p className="pa-estado pa-estado--erro">{erro}</p>}
 
       <div className="pa-diretorias">
-        {secoes.map((diretoria, directorateIndex) => {
+        {secoes.map((diretoria) => {
           const header = (
             <div className="pa-card__header">
               <span className="pa-card__badge">
@@ -126,7 +127,7 @@ export default function PlanoDeAcao() {
                 {!diretoria.capa && header}
 
                 <div className="pa-planos">
-                  {diretoria.planos.length === 0 && (
+                  {!carregando && diretoria.planos.length === 0 && (
                     <p className="pa-planos-vazio">Nenhum plano de ação cadastrado ainda.</p>
                   )}
                   {diretoria.planos.map((plano) => (

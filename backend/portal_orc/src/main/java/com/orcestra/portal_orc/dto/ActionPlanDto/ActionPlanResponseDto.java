@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.orcestra.portal_orc.dto.UserListResponseDto;
 import com.orcestra.portal_orc.dto.SubtaskDto.SubtaskResponseDto;
 import com.orcestra.portal_orc.model.ActionPlanEntity;
 
@@ -36,6 +37,8 @@ public class ActionPlanResponseDto {
     private String priority;
 
     private List<SubtaskResponseDto> subtasks;
+    
+    private List<UserListResponseDto> users;
 
     public ActionPlanResponseDto(ActionPlanEntity actionPlanEntity) {
         this.id = actionPlanEntity.getId();
@@ -46,6 +49,9 @@ public class ActionPlanResponseDto {
         this.priority = actionPlanEntity.getPriority();
         this.subtasks = actionPlanEntity.getSubtasks().stream()
             .map(SubtaskResponseDto::new)
+            .collect(Collectors.toList());
+        this.users = actionPlanEntity.getUsers().stream()
+            .map(UserListResponseDto:: new)
             .collect(Collectors.toList());
     }
 }
