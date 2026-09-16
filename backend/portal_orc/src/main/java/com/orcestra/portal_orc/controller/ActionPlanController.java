@@ -31,7 +31,7 @@ public class ActionPlanController {
         return actionPlanService.getAllActionPlan();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/users")
     public void linkUserToActionPlan(@PathVariable Integer id, @RequestBody LinkUsersToActionPlanRequestDto requestDto) throws NotFoundException {
         actionPlanService.linkUserToActionPlan(id, requestDto);
     }
