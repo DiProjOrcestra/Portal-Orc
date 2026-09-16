@@ -1,10 +1,15 @@
-import { useState } from 'react';
-import { CampaignIcon } from '../icons';
+import { useEffect, useState } from 'react';
+import { CampaignIcon, PersonIcon } from '../icons';
 import { STATUS_LABEL } from './PlanoDeAcaoConstants';
-import { updateActionPlanStatus } from './PlanoDeAcaoApi';
+import { fetchMembros, updateActionPlanFull } from './PlanoDeAcaoApi';
 import './PlanoDeAcaoEditModal.css';
 
 const STATUS_OPTIONS = Object.entries(STATUS_LABEL).map(([value, label]) => ({ value, label }));
+const PRIORIDADE_OPTIONS = [
+  { value: 'alta', label: 'Alta' },
+  { value: 'media', label: 'Média' },
+  { value: 'baixa', label: 'Baixa' },
+];
 
 function toInputDate(prazoBr) {
   if (!prazoBr) return '';
@@ -20,28 +25,49 @@ function toBrDate(prazoInput) {
   return `${dia}/${mes}/${ano}`;
 }
 
-// UC-20: Editar status do objetivo/plano de ação.
+// UC-20: Editar plano de ação, edição completa via PUT /v1/action-plan/{id}.
 //
-// Só o STATUS é salvo de verdade no backend (PATCH /{id}/status) - bate com
-// o nome oficial da UC-20. Os outros campos (nome, prazo, subtarefas,
-// responsáveis) continuam editáveis na tela, mas não persistem: o único
-// outro endpoint de edição completa (PUT /{id}) exige "usersId" e SUBSTITUI
-// por completo os membros vinculados pela UC-19 - como o GET de planos de
-// ação não devolve quem já está vinculado, não tem como preencher esse
-// campo corretamente aqui, e usá-lo apagaria vínculos feitos por outra tela
-// sem avisar ninguém. Ligar isso depende de uma mudança no backend (o time
-// já foi avisado - ver mensagem sobre a rota PUT /{id} conflitando entre
-// UC-19 e UC-20).
+// Esse endpoint SUBSTITUI por completo os membros vinculados (não é
+// aditivo). Como a tela de consulta não sabe quem já está vinculado a cada
+// plano (limitação do GET, já reportada ao backend), este modal busca a
+// lista real de membros e pede pra marcar de novo quem deve continuar
+// vinculado - se alguém for esquecido aqui, ele é desvinculado de verdade.
 export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
-  const [planos, setPlanos] = useState(() => diretoria.planos.map((plano) => ({ ...plano })));
+  const [planos, setPlanos] = useState(() =>
+    diretoria.planos.map((plano) => ({ ...plano, usersId: [] }))
+  );
+  const [membros, setMembros] = useState([]);
+  const [carregandoMembros, setCarregandoMembros] = useState(true);
+  const [erroMembros, setErroMembros] = useState(null);
   const [erros, setErros] = useState({});
   const [novaSubtarefa, setNovaSubtarefa] = useState({});
-  const [novoResponsavel, setNovoResponsavel] = useState({});
   const [enviando, setEnviando] = useState(false);
   const [erroEnvio, setErroEnvio] = useState(null);
 
+  useEffect(() => {
+    fetchMembros()
+      .then(setMembros)
+      .catch((err) => setErroMembros(err.message ?? 'Não foi possível carregar a lista de membros.'))
+      .finally(() => setCarregandoMembros(false));
+  }, []);
+
   const atualizarPlano = (index, campo, valor) => {
     setPlanos((atual) => atual.map((plano, i) => (i === index ? { ...plano, [campo]: valor } : plano)));
+  };
+
+  const alternarMembro = (index, cpf) => {
+    setPlanos((atual) =>
+      atual.map((plano, i) =>
+        i === index
+          ? {
+              ...plano,
+              usersId: plano.usersId.includes(cpf)
+                ? plano.usersId.filter((id) => id !== cpf)
+                : [...plano.usersId, cpf],
+            }
+          : plano
+      )
+    );
   };
 
   const adicionarSubtarefa = (index) => {
@@ -61,34 +87,16 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
     );
   };
 
-  const adicionarResponsavel = (index) => {
-    const texto = (novoResponsavel[index] ?? '').trim();
-    if (!texto) return;
-    setPlanos((atual) =>
-      atual.map((plano, i) =>
-        i === index ? { ...plano, responsaveis: [...(plano.responsaveis ?? []), texto] } : plano
-      )
-    );
-    setNovoResponsavel((atual) => ({ ...atual, [index]: '' }));
-  };
-
-  const removerResponsavel = (index, respIndex) => {
-    setPlanos((atual) =>
-      atual.map((plano, i) =>
-        i === index ? { ...plano, responsaveis: plano.responsaveis.filter((_, ri) => ri !== respIndex) } : plano
-      )
-    );
-  };
-
   const handleSalvar = async () => {
-    // FE-E1 da UC-20: status inválido - como o campo é um <select> com só as
-    // opções válidas, na prática não dá pra chegar aqui com um valor fora
-    // da lista, mas a checagem fica registrada pra deixar o fluxo explícito.
     const novosErros = {};
     planos.forEach((plano, index) => {
-      if (!STATUS_LABEL[plano.status]) {
-        novosErros[index] = 'Selecione um status válido.';
-      }
+      const errosPlano = {};
+      if (!plano.atividade?.trim()) errosPlano.nome = 'Informe o nome da atividade.';
+      if (!plano.prazo) errosPlano.prazo = 'Informe o prazo.';
+      if (!STATUS_LABEL[plano.status]) errosPlano.status = 'Selecione um status.';
+      if (!plano.prioridade) errosPlano.prioridade = 'Selecione uma prioridade.';
+      if (plano.subtarefas.length === 0) errosPlano.subtarefas = 'Adicione ao menos uma subtarefa.';
+      if (Object.keys(errosPlano).length > 0) novosErros[index] = errosPlano;
     });
 
     if (Object.keys(novosErros).length > 0) {
@@ -99,11 +107,22 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
     setErroEnvio(null);
     setEnviando(true);
     try {
-      // Só o status é enviado ao backend - ver explicação no topo do arquivo.
-      await Promise.all(planos.map((plano) => updateActionPlanStatus(plano.id, STATUS_LABEL[plano.status])));
+      await Promise.all(
+        planos.map((plano) =>
+          updateActionPlanFull(plano.id, {
+            nome: plano.atividade.trim(),
+            prazo: plano.prazo,
+            statusLabel: STATUS_LABEL[plano.status],
+            directorateCode: diretoria.code,
+            prioridadeLabel: PRIORIDADE_OPTIONS.find((o) => o.value === plano.prioridade)?.label,
+            subtarefas: plano.subtarefas,
+            usersId: plano.usersId,
+          })
+        )
+      );
       onSaved();
     } catch (err) {
-      setErroEnvio(err.message ?? 'Não foi possível salvar o status.');
+      setErroEnvio(err.message ?? 'Não foi possível salvar as alterações.');
     } finally {
       setEnviando(false);
     }
@@ -126,10 +145,7 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
           </span>
         </div>
 
-        <p className="pem-aviso">
-          Só o <strong>status</strong> é salvo de verdade por enquanto. Os outros campos ainda não persistem -
-          detalhes no código.
-        </p>
+        {erroMembros && <p className="pem-erro pem-erro--bloco">{erroMembros}</p>}
 
         <div className="pem-planos">
           {planos.map((plano, index) => (
@@ -143,6 +159,7 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
                     value={toInputDate(plano.prazo)}
                     onChange={(event) => atualizarPlano(index, 'prazo', toBrDate(event.target.value))}
                   />
+                  {erros[index]?.prazo && <span className="pem-erro">{erros[index].prazo}</span>}
                 </div>
                 <div className="pem-campo">
                   <label htmlFor={`pem-status-${plano.id}`}>Status</label>
@@ -151,13 +168,34 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
                     value={plano.status}
                     onChange={(event) => atualizarPlano(index, 'status', event.target.value)}
                   >
+                    <option value="" disabled>
+                      Selecionar status
+                    </option>
                     {STATUS_OPTIONS.map((opcao) => (
                       <option key={opcao.value} value={opcao.value}>
                         {opcao.label}
                       </option>
                     ))}
                   </select>
-                  {erros[index] && <span className="pem-erro">{erros[index]}</span>}
+                  {erros[index]?.status && <span className="pem-erro">{erros[index].status}</span>}
+                </div>
+                <div className="pem-campo">
+                  <label htmlFor={`pem-prioridade-${plano.id}`}>Prioridade</label>
+                  <select
+                    id={`pem-prioridade-${plano.id}`}
+                    value={plano.prioridade ?? ''}
+                    onChange={(event) => atualizarPlano(index, 'prioridade', event.target.value)}
+                  >
+                    <option value="" disabled>
+                      Prioridade
+                    </option>
+                    {PRIORIDADE_OPTIONS.map((opcao) => (
+                      <option key={opcao.value} value={opcao.value}>
+                        {opcao.label}
+                      </option>
+                    ))}
+                  </select>
+                  {erros[index]?.prioridade && <span className="pem-erro">{erros[index].prioridade}</span>}
                 </div>
               </div>
 
@@ -170,6 +208,7 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
                   onChange={(event) => atualizarPlano(index, 'atividade', event.target.value)}
                   placeholder="Ex: Divulgar processo seletivo nas redes sociais"
                 />
+                {erros[index]?.nome && <span className="pem-erro">{erros[index].nome}</span>}
               </div>
 
               <div className="pem-campo">
@@ -188,6 +227,7 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
                     </li>
                   ))}
                 </ul>
+                {erros[index]?.subtarefas && <span className="pem-erro">{erros[index].subtarefas}</span>}
                 <div className="pem-adicionar-linha">
                   <input
                     type="text"
@@ -204,32 +244,28 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
 
               <div className="pem-campo">
                 <span className="pem-campo__titulo">Responsáveis</span>
-                <ul className="pem-lista pem-lista--tags">
-                  {(plano.responsaveis ?? []).map((pessoa, respIndex) => (
-                    <li key={`${pessoa}-${respIndex}`}>
-                      <span>{pessoa}</span>
-                      <button
-                        type="button"
-                        onClick={() => removerResponsavel(index, respIndex)}
-                        aria-label={`Remover responsável ${pessoa}`}
-                      >
-                        ×
-                      </button>
+                <p className="pem-aviso-inline">
+                  Marca de novo quem já estava vinculado - editar sem marcar alguém desvincula essa pessoa.
+                </p>
+                {carregandoMembros && <p className="pem-erro">Carregando membros...</p>}
+                {!carregandoMembros && membros.length === 0 && !erroMembros && (
+                  <p className="pem-erro">Nenhum membro cadastrado.</p>
+                )}
+                <ul className="pem-lista pem-lista--membros">
+                  {membros.map((membro) => (
+                    <li key={membro.cpf}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={plano.usersId.includes(membro.cpf)}
+                          onChange={() => alternarMembro(index, membro.cpf)}
+                        />
+                        <PersonIcon />
+                        <span>{membro.name}</span>
+                      </label>
                     </li>
                   ))}
                 </ul>
-                <div className="pem-adicionar-linha">
-                  <input
-                    type="text"
-                    value={novoResponsavel[index] ?? ''}
-                    onChange={(event) => setNovoResponsavel((atual) => ({ ...atual, [index]: event.target.value }))}
-                    onKeyDown={(event) => event.key === 'Enter' && (event.preventDefault(), adicionarResponsavel(index))}
-                    placeholder="Nome do responsável"
-                  />
-                  <button type="button" onClick={() => adicionarResponsavel(index)}>
-                    Adicionar
-                  </button>
-                </div>
               </div>
             </div>
           ))}
@@ -241,7 +277,7 @@ export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
           <button type="button" className="pem-cancelar" onClick={onClose} disabled={enviando}>
             Cancelar alterações
           </button>
-          <button type="button" className="pem-salvar" onClick={handleSalvar} disabled={enviando}>
+          <button type="button" className="pem-salvar" onClick={handleSalvar} disabled={enviando || carregandoMembros}>
             {enviando ? 'Salvando...' : 'Salvar e sair'}
           </button>
         </div>

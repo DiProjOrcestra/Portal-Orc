@@ -39,24 +39,43 @@ export const DIRECTORATE_SECTIONS = [
 
 // GET /v1/action-plan - devolve todos os planos de ação já cadastrados no
 // banco (id, name, term "dd-MM-yyyy", progress, directorate, priority,
-// subtasks: [{id, name, done}]).
+// subtasks: [{id, name, done}]). Não devolve quem está vinculado a cada
+// plano (ver aviso em updateActionPlanFull).
 export function fetchPlanosDeAcao() {
   return apiRequest('/v1/action-plan');
 }
 
-// PATCH /v1/action-plan/{id}/status - único endpoint de edição usado aqui de
-// propósito. O PUT /v1/action-plan/{id} (edição completa) também existe,
-// mas ele exige "usersId" e SUBSTITUI por completo os membros vinculados
-// (ActionPlanService.updateActionPlan faz actionPlan.setUsers(users) com o
-// que vier nesse campo) - como o GET de planos de ação não devolve quem já
-// está vinculado, não tem como preencher esse campo direito daqui, e mandar
-// vazio apagaria silenciosamente o que a UC-19 vinculou. Por isso só o
-// status (que tem endpoint próprio, sem esse risco) é salvo de verdade por
-// enquanto - bate com o próprio nome da UC-20: "Editar STATUS do
-// objetivo/plano de ação".
+// GET /v1/users - devolve [{ cpf, name }], usado pra montar a lista real de
+// responsáveis selecionáveis (em vez de texto livre).
+export function fetchMembros() {
+  return apiRequest('/v1/users');
+}
+
 export function updateActionPlanStatus(actionPlanId, progressLabel) {
   return apiRequest(`/v1/action-plan/${actionPlanId}/status`, {
     method: 'PATCH',
     body: { progress: progressLabel },
+  });
+}
+
+// "22/09/2026" (dd/mm/yyyy, formato desta tela) -> "22-09-2026" (dd-MM-yyyy,
+// formato exigido pelo ActionPlanRequestDto do backend).
+function paraDataBackend(prazoBr) {
+  const [dia, mes, ano] = prazoBr.split('/');
+  return `${dia}-${mes}-${ano}`;
+}
+
+export function updateActionPlanFull(actionPlanId, atividade) {
+  return apiRequest(`/v1/action-plan/${actionPlanId}`, {
+    method: 'PUT',
+    body: {
+      name: atividade.nome,
+      term: paraDataBackend(atividade.prazo),
+      progress: atividade.statusLabel,
+      directorate: atividade.directorateCode,
+      priority: atividade.prioridadeLabel,
+      subtasks: atividade.subtarefas.map((nome) => ({ name: nome, done: false })),
+      usersId: atividade.usersId,
+    },
   });
 }
