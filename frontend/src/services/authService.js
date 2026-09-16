@@ -32,3 +32,21 @@ export function login(form) {
 
   return apiRequest('/v1/auth/login', { method: 'POST', body: payload });
 }
+
+/**
+ * Validates the 4-digit MFA code sent by email against
+ * com.orcestra.portal_orc.controller.AuthenticationController#validateMfaCode
+ * (POST /v1/auth/mfa/validate). Maps to com.orcestra.portal_orc.dto.CodeRequestDto.
+ */
+export function validateMfaCode(code) {
+  return apiRequest('/v1/auth/mfa/validate', { method: 'POST', body: { code } });
+}
+
+/**
+ * Requests a new MFA code, invalidating the previous one (UC-34, FA-A1).
+ * Maps to com.orcestra.portal_orc.controller.AuthenticationController#resendMfaCode
+ * (POST /v1/auth/mfa/resend) and com.orcestra.portal_orc.dto.ResendCodeRequestDto.
+ */
+export function resendMfaCode(email) {
+  return apiRequest('/v1/auth/mfa/resend', { method: 'POST' });
+}

@@ -31,6 +31,16 @@ public class CookieProvider {
                 .build();
     }
 
+    public ResponseCookie createMfaTokenCookie(String token, long mfaExpirationTime){
+        return ResponseCookie.from("temporary_token", token)
+                .httpOnly(true)
+                .secure(secure)
+                .sameSite("Strict")
+                .path("/v1/auth")
+                .maxAge(Duration.ofMillis(mfaExpirationTime))
+                .build();
+    }
+
     public String extractTokenFromCookie(HttpServletRequest request) {
         if (request.getCookies() == null) {
             return null;
@@ -38,6 +48,18 @@ public class CookieProvider {
         
         return Arrays.stream(request.getCookies())
                 .filter(cookie -> "access_token".equals(cookie.getName()))
+                .map(cookie -> cookie.getValue())
+                .findFirst()
+                .orElse(null);
+    }
+
+    public String extractMfaTokenFromCookie(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return null;
+        }
+
+        return Arrays.stream(request.getCookies())
+                .filter(cookie -> "temporary_token".equals(cookie.getName()))
                 .map(cookie -> cookie.getValue())
                 .findFirst()
                 .orElse(null);
