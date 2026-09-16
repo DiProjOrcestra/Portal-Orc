@@ -4,17 +4,17 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.orcestra.portal_orc.config.TokenProvider;
+import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
+import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
-import com.orcestra.portal_orc.dto.TokenResponseDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
@@ -40,8 +40,11 @@ public class AuthenticationService {
     private final EmailSenderService emailSenderService;
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
+    private final MfaService mfaService;
     @Value("${jwt.expiration}")
     private long expirationTime;
+    @Value("${jwt.mfa.expiration}")
+    private long mfaExpirationTime;
 
     public void registerUser(RegisterRequestDto registerRequestDto) throws BadRequestException{
         UserEntity userEntity = userRepository.findByEmail(registerRequestDto.getEmail()).orElse(null);
@@ -78,21 +81,44 @@ public class AuthenticationService {
         userRepository.save(userEntity);
         emailSenderService.sendEmail(resendPasswordDto.getEmail(), "Senha para primeiro cadastro", "Sua senha é " + userPassword);
     }
-
-    public TokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
+    public MfaTokenResponseDto loginUser(LoginRequestDto dto) throws Exception {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
-            String token = tokenProvider.gerarToken(authentication);
+            UserEntity user = userRepository.findByEmail(dto.getEmail())
+                        .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));
+            
+            mfaService.generateAndSendCode(user);
 
-            return new TokenResponseDto(token, expirationTime);
+            String mfaToken = tokenProvider.gerarTokenMfa(authentication);
 
+            return new MfaTokenResponseDto(mfaToken, mfaExpirationTime);
         } 
-        catch (BadCredentialsException e){
-            throw new BadRequestException("Credenciais inválidas");
-        }
         catch (Exception e){
             throw e;
         }
+    }
+
+    public String validatingCode(String mfaToken, CodeRequestDto codeRequestDto) throws Exception{
+        String email = tokenProvider.validarTokenMfa(mfaToken);
+
+        Boolean isValid = mfaService.validateCode(email, codeRequestDto.getCode());
+        if(!isValid){
+            throw new BadRequestException("Código inválido.");
+        }
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));
+
+        return tokenProvider.gerarToken(user);
+    }
+
+    public void resendCode(String mfaToken) throws BadRequestException{
+        String email = tokenProvider.validarTokenMfa(mfaToken);
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("Credenciais inválidas"));
+
+        mfaService.generateAndSendCode(user);
     }
 
 }

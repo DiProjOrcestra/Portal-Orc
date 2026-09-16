@@ -5,6 +5,14 @@ import { DIRECTORATE_SECTIONS, fetchPlanosDeAcao } from './PlanoDeAcaoApi';
 import PlanoDeAcaoEditModal from './PlanoDeAcaoEditModal';
 import './PlanoDeAcao.css';
 
+// Mesmo mapeamento de status usado no backend (ActionPlanRequestDto.progress
+// é uma String livre, ainda sem enum) - centralizado aqui pra já ficar fácil
+// de trocar por um enum de verdade quando o back definir um.
+const STATUS_LABEL = {
+  concluido: 'Concluído',
+  andamento: 'Em andamento',
+  'nao-concluido': 'Não Concluído',
+};
 const STATUS_SLUG_BY_LABEL = Object.fromEntries(Object.entries(STATUS_LABEL).map(([slug, label]) => [label, slug]));
 const PRIORIDADE_SLUG_BY_LABEL = { Alta: 'alta', Média: 'media', Baixa: 'baixa' };
 
@@ -17,6 +25,9 @@ function formatarPrazo(term) {
 // UC-20: Editar status do objetivo/plano de ação. Busca os planos reais do
 // backend (GET /v1/action-plan), igual à UC-21/UC-18 - as 5 diretorias
 // sempre aparecem (com sua foto de capa), mesmo sem nenhum plano cadastrado.
+// UC-21: Consultar plano de ação. Busca os planos reais do backend
+// (GET /v1/action-plan) e agrupa por diretoria - as 5 diretorias sempre
+// aparecem (com sua foto de capa), mesmo sem nenhum plano cadastrado ainda.
 export default function PlanoDeAcao() {
   const [secoes, setSecoes] = useState(() => DIRECTORATE_SECTIONS.map((secao) => ({ ...secao, planos: [] })));
   const [carregando, setCarregando] = useState(true);
@@ -94,6 +105,18 @@ export default function PlanoDeAcao() {
                   title="Editar plano de ação"
                   disabled={diretoria.planos.length === 0}
                   onClick={() => setEditando(diretoria)}
+                  >
+                 <EditIcon />
+                </button>
+                {/* Cadastrar (UC-18) e editar (UC-20) ficam em outras branches
+                    - aqui é só consulta, o ícone existe visualmente mas não
+                    faz nada. */}
+                <button 
+                  type="button"
+                  className="pa-card__edit"
+                  aria-label="Editar diretoria"
+                  title="Edição disponível em breve"
+                  disabled
                 >
                   <EditIcon />
                 </button>

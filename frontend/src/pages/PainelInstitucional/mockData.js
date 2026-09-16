@@ -65,10 +65,6 @@ export const PLANEJAMENTO_DATA = [
     resultadosChave: [{ label: 'KR 3', texto: KR_TEXT }],
   },
 ];
-
-// The grid itself (days in month, weekday alignment) is computed from the
-// real calendar in the component, since it now navigates between months -
-// this only holds what isn't derivable from a plain JS Date.
 export const CICLO_TATICO_DATA = {
   ciclo: '2026.2',
   diasSemana: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],

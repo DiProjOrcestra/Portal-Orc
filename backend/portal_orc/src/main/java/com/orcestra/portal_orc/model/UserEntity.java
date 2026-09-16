@@ -1,6 +1,7 @@
 package com.orcestra.portal_orc.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +37,6 @@ import lombok.Setter;
 public class UserEntity implements UserDetails {
 
     @Id
-    @Column(length = 11, nullable = false)
     private String cpf;
 
     @Column(nullable = false, unique = true)
@@ -48,7 +48,7 @@ public class UserEntity implements UserDetails {
     @Column(nullable = false, name = "nome")
     private String name;
 
-    @Column(name = "telefone", unique = true, nullable = false)
+    @Column(name = "telefone")
     private Long phone;
 
     @Column(name = "dia_de_entrada")
@@ -57,7 +57,7 @@ public class UserEntity implements UserDetails {
     @Column(name = "funcao_na_empresa")
     private String position;
 
-    @Column(name = "senha")
+    @Column(nullable = false, name = "senha")
     private String password;
 
     @ManyToOne
@@ -69,8 +69,17 @@ public class UserEntity implements UserDetails {
     @JoinTable(name = "cargo_usuario", joinColumns = @JoinColumn(name = "usuario_cpf"), inverseJoinColumns = @JoinColumn(name = "cargo_id"))
     private Set<RoleEntity> roles = new HashSet<>(); //roles de autenticação
 
+    @Column(name="mfa_code", length=100)
+    private String mfaCode;
+
+    @Column(name="mfa_code_expires_at")
+    private LocalDateTime mfaCodeExpiresAt;
+
+    @Column(name="mfa_attempts")
+    private Integer mfaAttempts;
+
     public UserEntity(RegisterRequestDto registerRequestDto){
-        this.cpf = registerRequestDto.getCpf().replaceAll("\\D", "");
+        this.cpf = registerRequestDto.getCpf();
         this.email = registerRequestDto.getEmail();
         this.birthDate = registerRequestDto.getBirthDate();
         this.name = registerRequestDto.getName();
