@@ -5,11 +5,13 @@ import { PAINEL_INTERNO_ITEMS } from '../../components/PainelInterno/painelInter
 import MissaoVisaoValores from './sections/MissaoVisaoValores';
 import GoldenCircle from './sections/GoldenCircle';
 import PlanejamentoEstrategico from './sections/PlanejamentoEstrategico';
+import PlanoDeAcao from './sections/PlanoDeAcao';
 import './PainelInstitucional.css';
 
 const SECTIONS = {
   'golden-circle': GoldenCircle,
   planejamento: PlanejamentoEstrategico,
+  'planos-acao': PlanoDeAcao,
 };
 
 export default function PainelInstitucional({ activeTab, onNavigate }) {
