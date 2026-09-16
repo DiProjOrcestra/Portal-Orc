@@ -69,14 +69,14 @@ public class UserEntity implements UserDetails {
     @JoinTable(name = "cargo_usuario", joinColumns = @JoinColumn(name = "usuario_cpf"), inverseJoinColumns = @JoinColumn(name = "cargo_id"))
     private Set<RoleEntity> roles = new HashSet<>(); //roles de autenticação
 
-    public UserEntity(RegisterRequestDto userRequestDto){
-        this.cpf = userRequestDto.getCpf().replaceAll("\\D", "");
-        this.email = userRequestDto.getEmail();
-        this.birthDate = userRequestDto.getBirthDate();
-        this.name = userRequestDto.getName();
-        this.phone = userRequestDto.getPhone();
-        this.entryDay = userRequestDto.getEntryDay();
-        this.position = userRequestDto.getPosition();
+    public UserEntity(RegisterRequestDto registerRequestDto){
+        this.cpf = registerRequestDto.getCpf().replaceAll("\\D", "");
+        this.email = registerRequestDto.getEmail();
+        this.birthDate = registerRequestDto.getBirthDate();
+        this.name = registerRequestDto.getName();
+        this.phone = registerRequestDto.getPhone();
+        this.entryDay = registerRequestDto.getEntryDay();
+        this.position = registerRequestDto.getPosition();
     }
 
     @Override

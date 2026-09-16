@@ -1,25 +1,29 @@
-package com.orcestra.portal_orc;
+package com.orcestra.portal_orc.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.orcestra.portal_orc.config.TokenProvider;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.enums.DirectorateEnum;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
@@ -30,7 +34,7 @@ import com.orcestra.portal_orc.model.UserEntity;
 import com.orcestra.portal_orc.repository.DirectorateRepository;
 import com.orcestra.portal_orc.repository.RoleRepository;
 import com.orcestra.portal_orc.repository.UserRepository;
-import com.orcestra.portal_orc.service.AuthenticationService;
+import com.orcestra.portal_orc.util.RandomPasswordGenerator;
 
 @ExtendWith(MockitoExtension.class)
 class UsuarioServiceTest {
@@ -45,15 +49,38 @@ class UsuarioServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
+    private AuthenticationManager authenticationManager;
+
+    @Mock
+    private TokenProvider tokenProvider;
+
+    @Mock
     private DirectorateRepository directorateRepository;
 
-    @InjectMocks
+    @Mock
+    private RandomPasswordGenerator randomPasswordGenerator;
+
+    @Mock
+    private EmailSenderService emailSenderService;
+
     private AuthenticationService authenticationService;
 
     private RegisterRequestDto request;
 
     @BeforeEach
     void setUp() {
+        // Ordem dos parâmetros ajustada para casar com o construtor do AuthenticationService
+        authenticationService = new AuthenticationService(
+                userRepository,
+                roleRepository,
+                passwordEncoder,
+                directorateRepository,
+                randomPasswordGenerator,
+                emailSenderService,
+                authenticationManager,
+                tokenProvider
+        );
+
         request = RegisterRequestDto.builder()
                 .cpf("529.982.247-25")
                 .email("membro@orcestra.com")
@@ -62,7 +89,6 @@ class UsuarioServiceTest {
                 .phone(61987654321L)
                 .entryDay(LocalDate.of(2024, 2, 1))
                 .position("Desenvolvedor")
-                .password("senha-temporaria")
                 .directorate(DirectorateEnum.DIPROJ)
                 .build();
     }
@@ -78,12 +104,15 @@ class UsuarioServiceTest {
                 .directorateName(DirectorateEnum.DIPROJ.name())
                 .build();
 
+        String tempPassword = "senha-temporaria";
+
         when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.empty());
         when(userRepository.existsByCpf("52998224725")).thenReturn(false);
         when(roleRepository.findByName(RoleTypeEnum.USER.name())).thenReturn(Optional.of(role));
         when(directorateRepository.findByDirectorateName(DirectorateEnum.DIPROJ.name()))
                 .thenReturn(Optional.of(directorate));
-        when(passwordEncoder.encode(request.getPassword())).thenReturn("senha-hash");
+        when(randomPasswordGenerator.generateRandomPassword(anyInt())).thenReturn(tempPassword);
+        when(passwordEncoder.encode(tempPassword)).thenReturn("senha-hash");
 
         authenticationService.registerUser(request);
 
@@ -102,12 +131,14 @@ class UsuarioServiceTest {
         assertEquals(directorate, savedUser.getDirectorate());
         assertEquals(Set.of(role), savedUser.getRoles());
 
-        verify(passwordEncoder).encode(request.getPassword());
+        verify(passwordEncoder).encode(tempPassword);
         verify(userRepository).existsByCpf("52998224725");
     }
 
     @Test
     void deveCriarRoleEDiretoriaQuandoAindaNaoExistirem() throws BadRequestException {
+        String tempPassword = "senha-temporaria";
+
         when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.empty());
         when(userRepository.existsByCpf("52998224725")).thenReturn(false);
         when(roleRepository.findByName(RoleTypeEnum.USER.name())).thenReturn(Optional.empty());
@@ -117,7 +148,8 @@ class UsuarioServiceTest {
                 .thenAnswer(invocation -> invocation.getArgument(0));
         when(directorateRepository.save(any(DirectorateEntity.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
-        when(passwordEncoder.encode(request.getPassword())).thenReturn("senha-hash");
+        when(randomPasswordGenerator.generateRandomPassword(anyInt())).thenReturn(tempPassword);
+        when(passwordEncoder.encode(tempPassword)).thenReturn("senha-hash");
 
         authenticationService.registerUser(request);
 
