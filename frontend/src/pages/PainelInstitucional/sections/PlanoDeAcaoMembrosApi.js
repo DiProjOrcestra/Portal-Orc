@@ -14,7 +14,7 @@ export function fetchMembros() {
  * backend hoje).
  */
 export function vincularMembros(actionPlanId, cpfs) {
-  return apiRequest(`/v1/action-plan/${actionPlanId}`, {
+  return apiRequest(`/v1/action-plan/${actionPlanId}/users`, {
     method: 'PUT',
     body: { usersId: cpfs },
   });
