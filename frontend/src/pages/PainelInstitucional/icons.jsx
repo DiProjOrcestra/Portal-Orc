@@ -81,26 +81,32 @@ export const ChevronRightIcon = (props) => (
   </svg>
 );
 
-export const TrashIcon = (props) => (
+// As três abaixo são aproximações no mesmo estilo de linha simples deste
+// arquivo. No Figma o título usa "Bold Duotone / Notes / Clipboard Text" e a
+// diretoria usa "Campaign" - ambos de um set de ícones duotone diferente do
+// que já existe aqui; não temos o SVG original desses, só uma referência
+// visual, então recriamos no estilo do site em vez de importar outro set.
+export const ClipboardIcon = (props) => (
   <svg viewBox="0 0 24 24" {...base} {...props}>
-    <path d="M4.5 7h15" />
-    <path d="M9.5 7V5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v2" />
-    <path d="M6.5 7l1 12.5a1.5 1.5 0 0 0 1.5 1.4h6a1.5 1.5 0 0 0 1.5-1.4L17.5 7" />
-    <path d="M10 11v6M14 11v6" />
+    <path d="M7.5 4.5h9a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1V5.5a1 1 0 0 1 1-1Z" />
+    <path d="M9.5 3.5h5a1 1 0 0 1 1 1V6h-7V4.5a1 1 0 0 1 1-1Z" />
+    <path d="M8.8 10.5h6.4M8.8 13.8h6.4M8.8 17h4" />
   </svg>
 );
 
-export const CheckIcon = (props) => (
+export const FilterIcon = (props) => (
   <svg viewBox="0 0 24 24" {...base} {...props}>
-    <path d="M5 12.5 9.5 17 19 7.5" />
+    <path d="M4 6.5h16M4 12h16M4 17.5h16" />
+    <circle cx="9" cy="6.5" r="1.6" fill="currentColor" stroke="none" />
+    <circle cx="16" cy="12" r="1.6" fill="currentColor" stroke="none" />
+    <circle cx="10.5" cy="17.5" r="1.6" fill="currentColor" stroke="none" />
   </svg>
 );
 
-export const AlertIcon = (props) => (
+export const CampaignIcon = (props) => (
   <svg viewBox="0 0 24 24" {...base} {...props}>
-    <path d="M12 3.5 21 19.5H3L12 3.5Z" strokeLinejoin="round" />
-    <path d="M12 10v4.2" />
-    <circle cx="12" cy="17" r="0.9" fill="currentColor" stroke="none" />
+    <path d="M3.5 10.2v3.6l3 .6v4.6a1.3 1.3 0 0 0 2.5 0v-4.1l7.5 1.5V8.2Z" />
+    <path d="M16.5 9v6.4a3 3 0 0 0 0-6.4Z" />
   </svg>
 );
 
@@ -144,26 +150,26 @@ export const ChevronDownIcon = (props) => (
     <path d="M5.5 8.5 12 15l6.5-6.5" />
   </svg>
 );
-export const ClipboardIcon = (props) => (
+
+export const TrashIcon = (props) => (
   <svg viewBox="0 0 24 24" {...base} {...props}>
-    <path d="M7.5 4.5h9a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1V5.5a1 1 0 0 1 1-1Z" />
-    <path d="M9.5 3.5h5a1 1 0 0 1 1 1V6h-7V4.5a1 1 0 0 1 1-1Z" />
-    <path d="M8.8 10.5h6.4M8.8 13.8h6.4M8.8 17h4" />
+    <path d="M4.5 7h15" />
+    <path d="M9.5 7V5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v2" />
+    <path d="M6.5 7l1 12.5a1.5 1.5 0 0 0 1.5 1.4h6a1.5 1.5 0 0 0 1.5-1.4L17.5 7" />
+    <path d="M10 11v6M14 11v6" />
   </svg>
 );
 
-export const FilterIcon = (props) => (
+export const CheckIcon = (props) => (
   <svg viewBox="0 0 24 24" {...base} {...props}>
-    <path d="M4 6.5h16M4 12h16M4 17.5h16" />
-    <circle cx="9" cy="6.5" r="1.6" fill="currentColor" stroke="none" />
-    <circle cx="16" cy="12" r="1.6" fill="currentColor" stroke="none" />
-    <circle cx="10.5" cy="17.5" r="1.6" fill="currentColor" stroke="none" />
+    <path d="M5 12.5 9.5 17 19 7.5" />
   </svg>
 );
 
-export const CampaignIcon = (props) => (
+export const AlertIcon = (props) => (
   <svg viewBox="0 0 24 24" {...base} {...props}>
-    <path d="M3.5 10.2v3.6l3 .6v4.6a1.3 1.3 0 0 0 2.5 0v-4.1l7.5 1.5V8.2Z" />
-    <path d="M16.5 9v6.4a3 3 0 0 0 0-6.4Z" />
+    <path d="M12 3.5 21 19.5H3L12 3.5Z" strokeLinejoin="round" />
+    <path d="M12 10v4.2" />
+    <circle cx="12" cy="17" r="0.9" fill="currentColor" stroke="none" />
   </svg>
 );

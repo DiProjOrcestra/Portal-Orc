@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, PlusIcon, WarningIcon } from '../icons';
+import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, PersonIcon, PlusIcon, WarningIcon } from '../icons';
 import { STATUS_LABEL } from './PlanoDeAcaoConstants';
 import { DIRECTORATE_SECTIONS, fetchPlanosDeAcao } from './PlanoDeAcaoApi';
 import CadastrarPlanoModal from './CadastrarPlanoModal';
+import VincularMembrosModal from './VincularMembrosModal';
 import './PlanoDeAcao.css';
 
 // O backend guarda o rótulo pronto (ex: "Em andamento"/"Alta"), não o slug
@@ -24,7 +25,13 @@ export default function PlanoDeAcao() {
   const [secoes, setSecoes] = useState(() => DIRECTORATE_SECTIONS.map((secao) => ({ ...secao, planos: [] })));
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
+
+  // UC-18: qual diretoria está com o modal de cadastro aberto
   const [cadastrando, setCadastrando] = useState(null); // índice da diretoria, ou null
+
+  // UC-19: qual plano está com o modal de vincular membros aberto agora,
+  // junto da diretoria dele (pro contexto exibido no modal).
+  const [vinculando, setVinculando] = useState(null); // { plano, diretoria } | null
 
   const buscarPlanos = useCallback(() => {
     return fetchPlanosDeAcao()
@@ -41,8 +48,7 @@ export default function PlanoDeAcao() {
                 prioridade: PRIORIDADE_SLUG_BY_LABEL[plano.priority],
                 atividade: plano.name,
                 subtarefas: plano.subtasks.map((subtarefa) => subtarefa.name),
-                // O GET /v1/action-plan agora devolve quem está vinculado a
-                // cada plano (campo novo, adicionado pela uc-21).
+                membrosVinculados: plano.users ?? [],
                 responsaveis: (plano.users ?? []).map((usuario) => usuario.name),
               })),
           }))
@@ -169,7 +175,18 @@ export default function PlanoDeAcao() {
                       </div>
 
                       <div className="pa-plano__responsaveis">
-                        Responsáveis:{plano.responsaveis.length > 0 && ` ${plano.responsaveis.join(', ')}`}
+                        <span>
+                          Responsáveis:
+                          {plano.responsaveis.length > 0 && ` ${plano.responsaveis.join(', ')}`}
+                        </span>
+                        <button
+                          type="button"
+                          className="pa-plano__vincular"
+                          onClick={() => setVinculando({ plano, diretoria })}
+                        >
+                          <PersonIcon />
+                          Vincular membros
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -188,6 +205,18 @@ export default function PlanoDeAcao() {
             buscarPlanos();
           }}
           onClose={() => setCadastrando(null)}
+        />
+      )}
+
+      {vinculando && (
+        <VincularMembrosModal
+          plano={vinculando.plano}
+          diretoria={vinculando.diretoria}
+          onSaved={() => {
+            setVinculando(null);
+            buscarPlanos();
+          }}
+          onClose={() => setVinculando(null)}
         />
       )}
     </section>

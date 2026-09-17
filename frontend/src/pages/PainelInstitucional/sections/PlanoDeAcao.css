@@ -385,6 +385,11 @@
 }
 
 .pa-plano__responsaveis {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
   padding: 16px 24px;
   margin: 0 -17px -19px;
   border-top: 1px solid var(--green-400);
@@ -392,6 +397,29 @@
   font-weight: 500;
   font-size: 15px;
   color: var(--off-white);
+}
+
+.pa-plano__vincular {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 0.5px solid var(--green-400);
+  background: transparent;
+  color: var(--off-white);
+  font-family: var(--font-body);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.pa-plano__vincular:hover {
+  background: rgba(1, 87, 30, 0.2);
+}
+
+.pa-plano__vincular svg {
+  width: 14px;
+  height: 14px;
 }
 
 @media (min-width: 900px) {
