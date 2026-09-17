@@ -79,7 +79,7 @@ public class UserEntity implements UserDetails {
     private Integer mfaAttempts;
 
     public UserEntity(RegisterRequestDto registerRequestDto){
-        this.cpf = registerRequestDto.getCpf();
+        this.cpf = registerRequestDto.getCpf().replaceAll("\\D", "");
         this.email = registerRequestDto.getEmail();
         this.birthDate = registerRequestDto.getBirthDate();
         this.name = registerRequestDto.getName();
