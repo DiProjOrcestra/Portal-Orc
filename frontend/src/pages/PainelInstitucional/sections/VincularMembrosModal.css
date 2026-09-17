@@ -175,3 +175,11 @@
   opacity: 0.5;
   cursor: default;
 }
+.vmm-aviso-desvincular {
+  padding: 10px 12px;
+  margin: 4px 0 16px;
+  border-radius: 10px;
+  background: rgba(204, 173, 16, 0.12);
+  border: 1px solid #ccad10;
+  color: #ccad10;
+}

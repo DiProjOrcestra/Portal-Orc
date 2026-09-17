@@ -4,19 +4,6 @@ import { CampaignIcon, CloseIcon, PersonIcon } from '../icons';
 import { fetchMembros, vincularMembros } from './PlanoDeAcaoMembrosApi';
 import './VincularMembrosModal.css';
 
-// UC-19: Vincular membros a plano de ação.
-// Fluxo: acessar a tela (aqui, abrir o modal a partir de um plano já
-// visível na consulta - o "selecionar o plano" da UC-19 já aconteceu ao
-// clicar no botão daquele card específico) -> sistema exibe lista de
-// membros cadastrados -> usuário seleciona um ou mais -> valida -> vincula.
-//
-// FE-E2 (nenhum membro cadastrado disponível): tratado abaixo, mostra aviso
-// e não deixa tentar vincular.
-// FE-E1 (membro já vinculado): NÃO é aplicada pelo backend hoje (o endpoint
-// é aditivo e ignora repetição em silêncio, sem erro) - e como o GET de
-// planos de ação não devolve quem já está vinculado, o frontend também não
-// tem como saber e pré-marcar/bloquear alguém já vinculado. Fica registrado
-// aqui como limitação conhecida, não como bug desta tela.
 export default function VincularMembrosModal({ plano, diretoria, onSaved, onClose }) {
   const [membros, setMembros] = useState([]);
   const [selecionados, setSelecionados] = useState(() =>
@@ -41,6 +28,10 @@ export default function VincularMembrosModal({ plano, diretoria, onSaved, onClos
   const membrosVinculados = plano.membrosVinculados ?? [];
   const cpfsVinculados = new Set(membrosVinculados.map((membro) => membro.cpf));
   const membrosDisponiveis = membros.filter((membro) => !cpfsVinculados.has(membro.cpf));
+
+  // Quem já estava vinculado mas foi desmarcado agora - salvar vai
+  // desvincular essas pessoas de verdade (o PUT substitui a lista inteira).
+  const seraoDesvinculados = membrosVinculados.filter((membro) => !selecionados.includes(membro.cpf));
 
   const handleVincular = async () => {
     setErroEnviar(null);
@@ -127,6 +118,13 @@ export default function VincularMembrosModal({ plano, diretoria, onSaved, onClos
               </ul>
             )}
           </>
+        )}
+
+        {seraoDesvinculados.length > 0 && (
+          <p className="vmm-estado vmm-aviso-desvincular">
+            Ao salvar, {seraoDesvinculados.map((membro) => membro.name).join(', ')}{' '}
+            {seraoDesvinculados.length === 1 ? 'será desvinculado' : 'serão desvinculados'} deste plano.
+          </p>
         )}
 
         {erroEnviar && <p className="vmm-estado vmm-estado--erro">{erroEnviar}</p>}
