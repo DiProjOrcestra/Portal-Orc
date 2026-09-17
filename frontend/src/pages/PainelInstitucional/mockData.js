@@ -69,3 +69,6 @@ export const CICLO_TATICO_DATA = {
   ciclo: '2026.2',
   diasSemana: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
 };
+// PLANO_ACAO_DATA foi removido: a seção "Planos de ação" agora busca os
+// dados reais em GET /v1/action-plan (ver PlanoDeAcaoApi.js e
+// PlanoDeAcao.jsx) em vez de usar conteúdo mockado.

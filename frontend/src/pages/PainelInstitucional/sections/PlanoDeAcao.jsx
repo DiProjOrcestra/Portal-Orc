@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, WarningIcon } from '../icons';
+import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, PersonIcon, PlusIcon, WarningIcon } from '../icons';
 import { STATUS_LABEL } from './PlanoDeAcaoConstants';
 import { DIRECTORATE_SECTIONS, fetchPlanosDeAcao } from './PlanoDeAcaoApi';
 import PlanoDeAcaoEditModal from './PlanoDeAcaoEditModal';
+import CadastrarPlanoModal from './CadastrarPlanoModal';
+import VincularMembrosModal from './VincularMembrosModal';
 import './PlanoDeAcao.css';
-
-// Mesmo mapeamento de status usado no backend (ActionPlanRequestDto.progress
-// é uma String livre, ainda sem enum) - centralizado aqui pra já ficar fácil
-// de trocar por um enum de verdade quando o back definir um.
 
 const STATUS_SLUG_BY_LABEL = Object.fromEntries(Object.entries(STATUS_LABEL).map(([slug, label]) => [label, slug]));
 const PRIORIDADE_SLUG_BY_LABEL = { Alta: 'alta', Média: 'media', Baixa: 'baixa' };
@@ -18,17 +16,25 @@ function formatarPrazo(term) {
   return term ? term.replaceAll('-', '/') : term;
 }
 
-// UC-20: Editar status do objetivo/plano de ação. Busca os planos reais do
-// backend (GET /v1/action-plan), igual à UC-21/UC-18 - as 5 diretorias
-// sempre aparecem (com sua foto de capa), mesmo sem nenhum plano cadastrado.
-// UC-21: Consultar plano de ação. Busca os planos reais do backend
-// (GET /v1/action-plan) e agrupa por diretoria - as 5 diretorias sempre
-// aparecem (com sua foto de capa), mesmo sem nenhum plano cadastrado ainda.
+// Junta as 3 funcionalidades já construídas em branches separadas: UC-18
+// (cadastrar), UC-19 (vincular membros) e UC-20 (editar status). Busca os
+// planos reais do backend (GET /v1/action-plan) e agrupa por diretoria - as
+// 5 diretorias sempre aparecem (com sua foto de capa), mesmo sem nenhum
+// plano cadastrado ainda.
 export default function PlanoDeAcao() {
   const [secoes, setSecoes] = useState(() => DIRECTORATE_SECTIONS.map((secao) => ({ ...secao, planos: [] })));
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
-  const [editando, setEditando] = useState(null); // diretoria sendo editada, ou null
+
+  // UC-20: diretoria sendo editada, ou null
+  const [editando, setEditando] = useState(null);
+
+  // UC-18: qual diretoria está com o modal de cadastro aberto
+  const [cadastrando, setCadastrando] = useState(null); // índice da diretoria, ou null
+
+  // UC-19: qual plano está com o modal de vincular membros aberto agora,
+  // junto da diretoria dele (pro contexto exibido no modal).
+  const [vinculando, setVinculando] = useState(null); // { plano, diretoria } | null
 
   const buscarPlanos = useCallback(() => {
     return fetchPlanosDeAcao()
@@ -45,6 +51,8 @@ export default function PlanoDeAcao() {
                 prioridade: PRIORIDADE_SLUG_BY_LABEL[plano.priority],
                 atividade: plano.name,
                 subtarefas: plano.subtasks.map((subtarefa) => subtarefa.name),
+                membrosVinculados: plano.users ?? [],
+                responsaveis: (plano.users ?? []).map((usuario) => usuario.name),
               })),
           }))
         );
@@ -84,7 +92,7 @@ export default function PlanoDeAcao() {
       {erro && <p className="pa-estado pa-estado--erro">{erro}</p>}
 
       <div className="pa-diretorias">
-        {secoes.map((diretoria) => {
+        {secoes.map((diretoria, directorateIndex) => {
           const header = (
             <div className="pa-card__header">
               <span className="pa-card__badge">
@@ -101,19 +109,18 @@ export default function PlanoDeAcao() {
                   title="Editar plano de ação"
                   disabled={diretoria.planos.length === 0}
                   onClick={() => setEditando(diretoria)}
-                  >
-                </button>
-                {/* Cadastrar (UC-18) e editar (UC-20) ficam em outras branches
-                    - aqui é só consulta, o ícone existe visualmente mas não
-                    faz nada. */}
-                <button 
-                  type="button"
-                  className="pa-card__edit"
-                  aria-label="Editar diretoria"
-                  title="Edição disponível em breve"
-                  disabled
                 >
                   <EditIcon />
+                </button>
+                {/* UC-18: cadastrar uma nova atividade pra esta diretoria. */}
+                <button
+                  type="button"
+                  className="pa-card__edit"
+                  aria-label="Cadastrar plano de ação"
+                  title="Cadastrar plano de ação"
+                  onClick={() => setCadastrando(directorateIndex)}
+                >
+                  <PlusIcon />
                 </button>
               </div>
             </div>
@@ -170,7 +177,20 @@ export default function PlanoDeAcao() {
                         </ul>
                       </div>
 
-                      <div className="pa-plano__responsaveis">Responsáveis:</div>
+                      <div className="pa-plano__responsaveis">
+                        <span>
+                          Responsáveis:
+                          {plano.responsaveis.length > 0 && ` ${plano.responsaveis.join(', ')}`}
+                        </span>
+                        <button
+                          type="button"
+                          className="pa-plano__vincular"
+                          onClick={() => setVinculando({ plano, diretoria })}
+                        >
+                          <PersonIcon />
+                          Vincular membros
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -188,6 +208,29 @@ export default function PlanoDeAcao() {
             buscarPlanos();
           }}
           onClose={() => setEditando(null)}
+        />
+      )}
+
+      {cadastrando !== null && (
+        <CadastrarPlanoModal
+          diretoria={secoes[cadastrando]}
+          onSave={() => {
+            setCadastrando(null);
+            buscarPlanos();
+          }}
+          onClose={() => setCadastrando(null)}
+        />
+      )}
+
+      {vinculando && (
+        <VincularMembrosModal
+          plano={vinculando.plano}
+          diretoria={vinculando.diretoria}
+          onSaved={() => {
+            setVinculando(null);
+            buscarPlanos();
+          }}
+          onClose={() => setVinculando(null)}
         />
       )}
     </section>
