@@ -35,7 +35,10 @@ function toBrDate(prazoInput) {
 // vinculado - se alguém for esquecido aqui, ele é desvinculado de verdade.
 export default function PlanoDeAcaoEditModal({ diretoria, onSaved, onClose }) {
   const [planos, setPlanos] = useState(() =>
-    diretoria.planos.map((plano) => ({ ...plano, usersId: [] }))
+    diretoria.planos.map((plano) => ({
+      ...plano,
+      usersId: (plano.membrosVinculados ?? plano.users ?? []).map((membro) => membro.cpf),
+    }))
   );
   const [membros, setMembros] = useState([]);
   const [carregandoMembros, setCarregandoMembros] = useState(true);
