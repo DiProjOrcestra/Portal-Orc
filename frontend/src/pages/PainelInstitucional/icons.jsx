@@ -1,4 +1,3 @@
-
 const base = {
   fill: 'none',
   stroke: 'currentColor',

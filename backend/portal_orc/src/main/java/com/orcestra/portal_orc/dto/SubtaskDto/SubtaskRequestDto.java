@@ -2,6 +2,7 @@ package com.orcestra.portal_orc.dto.SubtaskDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,11 +17,14 @@ import lombok.Setter;
 @Builder
 public class SubtaskRequestDto {
 
+    private Integer id;
+
     @Schema(example = "Criar formulário de CSAT")
     @NotBlank(message = "O campo nome não pode ser vazio")
     private String name;
 
     @Schema(example = "false")
     @Builder.Default
+    @NotNull 
     private Boolean done = false;
 }

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.orcestra.portal_orc.dto.LinkUsersToActionPlanRequestDto;
 import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanRequestDto;
 import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanResponseDto;
+import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanStatusRequestDto;
+import com.orcestra.portal_orc.dto.SubtaskDto.SubtaskRequestDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.model.ActionPlanEntity;
@@ -19,6 +21,7 @@ import com.orcestra.portal_orc.model.UserEntity;
 import com.orcestra.portal_orc.repository.ActionPlanRepository;
 import com.orcestra.portal_orc.repository.DirectorateRepository;
 import com.orcestra.portal_orc.repository.ObjectiveRepository;
+import com.orcestra.portal_orc.repository.SubtaskRepository;
 import com.orcestra.portal_orc.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,7 @@ public class ActionPlanService {
     private final DirectorateRepository directorateRepository;
     private final ObjectiveRepository objectiveRepository;
     private final UserRepository userRepository;
+    private final SubtaskRepository subtaskRepository;
 
     public void createActionPlan(Integer objectiveId, ActionPlanRequestDto actionPlanRequestDto) throws BadRequestException, NotFoundException {
 
@@ -95,5 +99,92 @@ public class ActionPlanService {
         }
         actionPlan.setUsers(users);;
         actionPlanRepository.save(actionPlan);                                                                
+    }
+
+    public void updateActionPlan(Integer actionPlanId, ActionPlanRequestDto actionPlanRequestDto) throws NotFoundException, BadRequestException {
+
+        ActionPlanEntity actionPlan = actionPlanRepository.findById(actionPlanId).orElseThrow(() -> 
+                                            new NotFoundException(String.format("Plano de ação com id %d não existe", actionPlanId)));
+        actionPlan.setName(actionPlanRequestDto.getName());
+        actionPlan.setTerm(actionPlanRequestDto.getTerm());
+        actionPlan.setProgress(actionPlanRequestDto.getProgress());
+        actionPlan.setDirectorate(directorateRepository.findByDirectorateName(
+                                                        actionPlanRequestDto
+                                                                            .getDirectorate()
+                                                                            .name())
+                                                                            .orElseThrow(() -> new 
+                                                                                                BadRequestException(String
+                                                                                                .format("Diretoria com nome %s não existe", 
+                                                                                                            actionPlanRequestDto.getDirectorate()
+                                                                                                                                .name()))));
+        actionPlan.setPriority(actionPlanRequestDto.getPriority());
+        List<SubtaskEntity> subtasks = actionPlan.getSubtasks();
+
+        subtasks.clear();
+
+        for (SubtaskRequestDto dto : actionPlanRequestDto.getSubtasks()) {
+            SubtaskEntity subtask;
+
+            if (dto.getId() == null) {
+                subtask = new SubtaskEntity(dto);
+            } 
+            else {
+                subtask = subtaskRepository.findById(dto.getId())
+                        .orElseThrow(() -> new NotFoundException(
+                                String.format(
+                                        "Tarefa com id %d não existe",
+                                        dto.getId())));
+
+                if (!subtask.getActionPlan().getId().equals(actionPlanId)) {
+                    throw new BadRequestException(
+                            "A tarefa não pertence a este plano de ação");
+                }
+
+                subtask.setTaskName(dto.getName());
+                subtask.setDone(dto.getDone());
+            }
+
+            subtask.setActionPlan(actionPlan);
+            subtasks.add(subtask);
+        
+        }
+        actionPlan.setSubtasks(subtasks);
+        Set<UserEntity> users = new HashSet<>();
+
+        for (String id : actionPlanRequestDto.getUsersId()) {
+            String cpf = id.replaceAll("\\D", "");
+            UserEntity user = userRepository.findById(cpf)
+                                            .orElseThrow(() -> new NotFoundException(
+                                                                    String.format("Usuário com CPF %s não existe",cpf)));
+            users.add(user);
+        }
+        actionPlan.setUsers(users);
+        actionPlanRepository.save(actionPlan); 
+    }
+
+    public void updateActionPlanStatus(Integer id, ActionPlanStatusRequestDto actionPlanStatusRequestDto) throws NotFoundException {
+        ActionPlanEntity actionPlan = actionPlanRepository.findById(id)
+                                                            .orElseThrow(() -> new 
+                                                                            NotFoundException(String.format("Plano de ação com id %d não existe", id)));
+        if(actionPlanStatusRequestDto.getProgress() != null) actionPlan.setProgress(actionPlanStatusRequestDto.getProgress());
+        actionPlanRepository.save(actionPlan);
+    }
+
+    public void updateActionPlanSubtask(Integer actionPlanId, Integer subtaskId) throws NotFoundException {
+        actionPlanRepository.findById(actionPlanId).orElseThrow(
+                                                     () -> new NotFoundException(String.format("Plano de ação com id %d não existe", actionPlanId)));
+        
+        SubtaskEntity subtask = subtaskRepository.findById(subtaskId).orElseThrow(
+                                                     () -> new NotFoundException(String.format("Tarefa com id %d não existe", subtaskId)));
+
+        subtask.setDone(!subtask.getDone());
+        subtaskRepository.save(subtask);
+    }
+
+    public void deleteActionPlan(Integer actionPlanId) throws NotFoundException {
+        ActionPlanEntity actionPlan = actionPlanRepository.findById(actionPlanId).orElseThrow(
+                                                     () -> new NotFoundException(String.format("Plano de ação com id %d não existe", actionPlanId)));
+
+        actionPlanRepository.delete(actionPlan);
     }
 }

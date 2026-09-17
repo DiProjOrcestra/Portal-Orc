@@ -55,14 +55,50 @@ export function fetchObjetivos() {
 
 // GET /v1/action-plan - devolve todos os planos de ação já cadastrados no
 // banco (id, name, term "dd-MM-yyyy", progress, directorate, priority,
-// subtasks: [{id, name, done}]).
+// subtasks: [{id, name, done}]). Não devolve quem está vinculado a cada
+// plano (ver aviso em updateActionPlanFull).
 export function fetchPlanosDeAcao() {
   return apiRequest('/v1/action-plan');
 }
 
-// "2026-08-14" (formato do <input type="date">) -> "14-08-2026" (dd-MM-yyyy,
-// formato exigido pelo ActionPlanRequestDto do backend).
-function paraDataBackend(dataInput) {
+// GET /v1/users - devolve [{ cpf, name }], usado pra montar a lista real de
+// responsáveis selecionáveis (em vez de texto livre).
+export function fetchMembros() {
+  return apiRequest('/v1/users');
+}
+
+export function updateActionPlanStatus(actionPlanId, progressLabel) {
+  return apiRequest(`/v1/action-plan/${actionPlanId}/status`, {
+    method: 'PATCH',
+    body: { progress: progressLabel },
+  });
+}
+
+// "22/09/2026" (dd/mm/yyyy, formato do PlanoDeAcaoEditModal) ->
+// "22-09-2026" (dd-MM-yyyy, formato exigido pelo ActionPlanRequestDto).
+function paraDataBackendBr(prazoBr) {
+  const [dia, mes, ano] = prazoBr.split('/');
+  return `${dia}-${mes}-${ano}`;
+}
+
+export function updateActionPlanFull(actionPlanId, atividade) {
+  return apiRequest(`/v1/action-plan/${actionPlanId}`, {
+    method: 'PUT',
+    body: {
+      name: atividade.nome,
+      term: paraDataBackendBr(atividade.prazo),
+      progress: atividade.statusLabel,
+      directorate: atividade.directorateCode,
+      priority: atividade.prioridadeLabel,
+      subtasks: atividade.subtarefas.map((nome) => ({ name: nome, done: false })),
+      usersId: atividade.usersId,
+    },
+  });
+}
+
+// "2026-08-14" (formato do <input type="date">, usado no CadastrarPlanoModal)
+// -> "14-08-2026" (dd-MM-yyyy, formato exigido pelo ActionPlanRequestDto).
+function paraDataBackendInput(dataInput) {
   const [ano, mes, dia] = dataInput.split('-');
   return `${dia}-${mes}-${ano}`;
 }
@@ -76,7 +112,7 @@ export function criarPlanoDeAcao(objectiveId, directorateLabel, atividade) {
     method: 'POST',
     body: {
       name: atividade.nome,
-      term: paraDataBackend(atividade.prazo),
+      term: paraDataBackendInput(atividade.prazo),
       progress: atividade.statusLabel,
       directorate: DIRECTORATE_CODES[directorateLabel],
       priority: atividade.prioridadeLabel,

@@ -291,6 +291,25 @@
   background: currentColor;
 }
 
+.pa-prioridade {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 20px;
+  border-radius: 35px;
+  border: 0.5px solid var(--green-400);
+  background: var(--green-700);
+  box-shadow: 0 0 2px var(--green-400);
+  font-family: var(--font-body);
+  font-size: 10.08px;
+  color: var(--off-white);
+}
+
+.pa-prioridade svg {
+  width: 15px;
+  height: 15px;
+}
+
 .pa-status--concluido {
   background: rgba(1, 87, 30, 0.2);
   border-color: #3fcc10;

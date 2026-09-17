@@ -2,12 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { ClipboardIcon, FilterIcon, CampaignIcon, EditIcon, PersonIcon, PlusIcon, WarningIcon } from '../icons';
 import { STATUS_LABEL } from './PlanoDeAcaoConstants';
 import { DIRECTORATE_SECTIONS, fetchPlanosDeAcao } from './PlanoDeAcaoApi';
+import PlanoDeAcaoEditModal from './PlanoDeAcaoEditModal';
 import CadastrarPlanoModal from './CadastrarPlanoModal';
 import VincularMembrosModal from './VincularMembrosModal';
 import './PlanoDeAcao.css';
 
-// O backend guarda o rótulo pronto (ex: "Em andamento"/"Alta"), não o slug
-// usado nas classes CSS/textos desta tela - esses mapas fazem essa volta.
 const STATUS_SLUG_BY_LABEL = Object.fromEntries(Object.entries(STATUS_LABEL).map(([slug, label]) => [label, slug]));
 const PRIORIDADE_SLUG_BY_LABEL = { Alta: 'alta', Média: 'media', Baixa: 'baixa' };
 
@@ -17,14 +16,18 @@ function formatarPrazo(term) {
   return term ? term.replaceAll('-', '/') : term;
 }
 
-// UC-18: cadastrar uma nova atividade pra uma diretoria (botão "+" e modal
-// abaixo). As 5 diretorias são sempre exibidas (com sua foto de capa),
-// mesmo sem nenhum plano real ainda - o conteúdo de cada seção vem do
-// backend (GET /v1/action-plan), não é mais dado mockado.
+// Junta as 3 funcionalidades já construídas em branches separadas: UC-18
+// (cadastrar), UC-19 (vincular membros) e UC-20 (editar status). Busca os
+// planos reais do backend (GET /v1/action-plan) e agrupa por diretoria - as
+// 5 diretorias sempre aparecem (com sua foto de capa), mesmo sem nenhum
+// plano cadastrado ainda.
 export default function PlanoDeAcao() {
   const [secoes, setSecoes] = useState(() => DIRECTORATE_SECTIONS.map((secao) => ({ ...secao, planos: [] })));
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
+
+  // UC-20: diretoria sendo editada, ou null
+  const [editando, setEditando] = useState(null);
 
   // UC-18: qual diretoria está com o modal de cadastro aberto
   const [cadastrando, setCadastrando] = useState(null); // índice da diretoria, ou null
@@ -98,6 +101,17 @@ export default function PlanoDeAcao() {
               </span>
               <div className="pa-card__objetivo-group">
                 <span className="pa-card__objetivo">Objetivo {diretoria.objetivo}</span>
+                {/* UC-20: editar o status do(s) plano(s) desta diretoria. */}
+                <button
+                  type="button"
+                  className="pa-card__edit"
+                  aria-label="Editar plano de ação"
+                  title="Editar plano de ação"
+                  disabled={diretoria.planos.length === 0}
+                  onClick={() => setEditando(diretoria)}
+                >
+                  <EditIcon />
+                </button>
                 {/* UC-18: cadastrar uma nova atividade pra esta diretoria. */}
                 <button
                   type="button"
@@ -107,17 +121,6 @@ export default function PlanoDeAcao() {
                   onClick={() => setCadastrando(directorateIndex)}
                 >
                   <PlusIcon />
-                </button>
-                {/* Editar um plano já cadastrado fica pra outra branch - o
-                    ícone só existe visualmente aqui, sem função. */}
-                <button
-                  type="button"
-                  className="pa-card__edit"
-                  aria-label="Editar plano de ação"
-                  title="Edição disponível em breve"
-                  disabled
-                >
-                  <EditIcon />
                 </button>
               </div>
             </div>
@@ -196,6 +199,17 @@ export default function PlanoDeAcao() {
           );
         })}
       </div>
+
+      {editando && (
+        <PlanoDeAcaoEditModal
+          diretoria={editando}
+          onSaved={() => {
+            setEditando(null);
+            buscarPlanos();
+          }}
+          onClose={() => setEditando(null)}
+        />
+      )}
 
       {cadastrando !== null && (
         <CadastrarPlanoModal

@@ -9,7 +9,7 @@ function App() {
       <Routes>
         <Route path="/cadastrar-membro" element={<CadastrarMembro />} />
         <Route path="/login" element={<Login />} />
-        <Route path="painel" element={<PainelInstitucional />} />
+        <Route path="painel" element={<PainelInstitucional activeTab="painel" />} />
         <Route path="/verificar-codigo" element={<VerificarCodigo />} />
       </Routes>
     </BrowserRouter>
