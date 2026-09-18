@@ -60,6 +60,10 @@ public class UserEntity implements UserDetails {
     @Column(nullable = false, name = "senha")
     private String password;
 
+    @Column(name="first_access")
+    @Builder.Default
+    private Boolean firstAccess = true;
+
     @ManyToOne
     @JoinColumn(name = "diretoria_id")
     private DirectorateEntity directorate;

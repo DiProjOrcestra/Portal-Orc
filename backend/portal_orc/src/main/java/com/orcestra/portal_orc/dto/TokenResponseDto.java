@@ -13,6 +13,8 @@ import lombok.Setter;
 @Builder
 public class TokenResponseDto {
     private String token;
+    
+    private String message;
 
     private long expiration;
 }

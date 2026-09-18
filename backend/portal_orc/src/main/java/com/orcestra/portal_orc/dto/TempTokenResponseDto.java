@@ -6,13 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class MfaTokenResponseDto {
-    private String mfaToken;
+@Builder 
+@Getter 
+@Setter 
+@NoArgsConstructor 
+@AllArgsConstructor 
+public class TempTokenResponseDto {
+    private String token;
 
-    private long mfaExpirationTime;
+    private long tempExpirationTime;
 }

@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.orcestra.portal_orc.config.CookieProvider;
 import com.orcestra.portal_orc.dto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.LoginRequestDto;
-import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
+import com.orcestra.portal_orc.dto.NewPasswordRequestDto;
 import com.orcestra.portal_orc.dto.RegisterRequestDto;
 import com.orcestra.portal_orc.dto.ResendPasswordDto;
-
+import com.orcestra.portal_orc.dto.TempTokenResponseDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.service.AuthenticationService;
@@ -44,9 +44,9 @@ public class AuthenticationController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) throws Exception{
-        MfaTokenResponseDto result = authenticationService.loginUser(loginRequestDto);
+        TempTokenResponseDto result = authenticationService.loginUser(loginRequestDto);
         
-        ResponseCookie cookie = cookieProvider.createMfaTokenCookie(result.getMfaToken(), result.getMfaExpirationTime());
+        ResponseCookie cookie = cookieProvider.createMfaTokenCookie(result.getToken(), result.getTempExpirationTime());
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
@@ -70,5 +70,14 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.OK)
     public void resendCodeMfa(@CookieValue("temporary_token") String mfaToken) throws BadRequestException{
         authenticationService.resendCode(mfaToken);
+    }
+
+    @PostMapping ("/new-password")
+    public void newPassword(@Valid @RequestBody NewPasswordRequestDto newPasswordRequestDto,
+                            @CookieValue("temporary_token") String passwordToken, 
+                            HttpServletResponse response) throws Exception{
+        String token = authenticationService.createNewPassword(passwordToken, newPasswordRequestDto);
+        ResponseCookie cookie = cookieProvider.createAccessTokenCookie(token);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }

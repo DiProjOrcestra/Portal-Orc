@@ -1,0 +1,173 @@
+.trocar-senha-main {
+  align-items: center;
+  min-height: 100svh;
+}
+
+.trocar-senha-card {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 32px;
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--green-400);
+  background: rgba(14, 14, 14, 0.85);
+  overflow: hidden;
+}
+
+.trocar-senha-card__glow-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.trocar-senha-card__glow {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+}
+
+.trocar-senha-card__glow--top {
+  top: -200px;
+  left: -160px;
+  background: radial-gradient(circle, rgba(63, 204, 16, 0.55), transparent 70%);
+}
+
+.trocar-senha-card__glow--bottom {
+  bottom: -220px;
+  right: -160px;
+  background: radial-gradient(circle, rgba(46, 182, 0, 0.5), transparent 70%);
+}
+
+.trocar-senha-card__content {
+  position: relative;
+  z-index: 1;
+  padding: 48px 40px 44px;
+}
+
+.trocar-senha-card__title {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--green-400), var(--green-500));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 10px;
+}
+
+.trocar-senha-card__subtitle {
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+
+.trocar-senha-card__banner {
+  margin: 0 0 20px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  text-align: center;
+}
+
+.trocar-senha-card__banner--success {
+  background: rgba(63, 204, 16, 0.12);
+  border: 1px solid rgba(63, 204, 16, 0.5);
+  color: var(--green-400);
+}
+
+.trocar-senha-card__banner--error {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.4);
+  color: var(--danger);
+}
+
+.trocar-senha-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.trocar-senha-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.trocar-senha-requirements {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+}
+
+.trocar-senha-requirements__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  transition: color 0.15s ease;
+}
+
+.trocar-senha-requirements__icon {
+  flex: none;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.trocar-senha-requirements__item--unmet {
+  color: var(--danger);
+}
+
+.trocar-senha-requirements__item--met {
+  color: var(--green-400);
+}
+
+.trocar-senha-match {
+  margin: 0;
+  font-size: 12.5px;
+}
+
+.trocar-senha-match--ok {
+  color: var(--green-400);
+}
+
+.trocar-senha-match--bad {
+  color: var(--danger);
+}
+
+@media (max-width: 420px) {
+  .trocar-senha-requirements {
+    grid-template-columns: 1fr;
+  }
+}
+
+.trocar-senha-form__submit {
+  width: 100%;
+  margin-top: 8px;
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .trocar-senha-card {
+    border-radius: 24px;
+  }
+
+  .trocar-senha-card__content {
+    padding: 36px 24px 32px;
+  }
+
+  .trocar-senha-card__title {
+    font-size: 24px;
+  }
+}
