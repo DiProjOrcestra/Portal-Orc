@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FormField from '../ui/FormField';
 import PasswordField from '../ui/PasswordField';
 import { login } from '../../services/authService';
@@ -23,6 +24,7 @@ function validate(form) {
 }
 
 export default function LoginForm() {
+  const navigate = useNavigate();
   const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -47,7 +49,7 @@ export default function LoginForm() {
     setSubmitting(true);
     try {
       await login(form);
-      // TODO: redirecionar pro painel informativo depois do login (RF04-07)
+      navigate('/verificar-codigo');
     } catch (err) {
       if (err instanceof ApiError) {
         setBanner({ type: 'error', message: err.message || 'Email ou senha inválidos.' });
