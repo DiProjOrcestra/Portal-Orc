@@ -17,9 +17,11 @@ public class MeResponseDto {
 
     private String name;
     private String position;
+    private String directorate;
 
     public MeResponseDto(UserEntity userEntity) {
         this.name = userEntity.getName();
         this.position = userEntity.getPosition();
+        this.directorate = userEntity.getDirectorate() != null ? userEntity.getDirectorate().getDirectorateName() : null;
     }
 }
