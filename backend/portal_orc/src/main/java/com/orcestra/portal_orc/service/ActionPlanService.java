@@ -44,7 +44,7 @@ public class ActionPlanService {
 
         ActionPlanEntity actionPlan = new ActionPlanEntity(actionPlanRequestDto);
         DirectorateEntity directorate = directorateRepository
-                                        .findByDirectorateName(
+                                        .findByName(
                                                 actionPlanRequestDto
                                                 .getDirectorate()
                                                 .name())
@@ -108,7 +108,7 @@ public class ActionPlanService {
         actionPlan.setName(actionPlanRequestDto.getName());
         actionPlan.setTerm(actionPlanRequestDto.getTerm());
         actionPlan.setProgress(actionPlanRequestDto.getProgress());
-        actionPlan.setDirectorate(directorateRepository.findByDirectorateName(
+        actionPlan.setDirectorate(directorateRepository.findByName(
                                                         actionPlanRequestDto
                                                                             .getDirectorate()
                                                                             .name())

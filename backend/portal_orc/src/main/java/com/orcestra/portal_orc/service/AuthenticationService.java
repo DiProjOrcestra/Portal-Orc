@@ -60,9 +60,9 @@ public class AuthenticationService {
                             .orElseGet(() -> roleRepository.save(RoleEntity.builder()
                                 .name(RoleTypeEnum.USER.name()).build()));
 
-        DirectorateEntity direcotrate = directorateRepository.findByDirectorateName(registerRequestDto.getDirectorate().name())
+        DirectorateEntity direcotrate = directorateRepository.findByName(registerRequestDto.getDirectorate().name())
                                         .orElseGet(() -> directorateRepository.save(DirectorateEntity.builder()
-                                            .directorateName(registerRequestDto.getDirectorate().name()).build()));
+                                            .name(registerRequestDto.getDirectorate().name()).build()));
                                 
         String userPassword = randomPasswordGenerator.generateRandomPassword(15);
         UserEntity userRegister = new UserEntity(registerRequestDto);

@@ -45,7 +45,7 @@ public class ActionPlanResponseDto {
         this.name = actionPlanEntity.getName();
         this.term = actionPlanEntity.getTerm();
         this.progress = actionPlanEntity.getProgress();
-        this.directorate = actionPlanEntity.getDirectorate().getDirectorateName();
+        this.directorate = actionPlanEntity.getDirectorate().getName();
         this.priority = actionPlanEntity.getPriority();
         this.subtasks = actionPlanEntity.getSubtasks().stream()
             .map(SubtaskResponseDto::new)
