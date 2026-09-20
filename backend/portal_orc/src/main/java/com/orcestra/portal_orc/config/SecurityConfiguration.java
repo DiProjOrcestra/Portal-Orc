@@ -47,7 +47,12 @@ public class SecurityConfiguration {
                     }))
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers(HttpMethod.GET, "/v1/auth/me").authenticated()
-                    .requestMatchers("/v1/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/error").permitAll()
+                    .requestMatchers("/v1/auth/login", "/v1/auth/resend/password", "/v1/auth/mfa/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/error").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/v1/auth/register").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/v1/mvv", "/v1/golden-circle").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/v1/mvv", "/v1/golden-circle/**", "/v1/objective/**").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/v1/objective", "/v1/objective/*/action-plan").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/v1/action-plan/*/users").hasAuthority("ADMIN")
                     .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
