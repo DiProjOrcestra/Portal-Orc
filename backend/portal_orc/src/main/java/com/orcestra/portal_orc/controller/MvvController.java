@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.orcestra.portal_orc.dto.MvvRequestDto;
-import com.orcestra.portal_orc.dto.MvvResponseDto;
+import com.orcestra.portal_orc.dto.MvvDto.MvvRequestDto;
+import com.orcestra.portal_orc.dto.MvvDto.MvvResponseDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.service.MvvService;

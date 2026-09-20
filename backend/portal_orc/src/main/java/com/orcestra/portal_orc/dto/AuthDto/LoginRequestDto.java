@@ -1,4 +1,4 @@
-package com.orcestra.portal_orc.dto;
+package com.orcestra.portal_orc.dto.AuthDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -10,11 +10,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CodeRequestDto {
-    @Schema(description = "Informe o código de 4 dígitos recebido no email cadastrado")
-    @NotBlank(message = "Informe o código recebido no email")
-    private String code;
+@Builder
+public class LoginRequestDto {
+    
+    @Schema(example = "user@orcestra.com.br")
+    @NotBlank
+    private String email;
+
+    @Schema(example = "orc'estra123")
+    @NotBlank
+    private String password;
 }

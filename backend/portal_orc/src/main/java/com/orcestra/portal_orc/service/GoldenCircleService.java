@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.orcestra.portal_orc.dto.GoldenCircleItemDto;
-import com.orcestra.portal_orc.dto.GoldenCircleResponseDto;
+import com.orcestra.portal_orc.dto.GoldenCircleDto.GoldenCircleItemDto;
+import com.orcestra.portal_orc.dto.GoldenCircleDto.GoldenCircleResponseDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.model.GoldenCircleEntity;

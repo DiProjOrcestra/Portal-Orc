@@ -10,11 +10,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.orcestra.portal_orc.config.TokenProvider;
-import com.orcestra.portal_orc.dto.CodeRequestDto;
-import com.orcestra.portal_orc.dto.LoginRequestDto;
-import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
-import com.orcestra.portal_orc.dto.RegisterRequestDto;
-import com.orcestra.portal_orc.dto.ResendPasswordDto;
+import com.orcestra.portal_orc.dto.AuthDto.CodeRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.LoginRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.MfaTokenResponseDto;
+import com.orcestra.portal_orc.dto.AuthDto.RegisterRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.ResendPasswordDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;

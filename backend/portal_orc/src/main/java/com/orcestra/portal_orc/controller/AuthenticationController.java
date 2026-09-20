@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.orcestra.portal_orc.config.CookieProvider;
-import com.orcestra.portal_orc.dto.CodeRequestDto;
-import com.orcestra.portal_orc.dto.LoginRequestDto;
 import com.orcestra.portal_orc.dto.MeResponseDto;
-import com.orcestra.portal_orc.dto.MfaTokenResponseDto;
-import com.orcestra.portal_orc.dto.RegisterRequestDto;
-import com.orcestra.portal_orc.dto.ResendPasswordDto;
+import com.orcestra.portal_orc.dto.AuthDto.CodeRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.LoginRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.MfaTokenResponseDto;
+import com.orcestra.portal_orc.dto.AuthDto.RegisterRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.ResendPasswordDto;
 import com.orcestra.portal_orc.model.UserEntity;
 
 import com.orcestra.portal_orc.exception.BadRequestException;
