@@ -60,11 +60,10 @@ public class ActionPlanService {
         
         Set<UserEntity> users = new HashSet<>();
                                                 
-        for (String id : actionPlanRequestDto.getUsersId()) {
-            String cpf = id.replaceAll("\\D", "");
-            UserEntity user = userRepository.findById(cpf).orElse(null);
+        for (Long id : actionPlanRequestDto.getUsersId()) {
+            UserEntity user = userRepository.findById(id).orElse(null);
             if (user == null) {
-                throw new NotFoundException(String.format("Usuário com CPF %s não existe", cpf));
+                throw new NotFoundException(String.format("Usuário com ID %d não existe", id));
             }
             users.add(user);
         }
@@ -89,11 +88,10 @@ public class ActionPlanService {
 
         Set<UserEntity> users = new HashSet<>();
                                                 
-        for (String id : requestDto.getUsersId()) {
-            String cpf = id.replaceAll("\\D", "");
-            UserEntity user = userRepository.findById(cpf).orElse(null);
+        for (Long id : requestDto.getUsersId()) {
+            UserEntity user = userRepository.findById(id).orElse(null);
             if (user == null) {
-                throw new NotFoundException(String.format("Usuário com CPF %s não existe", cpf));
+                throw new NotFoundException(String.format("Usuário com ID %d não existe", id));
             }
             users.add(user);
         }
@@ -151,11 +149,10 @@ public class ActionPlanService {
         actionPlan.setSubtasks(subtasks);
         Set<UserEntity> users = new HashSet<>();
 
-        for (String id : actionPlanRequestDto.getUsersId()) {
-            String cpf = id.replaceAll("\\D", "");
-            UserEntity user = userRepository.findById(cpf)
+        for (Long id : actionPlanRequestDto.getUsersId()) {
+            UserEntity user = userRepository.findById(id)
                                             .orElseThrow(() -> new NotFoundException(
-                                                                    String.format("Usuário com CPF %s não existe",cpf)));
+                                                                    String.format("Usuário com ID %d não existe",id)));
             users.add(user);
         }
         actionPlan.setUsers(users);

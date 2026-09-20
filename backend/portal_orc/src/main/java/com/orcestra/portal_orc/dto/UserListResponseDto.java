@@ -15,11 +15,11 @@ import lombok.Setter;
 @Builder
 public class UserListResponseDto {
 
-    private String cpf;
+    private Long id;
     private String name;
 
     public UserListResponseDto(UserEntity userEntity) {
-        this.cpf = userEntity.getCpf();
+        this.id = userEntity.getId();
         this.name = userEntity.getName();
     }
 }

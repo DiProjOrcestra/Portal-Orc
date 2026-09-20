@@ -15,5 +15,5 @@ import lombok.Setter;
 @Builder 
 public class LinkUsersToActionPlanRequestDto {
 
-    private List<String> usersId;
+    private List<Long> usersId;
 }

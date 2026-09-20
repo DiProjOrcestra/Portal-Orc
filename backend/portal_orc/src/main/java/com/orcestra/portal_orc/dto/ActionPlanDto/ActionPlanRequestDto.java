@@ -46,5 +46,5 @@ public class ActionPlanRequestDto {
     @NotEmpty(message = "A lista de subtarefas não pode ser vazia")
     private List<SubtaskRequestDto> subtasks;
 
-    private List<String> usersId;
+    private List<Long> usersId;
 }
