@@ -6,10 +6,10 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import com.orcestra.portal_orc.dto.LinkUsersToActionPlanRequestDto;
 import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanRequestDto;
 import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanResponseDto;
 import com.orcestra.portal_orc.dto.ActionPlanDto.ActionPlanStatusRequestDto;
+import com.orcestra.portal_orc.dto.ActionPlanDto.LinkUsersToActionPlanRequestDto;
 import com.orcestra.portal_orc.dto.SubtaskDto.SubtaskRequestDto;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
@@ -44,7 +44,7 @@ public class ActionPlanService {
 
         ActionPlanEntity actionPlan = new ActionPlanEntity(actionPlanRequestDto);
         DirectorateEntity directorate = directorateRepository
-                                        .findByDirectorateName(
+                                        .findByName(
                                                 actionPlanRequestDto
                                                 .getDirectorate()
                                                 .name())
@@ -60,11 +60,10 @@ public class ActionPlanService {
         
         Set<UserEntity> users = new HashSet<>();
                                                 
-        for (String id : actionPlanRequestDto.getUsersId()) {
-            String cpf = id.replaceAll("\\D", "");
-            UserEntity user = userRepository.findById(cpf).orElse(null);
+        for (Long id : actionPlanRequestDto.getUsersId()) {
+            UserEntity user = userRepository.findById(id).orElse(null);
             if (user == null) {
-                throw new NotFoundException(String.format("Usuário com CPF %s não existe", cpf));
+                throw new NotFoundException(String.format("Usuário com ID %d não existe", id));
             }
             users.add(user);
         }
@@ -89,11 +88,10 @@ public class ActionPlanService {
 
         Set<UserEntity> users = new HashSet<>();
                                                 
-        for (String id : requestDto.getUsersId()) {
-            String cpf = id.replaceAll("\\D", "");
-            UserEntity user = userRepository.findById(cpf).orElse(null);
+        for (Long id : requestDto.getUsersId()) {
+            UserEntity user = userRepository.findById(id).orElse(null);
             if (user == null) {
-                throw new NotFoundException(String.format("Usuário com CPF %s não existe", cpf));
+                throw new NotFoundException(String.format("Usuário com ID %d não existe", id));
             }
             users.add(user);
         }
@@ -108,7 +106,7 @@ public class ActionPlanService {
         actionPlan.setName(actionPlanRequestDto.getName());
         actionPlan.setTerm(actionPlanRequestDto.getTerm());
         actionPlan.setProgress(actionPlanRequestDto.getProgress());
-        actionPlan.setDirectorate(directorateRepository.findByDirectorateName(
+        actionPlan.setDirectorate(directorateRepository.findByName(
                                                         actionPlanRequestDto
                                                                             .getDirectorate()
                                                                             .name())
@@ -151,11 +149,10 @@ public class ActionPlanService {
         actionPlan.setSubtasks(subtasks);
         Set<UserEntity> users = new HashSet<>();
 
-        for (String id : actionPlanRequestDto.getUsersId()) {
-            String cpf = id.replaceAll("\\D", "");
-            UserEntity user = userRepository.findById(cpf)
+        for (Long id : actionPlanRequestDto.getUsersId()) {
+            UserEntity user = userRepository.findById(id)
                                             .orElseThrow(() -> new NotFoundException(
-                                                                    String.format("Usuário com CPF %s não existe",cpf)));
+                                                                    String.format("Usuário com ID %d não existe",id)));
             users.add(user);
         }
         actionPlan.setUsers(users);

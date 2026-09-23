@@ -22,6 +22,6 @@ public class MeResponseDto {
     public MeResponseDto(UserEntity userEntity) {
         this.name = userEntity.getName();
         this.position = userEntity.getPosition();
-        this.directorate = userEntity.getDirectorate() != null ? userEntity.getDirectorate().getDirectorateName() : null;
+        this.directorate = userEntity.getDirectorate() != null ? userEntity.getDirectorate().getName() : null;
     }
 }

@@ -1,8 +1,7 @@
-package com.orcestra.portal_orc.dto;
+package com.orcestra.portal_orc.dto.ActionPlanDto;
 
 import java.util.List;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,5 +15,5 @@ import lombok.Setter;
 @Builder 
 public class LinkUsersToActionPlanRequestDto {
 
-    private List<String> usersId;
+    private List<Long> usersId;
 }

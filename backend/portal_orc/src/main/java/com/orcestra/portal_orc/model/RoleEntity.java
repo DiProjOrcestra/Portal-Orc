@@ -3,6 +3,7 @@ package com.orcestra.portal_orc.model;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,6 +28,7 @@ public class RoleEntity implements GrantedAuthority{
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "nome")
     private String name;
 
     @Override
