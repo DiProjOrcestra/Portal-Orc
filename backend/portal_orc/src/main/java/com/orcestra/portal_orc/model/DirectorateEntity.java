@@ -3,6 +3,7 @@ package com.orcestra.portal_orc.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -29,7 +30,8 @@ public class DirectorateEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String nome;
+    @Column(name = "nome")
+    private String name;
 
     @Builder.Default
     @OneToMany(mappedBy = "directorate", fetch = FetchType.LAZY)

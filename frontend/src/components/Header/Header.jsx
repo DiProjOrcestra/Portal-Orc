@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo-orcestra.png';
+import { getCurrentUser } from '../../services/authService';
 import './Header.css';
 
 const NAV_ITEMS = [
@@ -63,8 +64,6 @@ const LogoutIcon = () => (
 );
 
 export default function Header({
-  userName = 'Nome Sobrenome',
-  userRole = 'Cargo',
   active = 'cadastro',
   onNavigate,
   sections,
@@ -74,6 +73,24 @@ export default function Header({
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [painelExpanded, setPainelExpanded] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    getCurrentUser()
+      .then((data) => {
+        if (mounted) setUser(data);
+      })
+      .catch(() => {});
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const userName = user?.name || 'Nome Sobrenome';
+  const userRole = user?.position || 'Cargo';
 
   const closeMenu = () => {
     setMenuOpen(false);

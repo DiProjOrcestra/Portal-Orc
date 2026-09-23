@@ -1,4 +1,4 @@
-package com.orcestra.portal_orc;
+package com;
 
 import org.junit.jupiter.api.Test;
 

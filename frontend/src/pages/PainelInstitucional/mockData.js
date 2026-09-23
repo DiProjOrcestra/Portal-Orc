@@ -1,6 +1,3 @@
-// UC-14/UC-16 have no backend endpoint yet (confirmed with the team) — this page renders
-// static placeholder content standing in for the "conteúdo vigente" each use case
-// describes, until a real institutional-content API exists.
 
 export const MVV_DATA = {
   quote: '"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."',
@@ -68,11 +65,10 @@ export const PLANEJAMENTO_DATA = [
     resultadosChave: [{ label: 'KR 3', texto: KR_TEXT }],
   },
 ];
-
-// The grid itself (days in month, weekday alignment) is computed from the
-// real calendar in the component, since it now navigates between months -
-// this only holds what isn't derivable from a plain JS Date.
 export const CICLO_TATICO_DATA = {
   ciclo: '2026.2',
   diasSemana: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
 };
+// PLANO_ACAO_DATA foi removido: a seção "Planos de ação" agora busca os
+// dados reais em GET /v1/action-plan (ver PlanoDeAcaoApi.js e
+// PlanoDeAcao.jsx) em vez de usar conteúdo mockado.

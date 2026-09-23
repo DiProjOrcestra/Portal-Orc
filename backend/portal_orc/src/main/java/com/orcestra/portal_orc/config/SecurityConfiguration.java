@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -17,7 +18,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -46,7 +46,13 @@ public class SecurityConfiguration {
                         response.setStatus(HttpStatus.FORBIDDEN.value());
                     }))
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/v1/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/error").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/v1/auth/me").authenticated()
+                    .requestMatchers("/v1/auth/login", "/v1/auth/resend/password", "/v1/auth/mfa/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/error").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/v1/auth/register").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/v1/mvv", "/v1/golden-circle").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/v1/mvv", "/v1/golden-circle/**", "/v1/objective/**").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/v1/objective", "/v1/objective/*/action-plan").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/v1/action-plan/*/users").hasAuthority("ADMIN")
                     .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

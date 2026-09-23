@@ -1,4 +1,4 @@
-package com.orcestra.portal_orc.dto;
+package com.orcestra.portal_orc.dto.AuthDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter 
 @NoArgsConstructor 
 @AllArgsConstructor 
-public class TempTokenResponseDto {
+public class MfaTokenResponseDto {
     private String token;
 
     private long tempExpirationTime;

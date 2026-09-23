@@ -24,10 +24,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.orcestra.portal_orc.config.TokenProvider;
-import com.orcestra.portal_orc.dto.CodeRequestDto;
-import com.orcestra.portal_orc.dto.LoginRequestDto;
-import com.orcestra.portal_orc.dto.RegisterRequestDto;
-import com.orcestra.portal_orc.dto.TempTokenResponseDto;
+import com.orcestra.portal_orc.dto.AuthDto.CodeRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.LoginRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.RegisterRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.TempTokenResponseDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.model.RoleEntity;

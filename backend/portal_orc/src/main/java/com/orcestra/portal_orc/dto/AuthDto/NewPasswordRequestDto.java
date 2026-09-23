@@ -1,4 +1,4 @@
-package com.orcestra.portal_orc.dto;
+package com.orcestra.portal_orc.dto.AuthDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

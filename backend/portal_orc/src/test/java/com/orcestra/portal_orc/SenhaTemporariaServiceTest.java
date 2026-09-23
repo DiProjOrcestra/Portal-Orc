@@ -21,8 +21,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.orcestra.portal_orc.dto.RegisterRequestDto;
-import com.orcestra.portal_orc.dto.ResendPasswordDto;
+import com.orcestra.portal_orc.dto.AuthDto.RegisterRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.ResendPasswordDto;
 import com.orcestra.portal_orc.enums.DirectorateEnum;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
@@ -85,7 +85,7 @@ class SenhaTemporariaServiceTest {
 
         directorate = DirectorateEntity.builder()
                 .id(1)
-                .nome(DirectorateEnum.DIPROJ.name())
+                .name(DirectorateEnum.DIPROJ.name())
                 .build();
     }
 
@@ -99,7 +99,7 @@ class SenhaTemporariaServiceTest {
         when(userRepository.existsByCpf("52998224725")).thenReturn(false);
         when(roleRepository.findByName(RoleTypeEnum.USER.name()))
                 .thenReturn(Optional.of(userRole));
-        when(directorateRepository.findByNome(DirectorateEnum.DIPROJ.name()))
+        when(directorateRepository.findByName(DirectorateEnum.DIPROJ.name()))
                 .thenReturn(Optional.of(directorate));
         when(randomPasswordGenerator.generateRandomPassword(15))
                 .thenReturn(temporaryPassword);
@@ -134,7 +134,7 @@ class SenhaTemporariaServiceTest {
         when(userRepository.existsByCpf("52998224725")).thenReturn(false);
         when(roleRepository.findByName(RoleTypeEnum.USER.name()))
                 .thenReturn(Optional.empty());
-        when(directorateRepository.findByNome(DirectorateEnum.DIPROJ.name()))
+        when(directorateRepository.findByName(DirectorateEnum.DIPROJ.name()))
                 .thenReturn(Optional.empty());
         when(roleRepository.save(any(RoleEntity.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -155,7 +155,7 @@ class SenhaTemporariaServiceTest {
         verify(directorateRepository).save(directorateCaptor.capture());
         
         // Ajustado de DirectorateEnum.DIPROJ para DirectorateEnum.DIPROJ.name()
-        assertEquals(DirectorateEnum.DIPROJ.name(), directorateCaptor.getValue().getNome());
+        assertEquals(DirectorateEnum.DIPROJ.name(), directorateCaptor.getValue().getName());
 
         verify(userRepository).save(any(UserEntity.class));
         verify(emailSenderService).sendEmail(

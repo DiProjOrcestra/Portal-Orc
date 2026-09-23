@@ -1,4 +1,4 @@
-package com.orcestra.portal_orc.dto;
+package com.orcestra.portal_orc.dto.ActionPlanDto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -7,13 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Getter 
+@Setter 
 @AllArgsConstructor 
 @NoArgsConstructor 
 @Builder 
-@Getter 
-@Setter 
-public class ObjectiveRequestDto {
+public class ActionPlanStatusRequestDto {
     
-    @NotBlank(message = "Esse campo não pode ser vazio")
-    private String description;
+    @NotBlank(message = "O campo de progresso não deve estar vazio")
+    private String progress;
 }

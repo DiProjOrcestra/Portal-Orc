@@ -1,5 +1,6 @@
 package com.orcestra.portal_orc.service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -10,12 +11,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.orcestra.portal_orc.config.TokenProvider;
-import com.orcestra.portal_orc.dto.CodeRequestDto;
-import com.orcestra.portal_orc.dto.LoginRequestDto;
-import com.orcestra.portal_orc.dto.NewPasswordRequestDto;
-import com.orcestra.portal_orc.dto.RegisterRequestDto;
-import com.orcestra.portal_orc.dto.ResendPasswordDto;
-import com.orcestra.portal_orc.dto.TempTokenResponseDto;
+import com.orcestra.portal_orc.dto.AuthDto.CodeRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.LoginRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.NewPasswordRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.RegisterRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.ResendPasswordDto;
+import com.orcestra.portal_orc.dto.AuthDto.TempTokenResponseDto;
+import com.orcestra.portal_orc.enums.DirectorateEnum;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
@@ -59,17 +61,25 @@ public class AuthenticationService {
             throw new BadRequestException("Esse CPF já foi cadastrado");
         }
 
-        RoleEntity role = roleRepository.findByName(RoleTypeEnum.USER.name())
+        Set<RoleEntity> roles = new HashSet<>();
+        roles.add(roleRepository.findByName(RoleTypeEnum.USER.name())
                             .orElseGet(() -> roleRepository.save(RoleEntity.builder()
-                                .name(RoleTypeEnum.USER.name()).build()));
+                                .name(RoleTypeEnum.USER.name()).build())));
 
-        DirectorateEntity direcotrate = directorateRepository.findByNome(registerRequestDto.getDirectorate().name())
+        if (registerRequestDto.getDirectorate().equals(DirectorateEnum.TOPS) || 
+            registerRequestDto.getDirectorate().equals(DirectorateEnum.DIREX)) {
+            roles.add(roleRepository.findByName(RoleTypeEnum.ADMIN.name())
+                                    .orElseGet(() -> roleRepository.save(RoleEntity.builder()
+                                    .name(RoleTypeEnum.ADMIN.name()).build())));
+        }
+
+        DirectorateEntity direcotrate = directorateRepository.findByName(registerRequestDto.getDirectorate().name())
                                         .orElseGet(() -> directorateRepository.save(DirectorateEntity.builder()
-                                            .nome(registerRequestDto.getDirectorate().name()).build()));
+                                            .name(registerRequestDto.getDirectorate().name()).build()));
                                 
         String userPassword = randomPasswordGenerator.generateRandomPassword(15);
         UserEntity userRegister = new UserEntity(registerRequestDto);
-        userRegister.setRoles(Set.of(role));
+        userRegister.setRoles(roles);
         userRegister.setPassword(passwordEncoder.encode(userPassword));
         userRegister.setDirectorate(direcotrate);
         userRepository.save(userRegister);

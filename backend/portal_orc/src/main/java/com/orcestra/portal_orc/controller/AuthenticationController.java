@@ -3,8 +3,10 @@ package com.orcestra.portal_orc.controller;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,12 +14,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.orcestra.portal_orc.config.CookieProvider;
-import com.orcestra.portal_orc.dto.CodeRequestDto;
-import com.orcestra.portal_orc.dto.LoginRequestDto;
-import com.orcestra.portal_orc.dto.NewPasswordRequestDto;
-import com.orcestra.portal_orc.dto.RegisterRequestDto;
-import com.orcestra.portal_orc.dto.ResendPasswordDto;
-import com.orcestra.portal_orc.dto.TempTokenResponseDto;
+import com.orcestra.portal_orc.dto.AuthDto.CodeRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.LoginRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.MeResponseDto;
+import com.orcestra.portal_orc.dto.AuthDto.NewPasswordRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.RegisterRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.ResendPasswordDto;
+import com.orcestra.portal_orc.dto.AuthDto.TempTokenResponseDto;
+import com.orcestra.portal_orc.model.UserEntity;
+
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.exception.NotFoundException;
 import com.orcestra.portal_orc.service.AuthenticationService;
@@ -79,5 +84,11 @@ public class AuthenticationController {
         String token = authenticationService.createNewPassword(passwordToken, newPasswordRequestDto);
         ResponseCookie cookie = cookieProvider.createAccessTokenCookie(token);
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    }
+
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public MeResponseDto me(@AuthenticationPrincipal UserEntity userEntity) {
+        return new MeResponseDto(userEntity);
     }
 }

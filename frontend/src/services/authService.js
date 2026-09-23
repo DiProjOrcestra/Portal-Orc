@@ -50,3 +50,11 @@ export function validateMfaCode(code) {
 export function resendMfaCode(email) {
   return apiRequest('/v1/auth/mfa/resend', { method: 'POST' });
 }
+
+/**
+ * Maps to com.orcestra.portal_orc.controller.AuthenticationController#me
+ * (GET /v1/auth/me). Returns the logged-in user's name and cargo (job position).
+ */
+export function getCurrentUser() {
+  return apiRequest('/v1/auth/me');
+}

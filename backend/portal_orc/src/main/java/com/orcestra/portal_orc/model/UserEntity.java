@@ -10,11 +10,13 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.orcestra.portal_orc.dto.RegisterRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.RegisterRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -36,7 +38,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserEntity implements UserDetails {
 
-    @Id
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
     private String cpf;
 
     @Column(nullable = false, unique = true)
@@ -70,7 +76,7 @@ public class UserEntity implements UserDetails {
 
     @Builder.Default
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "cargo_usuario", joinColumns = @JoinColumn(name = "usuario_cpf"), inverseJoinColumns = @JoinColumn(name = "cargo_id"))
+    @JoinTable(name = "cargo_usuario", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "cargo_id"))
     private Set<RoleEntity> roles = new HashSet<>(); //roles de autenticação
 
     @Column(name="mfa_code", length=100)
@@ -83,7 +89,7 @@ public class UserEntity implements UserDetails {
     private Integer mfaAttempts;
 
     public UserEntity(RegisterRequestDto registerRequestDto){
-        this.cpf = registerRequestDto.getCpf();
+        this.cpf = registerRequestDto.getCpf().replaceAll("\\D", "");
         this.email = registerRequestDto.getEmail();
         this.birthDate = registerRequestDto.getBirthDate();
         this.name = registerRequestDto.getName();
