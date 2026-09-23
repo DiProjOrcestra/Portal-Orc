@@ -26,14 +26,15 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.orcestra.portal_orc.config.TokenProvider;
 import com.orcestra.portal_orc.dto.AuthDto.CodeRequestDto;
 import com.orcestra.portal_orc.dto.AuthDto.LoginRequestDto;
-import com.orcestra.portal_orc.dto.AuthDto.MfaTokenResponseDto;
 import com.orcestra.portal_orc.dto.AuthDto.RegisterRequestDto;
+import com.orcestra.portal_orc.dto.AuthDto.TempTokenResponseDto;
 import com.orcestra.portal_orc.enums.RoleTypeEnum;
 import com.orcestra.portal_orc.exception.BadRequestException;
 import com.orcestra.portal_orc.model.RoleEntity;
 import com.orcestra.portal_orc.model.UserEntity;
 import com.orcestra.portal_orc.repository.RoleRepository;
 import com.orcestra.portal_orc.repository.UserRepository;
+import com.orcestra.portal_orc.util.PasswordValidator;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest {
@@ -61,6 +62,9 @@ class AuthenticationServiceTest {
     private MfaService mfaService;
 
     @Mock
+    private PasswordValidator passwordValidator;
+
+    @Mock
     private Authentication authentication;
 
     @InjectMocks
@@ -71,11 +75,12 @@ class AuthenticationServiceTest {
     @BeforeEach
     void setUp() {
         ReflectionTestUtils.setField(authenticationService, "expirationTime", 86400000L);
-        ReflectionTestUtils.setField(authenticationService, "mfaExpirationTime", 300000L);
+        ReflectionTestUtils.setField(authenticationService, "tempExpirationTime", 300000L);
 
         user = UserEntity.builder()
                 .email(EMAIL)
                 .password("hash-da-senha")
+                .firstAccess(false)
                 .build();
     }
 
@@ -110,7 +115,7 @@ class AuthenticationServiceTest {
     }
 
     @Test
-    @DisplayName("Deve autenticar o usuário e disparar a geração do código MFA no login")
+    @DisplayName("Deve autenticar o usuário e disparar a geração do código MFA no login quando não for o primeiro acesso")
     void deveFazerLoginEDispararMfa() throws Exception {
         LoginRequestDto dto = LoginRequestDto.builder().email(EMAIL).password(PASSWORD).build();
 
@@ -119,12 +124,34 @@ class AuthenticationServiceTest {
         doNothing().when(mfaService).generateAndSendCode(user);
         when(tokenProvider.gerarTokenMfa(authentication)).thenReturn(MFA_TOKEN);
 
-        MfaTokenResponseDto response = authenticationService.loginUser(dto);
+        TempTokenResponseDto response = authenticationService.loginUser(dto);
 
         assertNotNull(response);
-        assertEquals(MFA_TOKEN, response.getMfaToken());
-        assertEquals(300000L, response.getMfaExpirationTime());
+        assertEquals(MFA_TOKEN, response.getToken());
+        assertEquals(300000L, response.getTempExpirationTime());
         verify(mfaService).generateAndSendCode(user);
+    }
+
+    @Test
+    @DisplayName("Deve gerar token de senha temporária no login quando for o primeiro acesso")
+    void deveGerarTokenDeSenhaNoPrimeiroAcesso() throws Exception {
+        LoginRequestDto dto = LoginRequestDto.builder().email(EMAIL).password(PASSWORD).build();
+        UserEntity firstAccessUser = UserEntity.builder()
+                .email(EMAIL)
+                .password("hash-da-senha")
+                .firstAccess(true)
+                .build();
+
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+        when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(firstAccessUser));
+        when(tokenProvider.gerarTokenPassword(firstAccessUser)).thenReturn(MFA_TOKEN);
+
+        TempTokenResponseDto response = authenticationService.loginUser(dto);
+
+        assertNotNull(response);
+        assertEquals(MFA_TOKEN, response.getToken());
+        assertEquals(300000L, response.getTempExpirationTime());
+        verify(mfaService, never()).generateAndSendCode(any(UserEntity.class));
     }
 
     @Test

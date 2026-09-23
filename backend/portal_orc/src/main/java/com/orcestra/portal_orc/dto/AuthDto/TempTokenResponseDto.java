@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter 
 @NoArgsConstructor 
 @AllArgsConstructor 
-public class MfaTokenResponseDto {
+public class TempTokenResponseDto {
     private String token;
 
     private long tempExpirationTime;

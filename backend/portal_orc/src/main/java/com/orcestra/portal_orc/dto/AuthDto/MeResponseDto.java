@@ -1,4 +1,4 @@
-package com.orcestra.portal_orc.dto;
+package com.orcestra.portal_orc.dto.AuthDto;
 
 import com.orcestra.portal_orc.model.UserEntity;
 

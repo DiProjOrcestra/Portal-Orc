@@ -46,6 +46,48 @@
   border-color: var(--danger);
 }
 
+.field__control--has-toggle input {
+  padding-right: 44px;
+}
+
+/* Edge/IE render their own "show password" eye and clear ("x") buttons
+   inside password inputs, on top of our own toggle button below - hide
+   theirs so there's only ever one. Chrome/Firefox don't add one by default. */
+.field__control input[type='password']::-ms-reveal,
+.field__control input[type='password']::-ms-clear {
+  display: none;
+}
+
+.field__toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.field__toggle-btn:hover,
+.field__toggle-btn:focus-visible {
+  background: rgba(63, 204, 16, 0.14);
+  color: var(--green-400);
+}
+
+.field__toggle-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
 .field__control select {
   appearance: none;
   -webkit-appearance: none;
